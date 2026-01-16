@@ -8,8 +8,16 @@ import FirebaseCore
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    FirebaseApp.configure()
+    
+    // Configure Firebase
+    if FirebaseApp.app() == nil {
+      FirebaseApp.configure()
+      print("✅ Firebase configured")
+    }
+
     GeneratedPluginRegistrant.register(with: self)
+    print("✅ Plugins registered")
+
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }

@@ -133,7 +133,7 @@ class _FavoritePropertyCardWidgetState extends State<FavoritePropertyCardWidget>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Image section + badges (مطابقة لأسلوب hggzk_app)
+              // Image section + badges (مطابقة لأسلوب rezmate_app)
               Expanded(
                 flex: 3,
                 child: Stack(

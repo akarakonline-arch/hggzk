@@ -6,6 +6,7 @@ using YemenBooking.Application.Features.Properties;
 using YemenBooking.Core.Interfaces;
 using YemenBooking.Core.Interfaces.Repositories;
 using YemenBooking.Core.Helpers;
+using YemenBooking.Application.Features.Policies;
 using YemenBooking.Application.Features.Amenities.DTOs;
 using YemenBooking.Application.Features.Properties.DTOs;
 using YemenBooking.Application.Features.Properties.DTOs;
@@ -384,7 +385,7 @@ public class ClientGetPropertyDetailsQueryHandler : IRequestHandler<GetPropertyD
                 IsActive = policy.IsActive,
                 Type = policy.Type.ToString(),
                 Description = policy.Description ?? string.Empty,
-                Rules = ParseRules(policy.Rules)
+                Rules = PolicyRulesMapper.BuildRulesDictionary(policy)
             }).ToList();
         }
         catch (Exception ex)
@@ -392,11 +393,6 @@ public class ClientGetPropertyDetailsQueryHandler : IRequestHandler<GetPropertyD
             _logger.LogError(ex, "خطأ في جلب سياسات الكيان {PropertyId}", propertyId);
             return new List<PropertyPolicyDto>();
         }
-    }
-
-    private Dictionary<string, object> ParseRules(string rulesJson)
-    {
-        return JsonHelper.SafeDeserializeDictionary(rulesJson);
     }
 
     /// <summary>

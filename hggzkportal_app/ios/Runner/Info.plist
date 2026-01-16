@@ -65,26 +65,5 @@
 	<string>نحتاج للوصول إلى التقويم لإضافة تذكيرات الحجز</string>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>نستخدم بياناتك لتحسين تجربتك وعرض محتوى مخصص لك</string>
-	<key>NSFaceIDUsageDescription</key>
-	<string>نستخدم بصمة الوجه لتسجيل الدخول بشكل آمن وسريع</string>
-	<key>GMS_API_KEY</key>
-	<string>AIzaSyA3PbOyGhE-5zBfbpiRX10wp4gRVDYKI-c</string>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<false/>
-		<key>NSExceptionDomains</key>
-		<dict>
-			<key>ameenalqershi-001-site1.mtempurl.com</key>
-			<dict>
-				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
-				<key>NSTemporaryExceptionMinimumTLSVersion</key>
-				<string>TLSv1.0</string>
-				<key>NSIncludesSubdomains</key>
-				<true/>
-			</dict>
-		</dict>
-	</dict>
 </dict>
 </plist>

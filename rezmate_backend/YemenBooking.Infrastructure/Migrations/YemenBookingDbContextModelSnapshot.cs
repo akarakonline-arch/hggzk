@@ -3031,8 +3031,86 @@ namespace YemenBooking.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("PolicyId");
 
+                    b.Property<int?>("CancellationDaysBeforeCheckIn")
+                        .HasColumnType("integer");
+
+                    b.Property<bool?>("CancellationFreeCancel")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool?>("CancellationFullRefund")
+                        .HasColumnType("boolean");
+
+                    b.Property<int?>("CancellationHoursBeforeCheckIn")
+                        .HasColumnType("integer");
+
+                    b.Property<bool?>("CancellationNonRefundable")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("CancellationPenaltyAfterDeadline")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("CancellationRefundPercentage")
+                        .HasColumnType("integer");
+
                     b.Property<int>("CancellationWindowDays")
                         .HasColumnType("integer");
+
+                    b.Property<bool?>("CheckInContactOwner")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("CheckInEarlyCheckInNote")
+                        .HasColumnType("text");
+
+                    b.Property<bool?>("CheckInFlexible")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool?>("CheckInFlexibleCheckIn")
+                        .HasColumnType("boolean");
+
+                    b.Property<TimeOnly?>("CheckInFrom")
+                        .HasColumnType("time without time zone");
+
+                    b.Property<string>("CheckInLateCheckOutFee")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CheckInLateCheckOutNote")
+                        .HasColumnType("text");
+
+                    b.Property<bool?>("CheckInRequiresCoordination")
+                        .HasColumnType("boolean");
+
+                    b.Property<TimeOnly?>("CheckInTime")
+                        .HasColumnType("time without time zone");
+
+                    b.Property<TimeOnly?>("CheckInUntil")
+                        .HasColumnType("time without time zone");
+
+                    b.Property<TimeOnly?>("CheckOutTime")
+                        .HasColumnType("time without time zone");
+
+                    b.Property<bool?>("ChildrenAllowed")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ChildrenCribsNote")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("ChildrenFreeUnderAge")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ChildrenHalfPriceUnderAge")
+                        .HasColumnType("integer");
+
+                    b.Property<bool?>("ChildrenKidsMenuAvailable")
+                        .HasColumnType("boolean");
+
+                    b.Property<int?>("ChildrenMaxChildren")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ChildrenMaxChildrenPerRoom")
+                        .HasColumnType("integer");
+
+                    b.Property<bool?>("ChildrenPlaygroundAvailable")
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -3068,6 +3146,72 @@ namespace YemenBooking.Infrastructure.Migrations
                     b.Property<decimal>("MinimumDepositPercentage")
                         .HasColumnType("numeric");
 
+                    b.Property<bool?>("ModificationAllowed")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ModificationFeesAfter")
+                        .HasColumnType("text");
+
+                    b.Property<bool?>("ModificationFlexible")
+                        .HasColumnType("boolean");
+
+                    b.Property<int?>("ModificationFreeModificationHours")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ModificationReason")
+                        .HasColumnType("text");
+
+                    b.Property<bool?>("PaymentAcceptCard")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool?>("PaymentAcceptCash")
+                        .HasColumnType("boolean");
+
+                    b.Property<string[]>("PaymentAcceptedMethods")
+                        .HasColumnType("text[]");
+
+                    b.Property<bool?>("PaymentCashPreferred")
+                        .HasColumnType("boolean");
+
+                    b.Property<decimal?>("PaymentDepositPercentage")
+                        .HasColumnType("numeric");
+
+                    b.Property<bool?>("PaymentDepositRequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool?>("PaymentFullPaymentRequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool?>("PaymentPayAtProperty")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool?>("PetsAllowed")
+                        .HasColumnType("boolean");
+
+                    b.Property<decimal?>("PetsFeeAmount")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("PetsMaxWeight")
+                        .HasColumnType("text");
+
+                    b.Property<bool?>("PetsNoFees")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool?>("PetsOutdoorSpace")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool?>("PetsPetFriendly")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("PetsReason")
+                        .HasColumnType("text");
+
+                    b.Property<bool?>("PetsRequiresApproval")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool?>("PetsStrict")
+                        .HasColumnType("boolean");
+
                     b.Property<Guid>("PropertyId")
                         .HasColumnType("uuid")
                         .HasComment("معرف الكيان");
@@ -3076,7 +3220,6 @@ namespace YemenBooking.Infrastructure.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("Rules")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasComment("قواعد السياسة (JSON)");
 

@@ -10,6 +10,7 @@ using YemenBooking.Infrastructure.Seeds;
 using Microsoft.Extensions.Logging;
 using PaymentStatus = YemenBooking.Core.Enums.PaymentStatus;
 using System.Text.Json;
+using YemenBooking.Application.Features.Policies;
 
 namespace YemenBooking.Api.Services
 {
@@ -450,7 +451,7 @@ namespace YemenBooking.Api.Services
                                 minimumDepositPercentage = p.MinimumDepositPercentage,
                                 minHoursBeforeCheckIn = p.MinHoursBeforeCheckIn,
                                 description = p.Description,
-                                rules = p.Rules
+                                rules = PolicyRulesMapper.BuildRulesJson(p)
                             }).ToList()
                         };
 

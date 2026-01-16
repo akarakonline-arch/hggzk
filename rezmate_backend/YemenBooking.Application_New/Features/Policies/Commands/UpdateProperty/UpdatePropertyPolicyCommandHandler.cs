@@ -67,7 +67,6 @@ namespace YemenBooking.Application.Features.Policies.Commands.UpdateProperty
             policy.Type = request.Type;
             policy.Description = request.Description;
 
-            // If legacy Rules JSON is provided, populate typed fields from it
             if (!string.IsNullOrWhiteSpace(request.Rules))
             {
                 PolicyRulesMapper.PopulatePolicyFromRulesJson(policy, request.Rules);
@@ -184,7 +183,6 @@ namespace YemenBooking.Application.Features.Policies.Commands.UpdateProperty
             if (request.ModificationReason != null)
                 policy.ModificationReason = request.ModificationReason;
 
-            // Always regenerate Rules JSON from typed fields for compatibility
             policy.Rules = PolicyRulesMapper.BuildRulesJson(policy);
                 
             policy.UpdatedBy = _currentUserService.UserId;

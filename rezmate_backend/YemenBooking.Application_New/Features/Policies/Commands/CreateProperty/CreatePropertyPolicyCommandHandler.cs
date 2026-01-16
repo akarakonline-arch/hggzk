@@ -153,17 +153,15 @@ namespace YemenBooking.Application.Features.Policies.Commands.CreateProperty
                 CreatedBy = _currentUserService.UserId,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
-                IsActive = true, // ✅ تفعيل السياسة صراحةً
-                IsDeleted = false // ✅ التأكد من أنها غير محذوفة
+                IsActive = true,
+                IsDeleted = false
             };
 
-            // Legacy compatibility: if Rules JSON is provided, populate typed fields from it
             if (!string.IsNullOrWhiteSpace(request.Rules))
             {
                 PolicyRulesMapper.PopulatePolicyFromRulesJson(policy, request.Rules);
             }
 
-            // Always generate Rules JSON from typed fields for compatibility
             policy.Rules = PolicyRulesMapper.BuildRulesJson(policy);
             var created = await _policyRepository.CreatePropertyPolicyAsync(policy, cancellationToken);
 

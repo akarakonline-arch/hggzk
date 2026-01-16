@@ -19,6 +19,7 @@ using YemenBooking.Application.Features.SearchAndFilters.Services;
 using YemenBooking.Application.Features.Units.Services;
 using YemenBooking.Application.Features.Bookings.Commands.CreateBooking;
 using System.Text.Json;
+using YemenBooking.Application.Features.Policies;
 
 namespace YemenBooking.Application.Features.Bookings.Commands.CreateBooking;
 
@@ -240,7 +241,7 @@ public class CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand,
                         p.Id,
                         Type = p.Type.ToString(),
                         p.Description,
-                        p.Rules,
+                        Rules = PolicyRulesMapper.BuildRulesJson(p),
                         p.CancellationWindowDays,
                         p.RequireFullPaymentBeforeConfirmation,
                         p.MinimumDepositPercentage,
