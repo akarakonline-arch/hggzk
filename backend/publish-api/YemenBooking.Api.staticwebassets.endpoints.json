@@ -1,0 +1,580 @@
+{
+  "Version": 1,
+  "ManifestType": "Publish",
+  "Endpoints": [
+    {
+      "Route": "client/.gitkeep",
+      "AssetFile": "client/.gitkeep",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"AbpHGcgLb+kRsJGnwFEktk7uzpZOCcBY74+YBdrKVGs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 12 Sep 2025 15:55:55 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-AbpHGcgLb+kRsJGnwFEktk7uzpZOCcBY74+YBdrKVGs="
+        }
+      ]
+    },
+    {
+      "Route": "client/.lv5tvmajl9.gitkeep",
+      "AssetFile": "client/.gitkeep",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/octet-stream"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"AbpHGcgLb+kRsJGnwFEktk7uzpZOCcBY74+YBdrKVGs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 12 Sep 2025 15:55:55 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "lv5tvmajl9"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-AbpHGcgLb+kRsJGnwFEktk7uzpZOCcBY74+YBdrKVGs="
+        },
+        {
+          "Name": "label",
+          "Value": "client/.gitkeep"
+        }
+      ]
+    },
+    {
+      "Route": "client/assets/index-BH_USwWk.js",
+      "AssetFile": "client/assets/index-BH_USwWk.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1446136"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"BFBO49QoyPiMRnJz2eNCqzfCsIXubdfwe/pWS7QMKPI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 13 Sep 2025 21:21:30 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-BFBO49QoyPiMRnJz2eNCqzfCsIXubdfwe/pWS7QMKPI="
+        }
+      ]
+    },
+    {
+      "Route": "client/assets/index-BH_USwWk.wjr202ful2.js",
+      "AssetFile": "client/assets/index-BH_USwWk.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1446136"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"BFBO49QoyPiMRnJz2eNCqzfCsIXubdfwe/pWS7QMKPI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 13 Sep 2025 21:21:30 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "wjr202ful2"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-BFBO49QoyPiMRnJz2eNCqzfCsIXubdfwe/pWS7QMKPI="
+        },
+        {
+          "Name": "label",
+          "Value": "client/assets/index-BH_USwWk.js"
+        }
+      ]
+    },
+    {
+      "Route": "client/assets/index-CME3rlbe.css",
+      "AssetFile": "client/assets/index-CME3rlbe.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "109572"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"lwWWU/iEACYB7B9Gv9q8CpjGVAa77uKQn7vuHmjZhS0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 13 Sep 2025 21:21:30 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-lwWWU/iEACYB7B9Gv9q8CpjGVAa77uKQn7vuHmjZhS0="
+        }
+      ]
+    },
+    {
+      "Route": "client/assets/index-CME3rlbe.vy3uuizorc.css",
+      "AssetFile": "client/assets/index-CME3rlbe.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "109572"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"lwWWU/iEACYB7B9Gv9q8CpjGVAa77uKQn7vuHmjZhS0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 13 Sep 2025 21:21:30 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "vy3uuizorc"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-lwWWU/iEACYB7B9Gv9q8CpjGVAa77uKQn7vuHmjZhS0="
+        },
+        {
+          "Name": "label",
+          "Value": "client/assets/index-CME3rlbe.css"
+        }
+      ]
+    },
+    {
+      "Route": "client/assets/index-DZJLeG7T.js",
+      "AssetFile": "client/assets/index-DZJLeG7T.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1445825"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"rq06sQLYN6MbKzwFXVwAcJK0T1mOwFgWH2keYLlIn5U=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 12 Sep 2025 15:55:55 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-rq06sQLYN6MbKzwFXVwAcJK0T1mOwFgWH2keYLlIn5U="
+        }
+      ]
+    },
+    {
+      "Route": "client/assets/index-DZJLeG7T.m6gfif03cb.js",
+      "AssetFile": "client/assets/index-DZJLeG7T.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1445825"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"rq06sQLYN6MbKzwFXVwAcJK0T1mOwFgWH2keYLlIn5U=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 12 Sep 2025 15:55:55 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "m6gfif03cb"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-rq06sQLYN6MbKzwFXVwAcJK0T1mOwFgWH2keYLlIn5U="
+        },
+        {
+          "Name": "label",
+          "Value": "client/assets/index-DZJLeG7T.js"
+        }
+      ]
+    },
+    {
+      "Route": "client/firebase-messaging-sw.js",
+      "AssetFile": "client/firebase-messaging-sw.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1475"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"mIckbx4d7PHP+FTjHoRM93VHuKtcbjp7yKTk/M1q1q8=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 13 Sep 2025 21:21:29 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-mIckbx4d7PHP+FTjHoRM93VHuKtcbjp7yKTk/M1q1q8="
+        }
+      ]
+    },
+    {
+      "Route": "client/firebase-messaging-sw.ocmtmbsjl5.js",
+      "AssetFile": "client/firebase-messaging-sw.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1475"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"mIckbx4d7PHP+FTjHoRM93VHuKtcbjp7yKTk/M1q1q8=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 13 Sep 2025 21:21:29 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ocmtmbsjl5"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-mIckbx4d7PHP+FTjHoRM93VHuKtcbjp7yKTk/M1q1q8="
+        },
+        {
+          "Name": "label",
+          "Value": "client/firebase-messaging-sw.js"
+        }
+      ]
+    },
+    {
+      "Route": "client/index.1culyqrik9.html",
+      "AssetFile": "client/index.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "485"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Lzk1j8suCt+4waz2dBCl7shTrNsm8sxu8BhQ8O51Eww=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 13 Sep 2025 21:21:30 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "1culyqrik9"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Lzk1j8suCt+4waz2dBCl7shTrNsm8sxu8BhQ8O51Eww="
+        },
+        {
+          "Name": "label",
+          "Value": "client/index.html"
+        }
+      ]
+    },
+    {
+      "Route": "client/index.html",
+      "AssetFile": "client/index.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "485"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Lzk1j8suCt+4waz2dBCl7shTrNsm8sxu8BhQ8O51Eww=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 13 Sep 2025 21:21:30 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Lzk1j8suCt+4waz2dBCl7shTrNsm8sxu8BhQ8O51Eww="
+        }
+      ]
+    },
+    {
+      "Route": "client/vite.69kjnsiwqx.svg",
+      "AssetFile": "client/vite.svg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1497"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/svg+xml"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"SnSK/UQ5GLsWWRyDTEAdrjPoeGGrXbrQgRw6O0qSFPs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 13 Sep 2025 21:21:29 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "69kjnsiwqx"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-SnSK/UQ5GLsWWRyDTEAdrjPoeGGrXbrQgRw6O0qSFPs="
+        },
+        {
+          "Name": "label",
+          "Value": "client/vite.svg"
+        }
+      ]
+    },
+    {
+      "Route": "client/vite.svg",
+      "AssetFile": "client/vite.svg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1497"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/svg+xml"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"SnSK/UQ5GLsWWRyDTEAdrjPoeGGrXbrQgRw6O0qSFPs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 13 Sep 2025 21:21:29 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-SnSK/UQ5GLsWWRyDTEAdrjPoeGGrXbrQgRw6O0qSFPs="
+        }
+      ]
+    }
+  ]
+}

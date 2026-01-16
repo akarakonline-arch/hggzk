@@ -1,0 +1,2799 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>YemenBooking.Api</name>
+    </assembly>
+    <members>
+        <member name="T:YemenBooking.Api.Controllers.Admin.AmenitiesController">
+            <summary>
+            متحكم بإدارة المرافق للمدراء
+            Controller for managing amenities by admins
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.AmenitiesController.CreateAmenity(YemenBooking.Application.Features.Amenities.Commands.ManageAmenities.CreateAmenityCommand)">
+            <summary>
+            إنشاء مرفق جديد
+            Create a new amenity
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.AmenitiesController.UpdateAmenity(System.Guid,YemenBooking.Application.Features.Amenities.Commands.ManageAmenities.UpdateAmenityCommand)">
+            <summary>
+            تحديث مرفق موجود
+            Update an existing amenity
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.AmenitiesController.DeleteAmenity(System.Guid)">
+            <summary>
+            حذف مرفق
+            Delete an amenity
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.AmenitiesController.GetAllAmenities(YemenBooking.Application.Features.Amenities.Queries.GetAllAmenities.GetAllAmenitiesQuery)">
+            <summary>
+            جلب جميع المرافق مع الصفحات
+            Get all amenities with pagination
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.AmenitiesController.GetAmenityById(System.Guid)">
+            <summary>
+            جلب مرفق حسب المعرف
+            Get amenity by id
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.AmenitiesController.GetAmenityStats">
+            <summary>
+            إحصائيات المرافق
+            Amenities stats
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.AmenitiesController.GetPopularAmenities(System.Int32)">
+            <summary>
+            المرافق الشائعة
+            Popular amenities
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.AmenitiesController.ToggleAmenityStatus(System.Guid)">
+            <summary>
+            تبديل حالة المرفق (تفعيل/تعطيل)
+            Toggle amenity status
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.AmenitiesController.AssignAmenityToProperty(System.Guid,System.Guid,YemenBooking.Application.Features.Amenities.Commands.AssignAmenities.AssignAmenityToPropertyCommand)">
+            <summary>
+            إسناد مرفق لكيان
+            Assign an amenity to a property
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.AmenitiesController.UnassignAmenityFromProperty(System.Guid,System.Guid)">
+            <summary>
+            إلغاء إسناد مرفق من عقار
+            Unassign an amenity from a property
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.AmenitiesController.AssignAmenityToPropertyType(System.Guid,System.Guid,YemenBooking.Application.Features.Amenities.Commands.AssignAmenities.AssignAmenityToPropertyTypeCommand)">
+            <summary>
+            تخصيص مرفق لنوع الكيان
+            Assign an amenity to a property type
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Admin.AuditLogsController">
+            <summary>
+            متحكم بسجلات نشاط وتدقيق النظام للمدراء
+            Controller for admin activity and audit logs
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.AuditLogsController.GetAuditLogs(YemenBooking.Application.Features.AuditLog.Queries.GetAuditLogs.GetAuditLogsQuery)">
+            <summary>
+            جلب سجلات التدقيق مع الفلاتر
+            Get audit logs with optional filters (user, date range, search term, operation type)
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.AuditLogsController.GetAuditLogDetails(System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            جلب تفاصيل سجل تدقيق محدد (تشمل الحقول الثقيلة old/new/metadata)
+            Get details for a single audit log (includes heavy JSON fields)
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:YemenBooking.Api.Controllers.Admin.BookingsController" -->
+        <member name="M:YemenBooking.Api.Controllers.Admin.BookingsController.CancelBooking(System.Guid,YemenBooking.Application.Features.Bookings.Commands.CancelBooking.CancelBookingCommand)">
+            <summary>
+            إلغاء حجز
+            Cancel a booking
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.BookingsController.UpdateBooking(System.Guid,YemenBooking.Application.Features.Bookings.Commands.UpdateBooking.UpdateBookingCommand)">
+            <summary>
+            تحديث بيانات الحجز
+            Update booking information
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.BookingsController.ConfirmBooking(YemenBooking.Application.Features.Bookings.Commands.ConfirmBooking.ConfirmBookingCommand)">
+            <summary>
+            تأكيد الحجز
+            Confirm a booking
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.BookingsController.ConfirmBookingById(System.Guid)">
+            <summary>
+            تأكيد الحجز عبر المعرف في المسار
+            Confirm booking by id in route (alternative)
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.BookingsController.CheckIn(System.Guid)">
+            <summary>
+            تسجيل الوصول للحجز
+            Check-in booking
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.BookingsController.CheckOut(System.Guid)">
+            <summary>
+            تسجيل المغادرة للحجز
+            Check-out booking
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.BookingsController.Complete(System.Guid)">
+            <summary>
+            إكمال الحجز
+            Complete booking
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.BookingsController.RegisterPayment(System.Guid,YemenBooking.Application.Features.Payments.Commands.RegisterBookingPayment.RegisterBookingPaymentCommand)">
+            <summary>
+            تسجيل دفعة للحجز
+            Register a payment for booking
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.BookingsController.GetBookingById(System.Guid)">
+            <summary>
+            جلب بيانات حجز بواسطة المعرف
+            Get booking details by ID
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.BookingsController.GetBookingDetails(System.Guid)">
+            <summary>
+            جلب تفاصيل الحجز الكاملة (كيانات وخدمات ومدفوعات)
+            Get full booking details
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.BookingsController.GetBookingsByProperty(System.Guid,YemenBooking.Application.Features.Bookings.Queries.GetBookingsByProperty.GetBookingsByPropertyQuery)">
+            <summary>
+            جلب الحجوزات حسب الكيان
+            Get bookings by property with filters and pagination
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.BookingsController.GetBookingsByStatus(YemenBooking.Application.Features.Bookings.Queries.GetBookingsByStatus.GetBookingsByStatusQuery)">
+            <summary>
+            جلب الحجوزات حسب الحالة
+            Get bookings by status with pagination
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.BookingsController.GetBookingsByUnit(System.Guid,YemenBooking.Application.Features.Bookings.Queries.GetBookingsByUnit.GetBookingsByUnitQuery)">
+            <summary>
+            جلب الحجوزات حسب الوحدة
+            Get bookings by unit
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.BookingsController.GetBookingsByUser(System.Guid,YemenBooking.Application.Features.Bookings.Queries.GetBookingsByUser.GetBookingsByUserQuery)">
+            <summary>
+            جلب الحجوزات حسب المستخدم
+            Get bookings by user with filters and pagination
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.BookingsController.GetBookingServices(System.Guid)">
+            <summary>
+            جلب خدمات الحجز
+            Get services for a booking
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.BookingsController.GetBookingReport(YemenBooking.Application.Features.Analytics.Queries.BookingAnalytics.GetBookingReportQuery)">
+            <summary>
+            استعلام تقرير الحجوزات
+            Get booking report
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.BookingsController.GetBookingTrends(YemenBooking.Application.Features.Analytics.Queries.BookingAnalytics.GetBookingTrendsQuery)">
+            <summary>
+            استعلام اتجاهات الحجوزات كسلسلة زمنية
+            Get booking trends as time series
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.BookingsController.GetBookingWindowAnalysis(System.Guid)">
+            <summary>
+            استعلام تحليل نافذة الحجز لكيان معين
+            Get booking window analysis for a specific property
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.BookingsController.GetBookingsByDateRange(YemenBooking.Application.Features.Bookings.Queries.GetBookingsByDateRange.GetBookingsByDateRangeQuery)">
+            <summary>
+            استعلام الحجوزات في نطاق زمني
+            Get bookings by date range
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:YemenBooking.Api.Controllers.Admin.DailyScheduleController" -->
+        <member name="M:YemenBooking.Api.Controllers.Admin.DailyScheduleController.GetScheduleForPeriod(System.Guid,System.DateTime,System.DateTime)">
+            <summary>
+            الحصول على الجدول اليومي لفترة محددة
+            Get daily schedule for a specific period
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.DailyScheduleController.GetMonthlySchedule(System.Guid,System.Int32,System.Int32)">
+            <summary>
+            الحصول على الجدول الشهري
+            Get monthly schedule
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.DailyScheduleController.SetAvailability(System.Guid,YemenBooking.Application.Features.DailySchedules.Commands.SetAvailability.SetAvailabilityForPeriodCommand)">
+            <summary>
+            تعيين حالة الإتاحة لفترة محددة
+            Set availability status for a specific period
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.DailyScheduleController.CheckAvailability(System.Guid,System.DateTime,System.DateTime)">
+            <summary>
+            التحقق من توفر الوحدة في فترة محددة
+            Check unit availability for a specific period
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.DailyScheduleController.SetPricing(System.Guid,YemenBooking.Application.Features.DailySchedules.Commands.SetPricing.SetPricingForPeriodCommand)">
+            <summary>
+            تعيين الأسعار لفترة محددة
+            Set pricing for a specific period
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.DailyScheduleController.CalculatePrice(System.Guid,YemenBooking.Application.Features.DailySchedules.Queries.CalculatePrice.CalculatePriceForPeriodQuery)">
+            <summary>
+            حساب السعر الإجمالي لفترة محددة
+            Calculate total price for a specific period
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.DailyScheduleController.CloneSchedule(System.Guid,YemenBooking.Application.Features.DailySchedules.Commands.CloneSchedule.CloneScheduleCommand)">
+            <summary>
+            نسخ الجدول من فترة إلى فترة أخرى
+            Clone daily schedule from a source period to a target period
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Admin.DashboardController">
+            <summary>
+            متحكم بمعلومات لوحة تحكم الإدارة
+            Controller for admin dashboard operations
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.DashboardController.GetAdminDashboard(YemenBooking.Application.Features.Analytics.Queries.Dashboard.GetAdminDashboardQuery)">
+            <summary>
+            استعلام عن بيانات لوحة القيادة للإدارة
+            Get admin dashboard data for the given date range
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.DashboardController.ExportDashboardReport(YemenBooking.Application.Features.Analytics.Commands.Reports.ExportDashboardReportCommand)">
+            <summary>
+            تصدير تقرير لوحة القيادة
+            Export dashboard report
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.DashboardController.GetCustomerReport(YemenBooking.Application.Features.Analytics.Queries.UserAnalytics.GetCustomerReportQuery)">
+            <summary>
+            استعلام تقرير العملاء
+            Get customer report
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.DashboardController.GetFinancialSummary(YemenBooking.Application.Features.Analytics.Queries.FinancialAnalytics.GetFinancialSummaryQuery)">
+            <summary>
+            استعلام الملخص المالي
+            Get financial summary
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.DashboardController.GetPropertyPerformance(YemenBooking.Application.Features.Analytics.Queries.PropertyAnalytics.GetPropertyPerformanceQuery)">
+            <summary>
+            استعلام مؤشرات أداء الكيان
+            Get property performance
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.DashboardController.GetPropertyPerformanceComparison(YemenBooking.Application.Features.Analytics.Queries.PropertyAnalytics.GetPropertyPerformanceComparisonQuery)">
+            <summary>
+            استعلام مقارنة أداء الكيان
+            Get property performance comparison
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.DashboardController.GetOccupancyRate(YemenBooking.Application.Features.Analytics.Queries.BookingAnalytics.GetOccupancyRateQuery)">
+            <summary>
+            استعلام نسبة الإشغال لكيان
+            Get occupancy rate
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.DashboardController.GetOccupancyReport(YemenBooking.Application.Features.Analytics.Queries.BookingAnalytics.GetOccupancyReportQuery)">
+            <summary>
+            استعلام تقرير الإشغال
+            Get occupancy report
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.DashboardController.GetRevenueReport(YemenBooking.Application.Features.Analytics.Queries.FinancialAnalytics.GetRevenueReportQuery)">
+            <summary>
+            استعلام تقرير الإيرادات
+            Get revenue report
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.DashboardController.GetPlatformCancellationAnalysis(YemenBooking.Application.Features.Analytics.Queries.GetPlatformCancellationAnalysisQuery)">
+            <summary>
+            استعلام تحليل أسباب إلغاء الحجوزات
+            Get platform cancellation analysis
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.DashboardController.GetPlatformRevenueBreakdown(YemenBooking.Application.Features.Analytics.Queries.FinancialAnalytics.GetPlatformRevenueBreakdownQuery)">
+            <summary>
+            استعلام تفصيل الإيرادات للمنصة
+            Get platform revenue breakdown
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.DashboardController.GetUserAcquisitionFunnel(YemenBooking.Application.Features.Analytics.Queries.UserAnalytics.GetUserAcquisitionFunnelQuery)">
+            <summary>
+            استعلام قمع اكتساب العملاء
+            Get user acquisition funnel
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.DashboardController.GetCustomerCohortAnalysis(YemenBooking.Application.Features.Analytics.Queries.UserAnalytics.GetCustomerCohortAnalysisQuery)">
+            <summary>
+            استعلام للحصول على تحليل أفواج العملاء ضمن نطاق زمني
+            Query to get customer cohort analysis within a date range
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.DashboardController.GetReviewSentimentAnalysis(System.Guid)">
+            <summary>
+            استعلام للحصول على تحليل مشاعر التقييمات لكيان محدد
+            Query to get review sentiment analysis for a specific property
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.DashboardController.GetTopPerformingProperties(System.Int32)">
+            <summary>
+            استعلام أفضل الكيانات أداءً
+            Get top performing properties
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Admin.FieldGroupsController">
+            <summary>
+            متحكم بإدارة مجموعات الحقول للمدراء
+            Controller for managing field groups by admins
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.FieldGroupsController.CreateFieldGroup(YemenBooking.Application.Features.DynamicFields.Commands.ManageFieldGroups.CreateFieldGroupCommand)">
+            <summary>
+            إنشاء مجموعة حقول جديدة
+            Create a new field group
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.FieldGroupsController.UpdateFieldGroup(System.String,YemenBooking.Application.Features.DynamicFields.Commands.ManageFieldGroups.UpdateFieldGroupCommand)">
+            <summary>
+            تحديث مجموعة حقول
+            Update an existing field group
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.FieldGroupsController.DeleteFieldGroup(System.String)">
+            <summary>
+            حذف مجموعة حقول
+            Delete a field group
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.FieldGroupsController.GetFieldGroupsByUnitType(System.String)">
+            <summary>
+            جلب مجموعات الحقول لنوع وحدة معين
+            Get field groups by unit type
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Admin.FinancialReportsController">
+            <summary>
+            واجهة برمجة التطبيقات للتقارير المالية والمحاسبية
+            Financial Reports API Controller
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.FinancialReportsController.GetFinancialReport(System.DateTime,System.DateTime)">
+            <summary>
+            الحصول على التقرير المالي لفترة معينة
+            Get financial report for a specific period
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.FinancialReportsController.GetChartOfAccounts(System.Nullable{YemenBooking.Core.Entities.AccountType})">
+            <summary>
+            الحصول على دليل الحسابات
+            Get chart of accounts
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.FinancialReportsController.GetAccountsByType(System.Nullable{YemenBooking.Core.Entities.AccountType})">
+            <summary>
+            الحصول على الحسابات حسب النوع (مسار بديل للتوافق مع الواجهة الأمامية)
+            Get accounts by type (alternative route for frontend compatibility)
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.FinancialReportsController.SearchAccounts(System.String)">
+            <summary>
+            البحث في دليل الحسابات
+            Search chart of accounts
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.FinancialReportsController.GetTransactions(System.DateTime,System.DateTime,System.Nullable{YemenBooking.Core.Entities.TransactionStatus},System.Nullable{YemenBooking.Core.Entities.TransactionType},System.Nullable{System.Int32})">
+            <summary>
+            الحصول على القيود المحاسبية لفترة معينة
+            Get financial transactions for a specific period
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.FinancialReportsController.GetBookingTransactions(System.Guid)">
+            <summary>
+            الحصول على القيود المحاسبية للحجز
+            Get financial transactions for a booking
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.FinancialReportsController.GetPropertyTransactions(System.Guid)">
+            <summary>
+            الحصول على القيود المحاسبية للعقار
+            Get financial transactions for a property
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.FinancialReportsController.GetUserTransactions(System.Guid)">
+            <summary>
+            الحصول على القيود المحاسبية للمستخدم
+            Get financial transactions for a user
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.FinancialReportsController.ClearChartOfAccountsCache">
+            <summary>
+            إلغاء الذاكرة المؤقتة لدليل الحسابات
+            Clear chart of accounts cache
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.FinancialReportsController.GetAccountStatement(System.Guid,System.DateTime,System.DateTime)">
+            <summary>
+            الحصول على كشف حساب
+            Get account statement
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.FinancialReportsController.SearchTransactions(System.String,System.Nullable{YemenBooking.Core.Entities.TransactionType},System.Nullable{YemenBooking.Core.Entities.TransactionStatus},System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            البحث في القيود المحاسبية
+            Search financial transactions
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.FinancialReportsController.PostPendingTransactions">
+            <summary>
+            ترحيل القيود المعلقة
+            Post pending transactions
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.FinancialReportsController.ReverseTransaction(System.Guid,YemenBooking.Api.Controllers.Admin.ReverseTransactionRequest)">
+            <summary>
+            عكس قيد محاسبي
+            Reverse a financial transaction
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.FinancialReportsController.GetTransactionSummaryByType(System.DateTime,System.DateTime)">
+            <summary>
+            الحصول على ملخص القيود حسب النوع
+            Get transaction summary by type
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.FinancialReportsController.GetAccountBalance(System.Guid,System.Nullable{System.DateTime})">
+            <summary>
+            الحصول على رصيد الحساب
+            Get account balance
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.FinancialReportsController.GetRevenueChart(System.DateTime,System.DateTime)">
+            <summary>
+            الحصول على بيانات مخطط الإيرادات
+            Get revenue chart data
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.FinancialReportsController.GetExpenseChart(System.DateTime,System.DateTime)">
+            <summary>
+            الحصول على بيانات مخطط المصروفات
+            Get expense chart data
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.FinancialReportsController.GetCashFlowChart(System.DateTime,System.DateTime)">
+            <summary>
+            الحصول على بيانات التدفق النقدي
+            Get cash flow chart data
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.FinancialReportsController.GetFinancialSummary">
+            <summary>
+            الحصول على الملخص المالي الشامل
+            Get comprehensive financial summary
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Admin.ReverseTransactionRequest">
+            <summary>
+            طلب عكس القيد
+            Reverse transaction request
+            </summary>
+        </member>
+        <member name="P:YemenBooking.Api.Controllers.Admin.ReverseTransactionRequest.Reason">
+            <summary>
+            سبب العكس
+            Reversal reason
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Admin.NotificationChannelsController">
+            <summary>
+            وحدة تحكم قنوات الإشعارات للإدارة
+            Admin notification channels controller
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.NotificationChannelsController.GetChannels(System.String,System.String,System.Nullable{System.Boolean},System.Int32,System.Int32)">
+            <summary>
+            الحصول على جميع القنوات
+            Get all channels
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.NotificationChannelsController.GetChannel(System.Guid)">
+            <summary>
+            الحصول على قناة محددة
+            Get specific channel
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.NotificationChannelsController.CreateChannel(YemenBooking.Api.Controllers.Admin.CreateChannelRequest)">
+            <summary>
+            إنشاء قناة جديدة
+            Create new channel
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.NotificationChannelsController.UpdateChannel(System.Guid,YemenBooking.Api.Controllers.Admin.UpdateChannelRequest)">
+            <summary>
+            تحديث قناة
+            Update channel
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.NotificationChannelsController.DeleteChannel(System.Guid)">
+            <summary>
+            حذف قناة
+            Delete channel
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.NotificationChannelsController.GetChannelSubscribers(System.Guid,System.Boolean)">
+            <summary>
+            الحصول على مشتركي القناة
+            Get channel subscribers
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.NotificationChannelsController.AddSubscribers(System.Guid,YemenBooking.Api.Controllers.Admin.AddSubscribersRequest)">
+            <summary>
+            إضافة مشتركين للقناة
+            Add subscribers to channel
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.NotificationChannelsController.RemoveSubscribers(System.Guid,YemenBooking.Api.Controllers.Admin.RemoveSubscribersRequest)">
+            <summary>
+            إزالة مشتركين من القناة
+            Remove subscribers from channel
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.NotificationChannelsController.SendChannelNotification(System.Guid,YemenBooking.Api.Controllers.Admin.SendChannelNotificationRequest)">
+            <summary>
+            إرسال إشعار عبر القناة
+            Send notification through channel
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.NotificationChannelsController.GetChannelHistory(System.Guid,System.Int32,System.Int32)">
+            <summary>
+            الحصول على سجل إشعارات القناة
+            Get channel notification history
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.NotificationChannelsController.GetStatistics">
+            <summary>
+            الحصول على إحصائيات القنوات
+            Get channels statistics
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.NotificationChannelsController.GetUserChannels(System.Guid)">
+            <summary>
+            الحصول على قنوات المستخدم
+            Get user channels
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.NotificationChannelsController.UpdateUserSubscriptions(System.Guid,YemenBooking.Api.Controllers.Admin.UpdateUserSubscriptionsRequest)">
+            <summary>
+            تحديث اشتراكات المستخدم
+            Update user subscriptions
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Admin.NotificationsController">
+            <summary>
+            متحكم بإشعارات النظام للمدراء
+            Controller for system notifications by admins
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.NotificationsController.CreateNotification(YemenBooking.Application.Features.Notifications.Commands.ManageNotifications.CreateNotificationCommand)">
+            <summary>
+            إنشاء إشعار جديد
+            Create a new notification
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.NotificationsController.Broadcast(YemenBooking.Application.Features.Notifications.Commands.BroadcastNotifications.BroadcastNotificationCommand)">
+            <summary>
+            بث إشعار لمجموعة مستخدمين
+            Broadcast a notification to users
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.NotificationsController.GetSystemNotifications(YemenBooking.Application.Features.Notifications.Queries.GetSystemNotifications.GetSystemNotificationsQuery)">
+            <summary>
+            جلب إشعارات النظام
+            Get system notifications
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.NotificationsController.GetUserNotifications(System.Guid,YemenBooking.Application.Features.Notifications.Queries.GetUserNotifications.GetUserNotificationsQuery)">
+            <summary>
+            جلب إشعارات المستخدم
+            Get user notifications
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.NotificationsController.Delete(System.Guid)">
+            <summary>
+            حذف إشعار
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.NotificationsController.Resend(System.Guid)">
+            <summary>
+            إعادة إرسال إشعار فاشل
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.NotificationsController.GetStats(YemenBooking.Application.Features.Notifications.Queries.GetNotificationsStats.GetNotificationsStatsQuery)">
+            <summary>
+            الحصول على إحصائيات الإشعارات
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Admin.PaymentsController">
+            <summary>
+            متحكم بمدفوعات النظام للمدراء
+            Controller for payment operations by admins
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PaymentsController.RefundPayment(YemenBooking.Application.Features.Payments.Commands.RefundPayment.RefundPaymentCommand)">
+            <summary>
+            استرجاع الدفع
+            Refund a payment
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PaymentsController.VoidPayment(YemenBooking.Application.Features.Payments.Commands.VoidPayment.VoidPaymentCommand)">
+            <summary>
+            إلغاء الدفع
+            Void a payment
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PaymentsController.UpdatePaymentStatus(System.Guid,YemenBooking.Application.Features.Payments.Commands.PaymentStatus.UpdatePaymentStatusCommand)">
+            <summary>
+            تحديث حالة الدفع
+            Update payment status
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PaymentsController.GetAllPayments(YemenBooking.Application.Features.Payments.Queries.GetAllPayments.GetAllPaymentsQuery)">
+            <summary>
+            جلب جميع المدفوعات مع دعم الفلاتر
+            Get all payments with filters
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PaymentsController.GetPaymentById(System.Guid)">
+            <summary>
+            جلب تفاصيل دفعة واحدة حسب المعرف
+            Get a single payment by ID with details
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PaymentsController.GetPaymentDetails(System.Guid)">
+            <summary>
+            جلب تفاصيل كاملة للدفعة مع الأنشطة والاستردادات
+            Get full payment details with activities and refunds
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PaymentsController.GetPaymentAnalytics(YemenBooking.Application.Features.Payments.Queries.GetPaymentAnalytics.GetPaymentAnalyticsQuery)">
+            <summary>
+            جلب تحليلات المدفوعات والإيرادات
+            Get payment and revenue analytics
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PaymentsController.GetRevenueReport(YemenBooking.Application.Features.Analytics.Queries.FinancialAnalytics.GetRevenueReportQuery)">
+            <summary>
+            جلب تقرير الإيرادات
+            Get revenue report
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PaymentsController.GetPaymentTrends(YemenBooking.Application.Features.Payments.Queries.GetPaymentAnalytics.GetPaymentAnalyticsQuery)">
+            <summary>
+            جلب اتجاهات المدفوعات
+            Get payment trends
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PaymentsController.GetRefundStatistics(YemenBooking.Application.Features.Payments.Queries.GetPaymentAnalytics.GetPaymentAnalyticsQuery)">
+            <summary>
+            جلب إحصائيات الاستردادات
+            Get refund statistics
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Admin.PropertiesController">
+            <summary>
+            متحكم بالكيانات للمدراء
+            Controller for managing properties by admins
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertiesController.CreateProperty(YemenBooking.Application.Features.Properties.Commands.CreateProperty.CreatePropertyCommand)">
+            <summary>
+            إنشاء كيان جديد
+            Create a new property
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertiesController.UpdateProperty(System.Guid,YemenBooking.Application.Features.Properties.Commands.UpdateProperty.UpdatePropertyCommand)">
+            <summary>
+            تحديث بيانات كيان
+            Update an existing property
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertiesController.DeleteProperty(System.Guid)">
+            <summary>
+            حذف كيان
+            Delete a property
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertiesController.ApproveProperty(System.Guid)">
+            <summary>
+            الموافقة على الكيان
+            Approve a property
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertiesController.AddPropertyToSections(System.Guid,YemenBooking.Application.Features.Sections.Commands.ManageSectionItems.AddPropertyToSectionsCommand)">
+            <summary>
+            إضافة الكيان إلى أقسام متعددة
+            Add property to multiple sections
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertiesController.RejectProperty(System.Guid,YemenBooking.Application.Features.Properties.Commands.ApproveProperty.RejectPropertyCommand)">
+            <summary>
+            رفض الكيان
+            Reject a property
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertiesController.RecalculateAllPropertyRatings">
+            <summary>
+            إعادة احتساب متوسط التقييم لجميع العقارات (إجراء إداري)
+            Recalculate average rating for all properties (admin)
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertiesController.GetAllProperties(YemenBooking.Application.Features.Properties.Queries.GetAllProperties.GetAllPropertiesQuery)">
+            <summary>
+            جلب جميع الكيانات مع الفلاتر، الفرز، والتصفّح
+            Get all properties with filters, sorting, and pagination
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertiesController.GetPendingProperties(YemenBooking.Application.Features.Properties.Queries.GetPendingProperties.GetPendingPropertiesQuery)">
+            <summary>
+            جلب الكيانات في انتظار الموافقة
+            Get pending properties
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertiesController.GetPropertyDetails(System.Guid,System.Boolean,System.Boolean)">
+            <summary>
+            جلب تفاصيل الكيان مع الحقول الديناميكية
+            Get property details including dynamic fields
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Admin.PropertyInSectionImagesController">
+            <summary>
+            إدارة صور "عقار في قسم"
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertyInSectionImagesController.Upload(Microsoft.AspNetCore.Http.IFormFile,Microsoft.AspNetCore.Http.IFormFile,System.Nullable{System.Guid},System.String,System.String,System.String,System.Nullable{System.Boolean},System.Nullable{System.Int32},System.String,System.Nullable{System.Boolean})">
+            <summary>
+            رفع صورة لعقار في قسم
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertyInSectionImagesController.Get(System.Nullable{System.Guid},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            الحصول على صور عقار في قسم
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertyInSectionImagesController.Update(System.Guid,YemenBooking.Application.Features.Sections.Commands.UpdateProperty.UpdatePropertyInSectionImageCommand)">
+            <summary>
+            تحديث بيانات صورة
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertyInSectionImagesController.Delete(System.Guid,System.Boolean)">
+            <summary>
+            حذف صورة
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertyInSectionImagesController.Reorder(YemenBooking.Api.Controllers.Admin.PropertyInSectionImagesController.ReorderImagesRequest)">
+            <summary>
+            إعادة ترتيب الصور
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertyInSectionImagesController.SetPrimary(System.Guid,YemenBooking.Api.Controllers.Admin.PropertyInSectionImagesController.SetPrimaryRequest)">
+            <summary>
+            تعيين صورة كرئيسية
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Admin.PropertyPoliciesController">
+            <summary>
+            متحكم بسياسات الكيانات للمدراء
+            Controller for managing property policies by admins
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertyPoliciesController.CreatePropertyPolicy(YemenBooking.Application.Features.Policies.Commands.CreateProperty.CreatePropertyPolicyCommand)">
+            <summary>
+            إنشاء سياسة جديدة للكيان
+            Create a new property policy
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertyPoliciesController.UpdatePropertyPolicy(System.Guid,YemenBooking.Application.Features.Policies.Commands.UpdateProperty.UpdatePropertyPolicyCommand)">
+            <summary>
+            تحديث سياسة للكيان
+            Update an existing property policy
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertyPoliciesController.DeletePropertyPolicy(System.Guid)">
+            <summary>
+            حذف سياسة للكيان
+            Delete a property policy
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertyPoliciesController.GetPropertyPolicies(YemenBooking.Application.Features.Policies.Queries.GetPropertyPolicies.GetPropertyPoliciesQuery)">
+            <summary>
+            جلب جميع سياسات كيان معين
+            Get all property policies
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertyPoliciesController.GetPolicyById(System.Guid)">
+            <summary>
+            جلب سياسة معينة حسب المعرف
+            Get a property policy by ID
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertyPoliciesController.GetPoliciesByType(YemenBooking.Application.Features.Policies.Queries.GetPoliciesByType.GetPoliciesByTypeQuery)">
+            <summary>
+            جلب السياسات حسب النوع مع الصفحات
+            Get policies by type with pagination
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertyPoliciesController.GetAllPolicies(YemenBooking.Application.Features.Policies.Queries.GetAllPolicies.GetAllPoliciesQuery)">
+            <summary>
+            جلب جميع السياسات مع الصفحات
+            Get all policies with pagination
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertyPoliciesController.TogglePolicyStatus(System.Guid)">
+            <summary>
+            تفعيل/تعطيل السياسة
+            Toggle policy status
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertyPoliciesController.GetPolicyStats(YemenBooking.Application.Features.Policies.Queries.GetPolicyStats.GetPolicyStatsQuery)">
+            <summary>
+            جلب إحصائيات السياسات
+            Get policy statistics
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Admin.PropertyServicesController">
+            <summary>
+            متحكم بخدمات الكيانات للمدراء والمالكين
+            Controller for property services management (Admin/Owner)
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertyServicesController.CreatePropertyService(YemenBooking.Application.Features.Services.Commands.CreateProperty.CreatePropertyServiceCommand)">
+            <summary>
+            إنشاء خدمة جديدة لكيان
+            Create a new service for a property
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertyServicesController.UpdatePropertyService(System.Guid,YemenBooking.Application.Features.Services.Commands.UpdateProperty.UpdatePropertyServiceCommand)">
+            <summary>
+            تحديث بيانات خدمة كيان
+            Update an existing property service
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertyServicesController.DeletePropertyService(System.Guid)">
+            <summary>
+            حذف خدمة كيان
+            Delete a property service
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertyServicesController.GetPropertyServices(System.Guid)">
+            <summary>
+            جلب خدمات كيان معين
+            Get services for a specific property
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertyServicesController.GetServiceById(System.Guid)">
+            <summary>
+            جلب خدمة الكيان بحسب المعرف
+            Get property service by id
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertyServicesController.GetServicesByType(System.String,System.Int32,System.Int32)">
+            <summary>
+            جلب الخدمات حسب النوع
+            Get services by type
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Admin.PropertyTypesController">
+            <summary>
+            متحكم بأنواع الكيانات للمدراء
+            Controller for managing property types by admins
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertyTypesController.CreatePropertyType(YemenBooking.Application.Features.PropertyTypes.Commands.CreateProperty.CreatePropertyTypeCommand)">
+            <summary>
+            إنشاء نوع كيان جديد
+            Create a new property type
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertyTypesController.UpdatePropertyType(System.Guid,YemenBooking.Application.Features.PropertyTypes.Commands.UpdateProperty.UpdatePropertyTypeCommand)">
+            <summary>
+            تحديث نوع كيان
+            Update an existing property type
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertyTypesController.DeletePropertyType(System.Guid)">
+            <summary>
+            حذف نوع كيان
+            Delete a property type
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.PropertyTypesController.GetAllPropertyTypes(YemenBooking.Application.Features.PropertyTypes.Queries.GetAllPropertyTypes.GetAllPropertyTypesQuery)">
+            <summary>
+            جلب جميع أنواع الكيانات مع الصفحات
+            Get all property types with pagination
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Admin.ReportsController">
+            <summary>
+            متحكم بالبلاغات للمدراء
+            Controller for report management by admins (Reports as complaints)
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.ReportsController.CreateReport(YemenBooking.Application.Features.Reports.Commands.ManageReports.CreateReportCommand)">
+            <summary>
+            إنشاء بلاغ جديد
+            Create a new report
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.ReportsController.UpdateReport(System.Guid,YemenBooking.Application.Features.Reports.Commands.ManageReports.UpdateReportCommand)">
+            <summary>
+            تحديث بلاغ
+            Update an existing report
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.ReportsController.DeleteReport(System.Guid)">
+            <summary>
+            حذف بلاغ
+            Delete a report
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.ReportsController.GetAllReports(YemenBooking.Application.Features.Reports.Queries.GetAllReports.GetAllReportsQuery)">
+            <summary>
+            جلب جميع البلاغات
+            Get all reports with pagination
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.ReportsController.GetReportsByProperty(System.Guid,YemenBooking.Application.Features.Reports.Queries.GetReportsByProperty.GetReportsByPropertyQuery)">
+            <summary>
+            جلب البلاغات حسب كيان
+            Get reports by property
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.ReportsController.GetReportsByReportedUser(System.Guid,YemenBooking.Application.Features.Reports.Queries.GetReportsByReportedUser.GetReportsByReportedUserQuery)">
+            <summary>
+            جلب البلاغات حسب المستخدم المبلّغ عنه
+            Get reports by reported user
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.ReportsController.GetReportStats">
+            <summary>
+            جلب إحصائيات البلاغات
+            Get report analytics and statistics
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Admin.ReviewsController">
+            <summary>
+            متحكم بالتقييمات للمدراء
+            Controller for managing reviews by admins
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.ReviewsController.GetAllReviews(YemenBooking.Application.Features.Reviews.Queries.GetAllReviews.GetAllReviewsQuery)">
+            <summary>
+            جلب جميع التقييمات مع دعم التصفية
+            Get all reviews with filtering
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.ReviewsController.GetReviewDetails(System.Guid)">
+            <summary>
+            جلب تفاصيل تقييم محدد
+            Get details of a specific review
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.ReviewsController.GetReviewByBooking(System.Guid)">
+            <summary>
+            جلب تقييم مرتبط بحجز محدد
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.ReviewsController.ApproveReview(System.Guid,YemenBooking.Application.Features.Analytics.Commands.Reviews.ApproveReviewCommand)">
+            <summary>
+            الموافقة على تقييم
+            Approve a review
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.ReviewsController.DeleteReview(System.Guid)">
+            <summary>
+            حذف تقييم
+            Delete a review
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.ReviewsController.DisableReview(System.Guid)">
+            <summary>
+            تعطيل تقييم (إخفاؤه من الواجهة العميلة وعدم احتسابه في المتوسط)
+            Disable a review (hide it from client and exclude from aggregates)
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.ReviewsController.RespondToReview(System.Guid,YemenBooking.Application.Features.Reviews.Commands.RespondToReview.RespondToReviewCommand)">
+            <summary>
+            إضافة رد على تقييم
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.ReviewsController.GetReviewResponses(System.Guid)">
+            <summary>
+            جلب ردود تقييم
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.ReviewsController.DeleteReviewResponse(System.Guid)">
+            <summary>
+            حذف رد تقييم
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.RolesController.CreateRole(YemenBooking.Application.Features.Users.Commands.ManageRoles.CreateRoleCommand)">
+            <summary>
+            إنشاء دور جديد
+            Create a new role
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.RolesController.UpdateRole(System.Guid,YemenBooking.Application.Features.Users.Commands.ManageRoles.UpdateRoleCommand)">
+            <summary>
+            تحديث دور
+            Update an existing role
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.RolesController.DeleteRole(System.Guid)">
+            <summary>
+            حذف دور
+            Delete a role
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.RolesController.GetAllRoles(YemenBooking.Application.Features.Users.Queries.GetAllRoles.GetAllRolesQuery)">
+            <summary>
+            جلب جميع الأدوار مع الصفحات
+            Get all roles with pagination
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.SearchAnalyticsController.GetSearchAnalytics(YemenBooking.Application.Features.SearchAndFilters.Queries.SearchAnalytics.GetSearchAnalyticsQuery,System.Threading.CancellationToken)">
+            <summary>
+            جلب تحليلات البحث
+            Get search analytics with optional date filters
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Admin.SearchFiltersAnalyticsController">
+            <summary>
+            متحكم بنقاط نهاية احصائيات الفلاتر الديناميكية للوحدات
+            Controller for unit dynamic filter analytics endpoints
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.SearchFiltersAnalyticsController.GetUnitDynamicFilterAnalytics(YemenBooking.Application.Features.SearchAndFilters.Queries.FilterAnalytics.GetUnitDynamicFilterAnalyticsQuery,System.Threading.CancellationToken)">
+            <summary>
+            جلب احصائيات الفلاتر الديناميكية للوحدات
+            Get analytics for unit dynamic filters
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.SearchLogsController.GetSearchLogs(YemenBooking.Application.Features.SearchAndFilters.Queries.SearchLogs.GetSearchLogsQuery)">
+            <summary>
+            جلب سجلات البحث مع الفلترة والصفحات
+            Get search logs with filters and pagination
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Admin.SectionImagesController">
+            <summary>
+            إدارة صور الأقسام
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.SectionImagesController.Upload(Microsoft.AspNetCore.Http.IFormFile,Microsoft.AspNetCore.Http.IFormFile,System.Nullable{System.Guid},System.String,System.String,System.String,System.Nullable{System.Boolean},System.Nullable{System.Int32},System.String)">
+            <summary>
+            رفع صورة لقسم
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.SectionImagesController.Get(System.Nullable{System.Guid},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            الحصول على صور قسم
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.SectionImagesController.Update(System.Guid,YemenBooking.Application.Features.Sections.Commands.ManageImages.UpdateSectionImageCommand)">
+            <summary>
+            تحديث بيانات صورة
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.SectionImagesController.Delete(System.Guid,System.Boolean)">
+            <summary>
+            حذف صورة
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.SectionImagesController.Reorder(YemenBooking.Api.Controllers.Admin.SectionImagesController.ReorderImagesRequest)">
+            <summary>
+            إعادة ترتيب الصور
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.SectionImagesController.SetPrimary(System.Guid,YemenBooking.Api.Controllers.Admin.SectionImagesController.SetPrimaryRequest)">
+            <summary>
+            تعيين صورة كرئيسية
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Admin.StaffController">
+            <summary>
+            متحكم بعمليات الموظفين: إضافة، تعديل، إزالة واستعلام
+            Controller for staff management by admin
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.StaffController.AddStaff(YemenBooking.Application.Features.Staffs.Commands.ManageStaff.AddStaffCommand)">
+            <summary>
+            إضافة موظف جديد
+            Add a new staff member
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.StaffController.UpdateStaff(YemenBooking.Application.Features.Staffs.Commands.ManageStaff.UpdateStaffCommand)">
+            <summary>
+            تحديث بيانات موظف
+            Update staff member details
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.StaffController.RemoveStaff(YemenBooking.Application.Features.Staffs.Commands.ManageStaff.RemoveStaffCommand)">
+            <summary>
+            إزالة موظف
+            Remove a staff member
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.StaffController.GetStaffByPosition(YemenBooking.Application.Features.Staffs.Queries.GetStaffByPosition.GetStaffByPositionQuery)">
+            <summary>
+            جلب الموظفين حسب المنصب
+            Get staff by position
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.StaffController.GetStaffByProperty(YemenBooking.Application.Features.Staffs.Queries.GetStaffByProperty.GetStaffByPropertyQuery)">
+            <summary>
+            جلب الموظفين حسب الكيان
+            Get staff by property
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.StaffController.GetStaffByUser(YemenBooking.Application.Features.Staffs.Queries.GetStaffByUser.GetStaffByUserQuery)">
+            <summary>
+            جلب الموظفين حسب المستخدم (المالك)
+            Get staff by user
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.StatisticsController.GetStats">
+            <summary>
+            الحصول على إحصائيات لوحة التحكم
+            Get dashboard statistics
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.SystemSettingsController.GetSettingsAsync(System.Threading.CancellationToken)">
+            <summary>
+            جلب إعدادات النظام
+            Get system settings
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.SystemSettingsController.SaveSettingsAsync(System.Collections.Generic.Dictionary{System.String,System.String},System.Threading.CancellationToken)">
+            <summary>
+            حفظ أو تحديث إعدادات النظام
+            Save or update system settings
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.SystemSettingsController.GetCurrenciesAsync(System.Threading.CancellationToken)">
+            <summary>
+            جلب قائمة العملات
+            Get currency settings
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.SystemSettingsController.GetCurrenciesStatsAsync(System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Threading.CancellationToken)">
+            <summary>
+            Get currency statistics with optional last-30-days trends
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.SystemSettingsController.GetCitiesStatsAsync(System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Threading.CancellationToken)">
+            <summary>
+            Get city statistics with optional last-30-days trends
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.SystemSettingsController.GetCitiesAsync(System.Threading.CancellationToken)">
+            <summary>
+            جلب قائمة المدن
+            Get city settings
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.SystemSettingsController.SaveCurrenciesAsync(System.Collections.Generic.List{YemenBooking.Application.Common.Models.CurrencyDto},System.Threading.CancellationToken)">
+            <summary>
+            حفظ أو تحديث قائمة العملات
+            Save or update currency settings
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.SystemSettingsController.DeleteCurrencyAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            حذف عملة نهائياً بعد التحقق من الارتباطات
+            Permanently delete a currency after verifying references
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.SystemSettingsController.SaveCitiesAsync(System.Collections.Generic.List{YemenBooking.Application.Common.Models.CityDto},System.Threading.CancellationToken)">
+            <summary>
+            حفظ أو تحديث قائمة المدن
+            Save or update city settings
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.SystemSettingsController.DeleteCityAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            حذف مدينة مع التحقق من الارتباطات
+            Delete city after validating dependent references
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Admin.UnitInSectionImagesController">
+            <summary>
+            إدارة صور "وحدة في قسم"
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UnitInSectionImagesController.Upload(Microsoft.AspNetCore.Http.IFormFile,Microsoft.AspNetCore.Http.IFormFile,System.String,System.String,System.String,System.String,System.Nullable{System.Boolean},System.Nullable{System.Int32},System.String,System.Nullable{System.Boolean})">
+            <summary>
+            رفع صورة لوحدة في قسم
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UnitInSectionImagesController.Get(System.String,System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            الحصول على صور وحدة في قسم
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UnitInSectionImagesController.Update(System.Guid,YemenBooking.Application.Features.Sections.Commands.UpdateUnit.UpdateUnitInSectionImageCommand)">
+            <summary>
+            تحديث بيانات صورة
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UnitInSectionImagesController.Delete(System.Guid,System.Boolean)">
+            <summary>
+            حذف صورة
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UnitInSectionImagesController.Reorder(YemenBooking.Api.Controllers.Admin.UnitInSectionImagesController.ReorderImagesRequest)">
+            <summary>
+            إعادة ترتيب الصور
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UnitInSectionImagesController.SetPrimary(System.Guid,YemenBooking.Api.Controllers.Admin.UnitInSectionImagesController.SetPrimaryRequest)">
+            <summary>
+            تعيين صورة كرئيسية
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Admin.UnitsController">
+            <summary>
+            متحكم بتحديث توفر الوحدات للمدراء
+            Controller for bulk updating unit availability by admins
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UnitsController.GetAllUnits(YemenBooking.Application.Features.Units.Queries.SearchUnits.SearchUnitsQuery)">
+            <summary>
+            جلب جميع الوحدات مع الصفحات والفلاتر
+            Get all units with pagination and filters
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UnitsController.GetSimpleUnits(System.Nullable{System.Guid},System.Int32,System.Int32)">
+            <summary>
+            جلب الوحدات بطريقة مبسطة بالاعتماد فقط على معرف العقار والصفحات
+            Simple units listing for admin filtered only by PropertyId and pagination
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UnitsController.CreateUnit(YemenBooking.Application.Features.Units.Commands.CreateUnit.CreateUnitCommand)">
+            <summary>
+            إنشاء وحدة جديدة
+            Create a new unit
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UnitsController.UpdateUnit(System.Guid,YemenBooking.Application.Features.Units.Commands.UpdateUnit.UpdateUnitCommand)">
+            <summary>
+            تحديث بيانات وحدة
+            Update an existing unit
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UnitsController.DeleteUnit(System.Guid)">
+            <summary>
+            حذف وحدة
+            Delete a unit
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UnitsController.AddUnitToSections(System.Guid,YemenBooking.Application.Features.Sections.Commands.ManageSectionItems.AddUnitToSectionsCommand)">
+            <summary>
+            إضافة الوحدة إلى أقسام متعددة
+            Add unit to multiple sections
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UnitsController.GetUnitById(System.Guid)">
+            <summary>
+            جلب بيانات وحدة بواسطة المعرف
+            Get unit details by ID
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UnitsController.GetUnitDetails(System.Guid,System.Boolean)">
+            <summary>
+            الحصول على تفاصيل الوحدة
+            Get unit details including dynamic fields
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Admin.UnitTypeFieldsController">
+            <summary>
+            متحكم بحقول نوع الكيان للمدراء
+            Controller for property type fields management by admins
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UnitTypeFieldsController.CreateUnitTypeField(YemenBooking.Application.Features.DynamicFields.Commands.CreateUnit.CreateUnitTypeFieldCommand)">
+            <summary>
+            إنشاء حقل نوع للكيان
+            Create a new property type field
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UnitTypeFieldsController.UpdateUnitTypeField(System.String,YemenBooking.Application.Features.DynamicFields.Commands.UpdateUnit.UpdateUnitTypeFieldCommand)">
+            <summary>
+            تحديث بيانات حقل نوع الوحدة
+            Update an existing property type field
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UnitTypeFieldsController.DeleteUnitTypeField(System.String)">
+            <summary>
+            حذف حقل نوع الوحدة
+            Delete a property type field
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UnitTypeFieldsController.ReorderUnitTypeFields(YemenBooking.Application.Features.DynamicFields.Commands.ManageFields.ReorderUnitTypeFieldsCommand)">
+            <summary>
+            إعادة ترتيب حقول نوع الكيان
+            Reorder property type fields
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UnitTypeFieldsController.GetUnitTypeFields(System.String,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.String,System.String)">
+            <summary>
+            جلب الحقول حسب نوع الوحدة مع دعم الفلاتر
+            Get unit type fields for a given unit type with filters
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Admin.UnitTypesController">
+            <summary>
+            متحكم بأنواع الوحدات للمدراء
+            Controller for unit type management by admins
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UnitTypesController.CreateUnitType(YemenBooking.Application.Features.PropertyTypes.Commands.CreateUnit.CreateUnitTypeCommand)">
+            <summary>
+            إنشاء نوع وحدة جديد
+            Create a new unit type
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UnitTypesController.UpdateUnitType(System.Guid,YemenBooking.Application.Features.PropertyTypes.Commands.UpdateUnit.UpdateUnitTypeCommand)">
+            <summary>
+            تحديث نوع وحدة
+            Update an existing unit type
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UnitTypesController.DeleteUnitType(System.Guid)">
+            <summary>
+            حذف نوع وحدة
+            Delete a unit type
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UnitTypesController.GetUnitTypesByPropertyType(System.Guid)">
+            <summary>
+            جلب أنواع الوحدات حسب نوع الكيان
+            Get unit types by property type
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UnitTypesController.GetAllUnitTypes(YemenBooking.Application.Features.PropertyTypes.Queries.GetAllUnitTypes.GetAllUnitTypesQuery)">
+            <summary>
+            جلب جميع أنواع الوحدات مع الصفحات
+            Get all unit types with pagination
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Admin.UploadImageController">
+            <summary>
+            متحكم برفع الصور للمدراء
+            Controller for uploading images by admins
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UploadImageController.UploadImage(YemenBooking.Application.Features.Properties.Commands.UploadImages.UploadImageCommand)">
+            <summary>
+            رفع صورة مع بيانات إضافية
+            Upload an image with additional data
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Admin.UsersController">
+            <summary>
+            متحكم بإدارة المستخدمين (إنشاء، تعديل، حذف، تمكين/تعطيل، تخصيص الأدوار)
+            Controller for user management by admin
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UsersController.SearchUsers(YemenBooking.Application.Features.Users.Queries.SearchUsers.SearchUsersQuery)">
+            <summary>
+            البحث عن المستخدمين مع الفلاتر والفرز
+            Search users with filters, sorting, and pagination
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UsersController.GetAllUsers(YemenBooking.Application.Features.Users.Queries.GetAllUsers.GetAllUsersQuery)">
+            <summary>
+            جلب جميع المستخدمين
+            Get all users with optional search, sorting, and pagination
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UsersController.GetUserById(System.Guid)">
+            <summary>
+            جلب بيانات مستخدم بواسطة المعرف
+            Get user details by ID
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UsersController.CreateUser(YemenBooking.Application.Features.Users.Commands.CreateUser.CreateUserCommand)">
+            <summary>
+            إنشاء مستخدم جديد
+            Create a new user
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UsersController.RegisterPropertyOwner(YemenBooking.Application.Features.Authentication.Commands.RegisterOwner.RegisterPropertyOwnerCommand)">
+            <summary>
+            تسجيل مالك كيان جديد وإنشاء العقار المرتبط (عملية واحدة)
+            Register new property owner and create the linked property (single operation)
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UsersController.UpdateUser(System.Guid,YemenBooking.Application.Features.Users.Commands.UpdateUser.UpdateUserCommand)">
+            <summary>
+            تحديث بيانات مستخدم
+            Update an existing user
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UsersController.ActivateUser(System.Guid)">
+            <summary>
+            تفعيل حساب المستخدم
+            Activate a user account
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UsersController.DeactivateUser(System.Guid)">
+            <summary>
+            إلغاء تفعيل حساب المستخدم
+            Deactivate a user account
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UsersController.AssignUserRole(System.Guid,YemenBooking.Application.Features.Users.Commands.ManageRoles.AssignUserRoleCommand)">
+            <summary>
+            تخصيص دور للمستخدم
+            Assign a role to a user
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UsersController.GetUsersByRole(YemenBooking.Application.Features.Users.Queries.GetUsersByRole.GetUsersByRoleQuery)">
+            <summary>
+            استعلام المستخدمين حسب الدور
+            Get users by role
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UsersController.GetUserLifetimeStats(System.Guid)">
+            <summary>
+            استعلام إحصائيات المستخدم مدى الحياة
+            Get user lifetime statistics
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UsersController.GetUserNotifications(System.Guid,YemenBooking.Application.Features.Notifications.Queries.GetUserNotifications.GetUserNotificationsQuery)">
+            <summary>
+            استعلام إشعارات المستخدم
+            Get user notifications
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Admin.UsersController.GetUserDetails(System.Guid)">
+            <summary>
+            استعلام تفاصيل مستخدم بواسطة المعرف
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Client.AmenitiesController">
+            <summary>
+            كونترولر إدارة المرافق للعملاء
+            Client Amenities Management Controller
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.AmenitiesController.GetAllAmenities(YemenBooking.Application.Features.Amenities.Queries.GetAllAmenities.GetAllAmenitiesQuery)">
+            <summary>
+            الحصول على جميع المرافق المتاحة
+            Get all available amenities
+            </summary>
+            <returns>قائمة المرافق</returns>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Client.AuthController">
+            <summary>
+            كونترولر المصادقة والتفويض للعملاء
+            Client Authentication and Authorization Controller
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.AuthController.Login(YemenBooking.Application.Features.Authentication.Commands.Login.ClientLoginUserCommand)">
+            <summary>
+            تسجيل دخول المستخدم
+            User login
+            </summary>
+            <param name="command">بيانات تسجيل الدخول</param>
+            <returns>بيانات المستخدم ومعلومات الجلسة</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.AuthController.Register(YemenBooking.Application.Features.Authentication.Commands.Register.RegisterUserCommand)">
+            <summary>
+            تسجيل مستخدم جديد
+            Register new user
+            </summary>
+            <param name="command">بيانات التسجيل</param>
+            <returns>نتيجة التسجيل</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.AuthController.RefreshToken(YemenBooking.Application.Features.Authentication.Commands.RefreshToken.RefreshTokenCommand)">
+            <summary>
+            تحديث رمز الوصول
+            Refresh access token
+            </summary>
+            <param name="command">رمز التحديث</param>
+            <returns>رمز وصول جديد</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.AuthController.Logout(YemenBooking.Application.Features.Authentication.Commands.Logout.LogoutCommand)">
+            <summary>
+            تسجيل خروج المستخدم
+            User logout
+            </summary>
+            <param name="command">بيانات تسجيل الخروج</param>
+            <returns>نتيجة تسجيل الخروج</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.AuthController.ChangePassword(YemenBooking.Application.Features.Authentication.Commands.ChangePassword.ChangePasswordCommand)">
+            <summary>
+            تغيير كلمة المرور
+            Change password
+            </summary>
+            <param name="command">بيانات تغيير كلمة المرور</param>
+            <returns>نتيجة تغيير كلمة المرور</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.AuthController.RequestPasswordReset(YemenBooking.Application.Features.Authentication.Commands.PasswordReset.RequestPasswordResetCommand)">
+            <summary>
+            طلب إعادة تعيين كلمة المرور
+            Request password reset
+            </summary>
+            <param name="command">بيانات طلب إعادة التعيين</param>
+            <returns>نتيجة الطلب</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.AuthController.UpdateProfile(YemenBooking.Application.Features.Authentication.Commands.UpdateUser.UpdateUserProfileCommand)">
+            <summary>
+            تحديث ملف المستخدم الشخصي
+            Update user profile
+            </summary>
+            <param name="command">بيانات التحديث</param>
+            <returns>نتيجة التحديث</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.AuthController.UpdateClientProfile(YemenBooking.Application.Features.Authentication.Commands.UpdateUser.ClientUpdateUserProfileCommand)">
+            <summary>
+            تحديث ملف المستخدم الشخصي (إصدار العميل)
+            Update user profile (client version)
+            </summary>
+            <param name="command">بيانات التحديث</param>
+            <returns>نتيجة التحديث</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.AuthController.UploadProfileImage(Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            رفع صورة الملف الشخصي (multipart/form-data)
+            Upload user profile image
+            </summary>
+            <param name="file">ملف الصورة</param>
+            <returns>رابط الصورة الجديد</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.AuthController.VerifyEmail(YemenBooking.Application.Features.Authentication.Commands.VerifyEmail.VerifyEmailCommand)">
+            <summary>
+            التحقق من البريد الإلكتروني
+            Verify email
+            </summary>
+            <param name="command">بيانات التحقق</param>
+            <returns>نتيجة التحقق</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.AuthController.ResendEmailVerification(YemenBooking.Application.Features.Authentication.Commands.VerifyEmail.ResendEmailVerificationCommand)">
+            <summary>
+            إعادة إرسال رمز التحقق من البريد الإلكتروني
+            Resend email verification
+            </summary>
+            <param name="command">بيانات الإرسال</param>
+            <returns>نتيجة الإرسال</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.AuthController.DeleteAccount(YemenBooking.Application.Features.Authentication.Commands.Account.DeleteAccountCommand)">
+            <summary>
+            حذف الحساب
+            Delete account
+            </summary>
+            <param name="command">بيانات حذف الحساب</param>
+            <returns>نتيجة الحذف</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.AuthController.SocialLogin(YemenBooking.Application.Features.Authentication.Commands.Login.SocialLoginCommand)">
+            <summary>
+            تسجيل الدخول عبر مزود خارجي (Google/Facebook)
+            Social login (Google/Facebook)
+            </summary>
+            <param name="command">مزود وتوكن التحقق</param>
+            <returns>بيانات تسجيل الدخول</returns>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Client.BookingController">
+            <summary>
+            كونترولر إدارة الحجوزات للعملاء
+            Client Booking Management Controller
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.BookingController.CreateBooking(YemenBooking.Application.Features.Bookings.Commands.CreateBooking.CreateBookingCommand)">
+            <summary>
+            إنشاء حجز جديد
+            Create new booking
+            </summary>
+            <param name="command">بيانات الحجز</param>
+            <returns>تفاصيل الحجز الجديد</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.BookingController.CancelBooking(YemenBooking.Application.Features.Bookings.Commands.CancelBooking.CancelBookingCommand)">
+            <summary>
+            إلغاء حجز موجود
+            Cancel existing booking
+            </summary>
+            <param name="command">بيانات إلغاء الحجز</param>
+            <returns>نتيجة إلغاء الحجز</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.BookingController.AddServiceToBooking(YemenBooking.Application.Features.Bookings.Commands.AddServices.AddServicesToBookingCommand)">
+            <summary>
+            إضافة خدمة للحجز
+            Add service to booking
+            </summary>
+            <param name="command">بيانات الخدمة المراد إضافتها</param>
+            <returns>نتيجة إضافة الخدمة</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.BookingController.GetUserBookings(YemenBooking.Application.Features.Bookings.Queries.GetUserBookings.GetUserBookingsQuery)">
+            <summary>
+            الحصول على قائمة حجوزات المستخدم
+            Get user bookings list
+            </summary>
+            <param name="query">معايير البحث والفلترة</param>
+            <returns>قائمة حجوزات المستخدم</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.BookingController.UpdateBooking(System.Guid,YemenBooking.Application.Features.Bookings.Commands.UpdateBooking.UpdateBookingCommand)">
+            <summary>
+            تعديل حجز موجود للعميل
+            Update existing booking for client
+            </summary>
+            <param name="bookingId">معرف الحجز</param>
+            <param name="command">بيانات التعديل</param>
+            <returns>نتيجة عملية التعديل</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.BookingController.GetBookingDetails(System.Guid,System.Guid)">
+            <summary>
+            الحصول على تفاصيل حجز محدد
+            Get specific booking details
+            </summary>
+            <param name="id">معرف الحجز</param>
+            <param name="userId">معرف المستخدم</param>
+            <returns>تفاصيل الحجز</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.BookingController.GetUserBookingSummary(System.Guid,System.Nullable{System.Int32})">
+            <summary>
+            الحصول على ملخص حجوزات المستخدم
+            Get user booking summary
+            </summary>
+            <param name="userId">معرف المستخدم</param>
+            <param name="year">السنة</param>
+            <returns>ملخص الحجوزات</returns>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Client.FavoritesController">
+            <summary>
+            كونترولر إدارة المفضلات للعملاء
+            Client Favorites Management Controller
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.FavoritesController.AddToFavorites(YemenBooking.Application.Features.Favorites.Commands.ToFavorites.AddToFavoritesCommand)">
+            <summary>
+            إضافة عقار للمفضلات
+            Add property to favorites
+            </summary>
+            <param name="command">بيانات إضافة للمفضلات</param>
+            <returns>نتيجة الإضافة</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.FavoritesController.RemoveFromFavorites(YemenBooking.Application.Features.Favorites.Commands.FromFavorites.RemoveFromFavoritesCommand)">
+            <summary>
+            إزالة عقار من المفضلات
+            Remove property from favorites
+            </summary>
+            <param name="command">بيانات الإزالة من المفضلات</param>
+            <returns>نتيجة الإزالة</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.FavoritesController.GetUserFavorites(YemenBooking.Application.Features.Favorites.Queries.GetUserFavorites.GetUserFavoritesQuery)">
+            <summary>
+            الحصول على قائمة مفضلات المستخدم
+            Get user favorites list
+            </summary>
+            <param name="query">معايير البحث</param>
+            <returns>قائمة المفضلات</returns>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Client.GeneralController">
+            <summary>
+            كونترولر الوظائف العامة للعملاء
+            Client General Functions Controller
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.GeneralController.SubmitFeedback(YemenBooking.Application.Features.Reports.Commands.SubmitFeedback.SubmitFeedbackCommand)">
+            <summary>
+            إرسال ملاحظات أو اقتراحات
+            Submit feedback or suggestions
+            </summary>
+            <param name="command">بيانات الملاحظات</param>
+            <returns>نتيجة الإرسال</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.GeneralController.GetAppVersion(YemenBooking.Application.Features.SearchAndFilters.Queries.GetAppVersion.GetAppVersionQuery)">
+            <summary>
+            الحصول على إصدار التطبيق الحالي
+            Get current app version
+            </summary>
+            <returns>معلومات الإصدار</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.GeneralController.GetCurrencyExchangeRate(YemenBooking.Application.Features.SearchAndFilters.Queries.GetCurrencyExchangeRate.GetCurrencyExchangeRateQuery)">
+            <summary>
+            الحصول على سعر صرف العملة
+            Get currency exchange rate
+            </summary>
+            <param name="query">معايير العملة</param>
+            <returns>سعر الصرف</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.GeneralController.GetFAQs(YemenBooking.Application.Features.SearchAndFilters.Queries.GetFAQs.GetFAQsQuery)">
+            <summary>
+            الحصول على الأسئلة الشائعة
+            Get frequently asked questions
+            </summary>
+            <returns>قائمة الأسئلة الشائعة</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.GeneralController.GetPrivacyPolicy(YemenBooking.Application.Features.SearchAndFilters.Queries.GetPrivacyPolicy.GetPrivacyPolicyQuery)">
+            <summary>
+            الحصول على سياسة الخصوصية
+            Get privacy policy
+            </summary>
+            <returns>سياسة الخصوصية</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.GeneralController.GetTermsAndConditions(YemenBooking.Application.Features.SearchAndFilters.Queries.GetTermsAndConditions.GetTermsAndConditionsQuery)">
+            <summary>
+            الحصول على الشروط والأحكام
+            Get terms and conditions
+            </summary>
+            <returns>الشروط والأحكام</returns>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Client.NotificationsController">
+            <summary>
+            كونترولر إدارة الإشعارات للعملاء
+            Client Notifications Management Controller
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.NotificationsController.UpdateNotificationSettings(YemenBooking.Application.Features.Notifications.Commands.NotificationSettings.UpdateNotificationSettingsCommand)">
+            <summary>
+            تحديث إعدادات الإشعارات
+            Update notification settings
+            </summary>
+            <param name="command">إعدادات الإشعارات الجديدة</param>
+            <returns>نتيجة التحديث</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.NotificationsController.MarkAsRead(YemenBooking.Application.Features.Notifications.Commands.ManageNotifications.MarkNotificationAsReadCommand)">
+            <summary>
+            تمييز إشعار كمقروء
+            Mark notification as read
+            </summary>
+            <param name="command">بيانات الإشعار</param>
+            <returns>نتيجة التمييز</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.NotificationsController.MarkAllAsRead(YemenBooking.Application.Features.Notifications.Commands.MarkAllNotificationsAsRead.MarkAllNotificationsAsReadCommand)">
+            <summary>
+            تمييز جميع الإشعارات كمقروءة
+            Mark all notifications as read
+            </summary>
+            <param name="command">بيانات المستخدم</param>
+            <returns>نتيجة التمييز</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.NotificationsController.DismissNotification(YemenBooking.Application.Features.Notifications.Commands.DismissNotification.DismissNotificationCommand)">
+            <summary>
+            إغلاق إشعار
+            Dismiss notification
+            </summary>
+            <param name="command">بيانات الإشعار</param>
+            <returns>نتيجة الإغلاق</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.NotificationsController.GetUserNotifications(YemenBooking.Application.Features.Notifications.Queries.GetUserNotifications.ClientGetUserNotificationsQuery)">
+            <summary>
+            الحصول على إشعارات المستخدم
+            Get user notifications
+            </summary>
+            <param name="query">معايير البحث</param>
+            <returns>قائمة الإشعارات</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.NotificationsController.GetNotificationsSummary(YemenBooking.Application.Features.Notifications.Queries.GetNotificationsSummary.ClientGetNotificationsSummaryQuery)">
+            <summary>
+            الحصول على ملخص إشعارات المستخدم
+            Get user notifications summary
+            </summary>
+            <param name="query">معايير الملخص</param>
+            <returns>ملخص الإشعارات</returns>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Client.PaymentsController">
+            <summary>
+            كونترولر إدارة المدفوعات للعملاء
+            Client Payments Management Controller
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.PaymentsController.ProcessPayment(YemenBooking.Application.Features.Payments.Commands.ProcessPayment.ProcessPaymentCommand)">
+            <summary>
+            معالجة دفعة جديدة
+            Process new payment
+            </summary>
+            <param name="command">بيانات الدفع</param>
+            <returns>نتيجة معالجة الدفع</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.PaymentsController.GetUserPayments(YemenBooking.Application.Features.Payments.Queries.GetUserPayments.ClientGetUserPaymentsQuery)">
+            <summary>
+            الحصول على تاريخ مدفوعات المستخدم
+            Get user payment history
+            </summary>
+            <param name="query">معايير البحث</param>
+            <returns>تاريخ المدفوعات</returns>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Client.PropertiesController">
+            <summary>
+            كونترولر إدارة العقارات للعملاء
+            Client Properties Management Controller
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.PropertiesController.AddToWishlist(YemenBooking.Application.Features.Properties.Commands.PropertyToWishlist.ClientAddPropertyToWishlistCommand)">
+            <summary>
+            إضافة عقار لقائمة الرغبات للعميل
+            Add property to client's wishlist
+            </summary>
+            <param name="command">بيانات إضافة للرغبات</param>
+            <returns>نتيجة الإضافة</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.PropertiesController.UpdateViewCount(YemenBooking.Application.Features.Properties.Commands.UpdateProperty.ClientUpdatePropertyViewCountCommand)">
+            <summary>
+            تحديث عداد المشاهدات للعقار
+            Update property view count
+            </summary>
+            <param name="command">بيانات العقار</param>
+            <returns>نتيجة التحديث</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.PropertiesController.SearchProperties(YemenBooking.Application.Features.Properties.Queries.SearchProperties.SearchPropertiesQuery)">
+            <summary>
+            البحث في العقارات (GET)
+            Search properties (GET)
+            </summary>
+            <param name="query">معايير البحث</param>
+            <returns>نتائج البحث</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.PropertiesController.SearchPropertiesPost(YemenBooking.Application.Features.Properties.Queries.SearchProperties.SearchPropertiesQuery)">
+            <summary>
+            البحث في العقارات (POST)
+            Search properties (POST) - allows complex filters in request body (e.g., DynamicFieldFilters)
+            </summary>
+            <param name="query">معايير البحث</param>
+            <returns>نتائج البحث</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.PropertiesController.GetPropertyDetails(System.Guid,System.Nullable{System.Guid})">
+            <summary>
+            الحصول على تفاصيل عقار محدد
+            Get specific property details
+            </summary>
+            <param name="id">معرف العقار</param>
+            <param name="userId">معرف المستخدم (اختياري)</param>
+            <returns>تفاصيل العقار</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.PropertiesController.GetPropertyPolicies(System.Guid)">
+            <summary>
+            الحصول على سياسات العقار
+            Get property policies
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.PropertiesController.GetNearbyProperties(YemenBooking.Application.Features.Properties.Queries.GetNearbyProperties.GetNearbyPropertiesQuery)">
+            <summary>
+            الحصول على العقارات القريبة
+            Get nearby properties
+            </summary>
+            <param name="query">معايير الموقع</param>
+            <returns>قائمة العقارات القريبة</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.PropertiesController.CheckAvailability(YemenBooking.Application.Features.Properties.Queries.GetCheckPropertyAvailability.CheckPropertyAvailabilityQuery)">
+            <summary>
+            التحقق من توفر العقار
+            Check property availability
+            </summary>
+            <param name="query">معايير التحقق</param>
+            <returns>حالة التوفر</returns>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Client.ServicesController">
+            <summary>
+            خدمات الكيانات
+            property services
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.ServicesController.GetPropertyServices(System.Guid)">
+            <summary>
+            جلب خدمات كيان معين
+            Get services for a specific property
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Client.PropertyTypesController">
+            <summary>
+            كونترولر أنواع العقارات للعملاء
+            Client Property Types Controller
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.PropertyTypesController.GetPropertyTypes">
+            <summary>
+            الحصول على جميع أنواع العقارات
+            Get all property types
+            </summary>
+            <returns>قائمة أنواع العقارات</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.PropertyTypesController.GetPropertyTypesWithUnits">
+            <summary>
+            الحصول على أنواع العقارات مع أنواع الوحدات التابعة لها في استعلام واحد
+            Get property types with their unit types in a single call
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Client.ReportsController">
+            <summary>
+            كونترولر التقارير للعملاء
+            Client Reports Controller
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.ReportsController.ReportProperty(YemenBooking.Application.Features.Reports.Commands.ReportProperty.ReportPropertyCommand)">
+            <summary>
+            الإبلاغ عن عقار
+            Report a property
+            </summary>
+            <param name="command">بيانات التقرير</param>
+            <returns>نتيجة الإبلاغ</returns>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Client.ReviewsController">
+            <summary>
+            كونترولر إدارة التقييمات للعملاء
+            Client Reviews Management Controller
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.ReviewsController.SubmitReview(YemenBooking.Application.Features.Reviews.Commands.SubmitReview.SubmitReviewCommand)">
+            <summary>
+            إرسال تقييم جديد
+            Submit new review
+            </summary>
+            <param name="command">بيانات التقييم</param>
+            <returns>نتيجة إرسال التقييم</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.ReviewsController.GetPropertyReviews(YemenBooking.Application.Features.Reviews.Queries.GetPropertyReviews.ClientGetPropertyReviewsQuery)">
+            <summary>
+            الحصول على تقييمات عقار محدد للعملاء
+            Get property reviews for clients
+            </summary>
+            <param name="query">معايير البحث</param>
+            <returns>قائمة التقييمات</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.ReviewsController.GetReviewsSummary(YemenBooking.Application.Features.Reviews.Queries.GetReviewsSummarySummary.ClientGetReviewsSummaryQuery)">
+            <summary>
+            الحصول على ملخص التقييمات للعملاء
+            Get reviews summary for clients
+            </summary>
+            <param name="query">معايير الملخص</param>
+            <returns>ملخص التقييمات</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.SearchController.GetSearchSuggestions(YemenBooking.Application.Features.SearchAndFilters.Queries.SearchSuggestions.GetSearchSuggestionsQuery)">
+            <summary>
+            اقتراحات البحث بناءً على سجل البحث السابق
+            </summary>
+            <param name="query">استعلام الاقتراح</param>
+            <returns>قائمة اقتراحات نصية</returns>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Client.SearchFiltersController">
+            <summary>
+            كونترولر فلاتر البحث للعملاء
+            Client Search Filters Controller
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.SearchFiltersController.GetPopularDestinations">
+            <summary>
+            الحصول على الوجهات الشائعة
+            Get popular destinations
+            </summary>
+            <returns>قائمة الوجهات الشائعة</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.SearchFiltersController.GetRecommendedProperties(YemenBooking.Application.Features.SearchAndFilters.Queries.GetRecommendedProperties.GetRecommendedPropertiesQuery)">
+            <summary>
+            الحصول على العقارات الموصى بها
+            Get recommended properties
+            </summary>
+            <param name="query">معايير التوصية</param>
+            <returns>قائمة العقارات الموصى بها</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.SearchFiltersController.GetSearchFilters">
+            <summary>
+            الحصول على فلاتر البحث
+            Get search filters
+            </summary>
+            <returns>فلاتر البحث المتاحة</returns>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Client.SettingsController">
+            <summary>
+            كونترولر إعدادات المستخدم للعملاء
+            Client User Settings Controller
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.SettingsController.UpdateUserSettings(YemenBooking.Application.Features.Users.Commands.UpdateUser.UpdateUserSettingsCommand)">
+            <summary>
+            تحديث إعدادات المستخدم
+            Update user settings
+            </summary>
+            <param name="command">الإعدادات الجديدة</param>
+            <returns>نتيجة التحديث</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.SettingsController.GetUserSettings(YemenBooking.Application.Features.Users.Queries.GetUserSettings.GetUserSettingsQuery)">
+            <summary>
+            الحصول على إعدادات المستخدم الحالية
+            Get current user settings
+            </summary>
+            <param name="query">معايير الاستعلام</param>
+            <returns>إعدادات المستخدم</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.SettingsController.UpdateLanguageUser(System.String)">
+            <summary>
+            تحديث لغة المستخدم
+            Update user language
+            </summary>
+            <param name="languageCode">رمز اللغة</param>
+            <returns>نتيجة التحديث</returns>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Client.StatisticsController">
+            <summary>
+            كونترولر الإحصائيات للعملاء
+            Client Statistics Controller
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.StatisticsController.GetUserStatistics(YemenBooking.Application.Features.Users.Queries.GetUserStatisticsStatistics.GetUserStatisticsQuery)">
+            <summary>
+            الحصول على إحصائيات المستخدم
+            Get user statistics
+            </summary>
+            <param name="query">معايير الإحصائيات</param>
+            <returns>إحصائيات المستخدم</returns>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Client.UnitsController">
+            <summary>
+            كونترولر إدارة الوحدات للعملاء
+            Client Units Management Controller
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.UnitsController.CheckUnitAvailability(YemenBooking.Application.Features.DailySchedules.Queries.CheckAvailability.CheckUnitAvailabilityQuery)">
+            <summary>
+            التحقق من توفر وحدة للعميل
+            Check unit availability for client
+            </summary>
+            <param name="query">بيانات التحقق</param>
+            <returns>حالة التوفر مع معلومات التسعير</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.UnitsController.ReserveUnit(YemenBooking.Application.Features.Units.Commands.ReserveUnit.ClientReserveUnitCommand)">
+            <summary>
+            حجز وحدة للعميل
+            Reserve unit for client
+            </summary>
+            <param name="command">بيانات الحجز</param>
+            <returns>نتيجة الحجز</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.UnitsController.GetAvailableUnits(YemenBooking.Application.Features.Units.Queries.GetAvailableUnits.GetAvailableUnitsQuery)">
+            <summary>
+            الحصول على الوحدات المتاحة
+            Get available units
+            </summary>
+            <param name="query">معايير البحث</param>
+            <returns>قائمة الوحدات المتاحة</returns>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.UnitsController.GetUnitDetails(System.Guid,YemenBooking.Application.Features.Units.Queries.GetUnitDetails.GetUnitDetailsQuery)">
+            <summary>
+            الحصول على تفاصيل وحدة محددة
+            Get specific unit details
+            </summary>
+            <param name="id">معرف الوحدة</param>
+            <returns>تفاصيل الوحدة</returns>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Client.UnitTypesController">
+            <summary>
+            كونترولر أنواع الوحدات للعملاء
+            Client Unit Types Controller
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Client.UnitTypesController.GetUnitTypes(YemenBooking.Application.Features.PropertyTypes.Queries.GetUnitTypes.GetUnitTypesQuery)">
+            <summary>
+            الحصول على جميع أنواع الوحدات
+            Get all unit types
+            </summary>
+            <returns>قائمة أنواع الوحدات</returns>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Common.AuthController">
+            <summary>
+            متحكم بعمليات المصادقة: تسجيل الدخول، تحديث التوكن، وإدارة استعادة الحساب
+            Controller for authentication operations: login, refresh token, password resets, and email verification
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.AuthController.Login(YemenBooking.Application.Features.Authentication.Commands.Login.LoginCommand)">
+            <summary>
+            تسجيل الدخول للمستخدم وإصدار رموز المصادقة
+            User login and token issuance
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.AuthController.RefreshToken(YemenBooking.Application.Features.Authentication.Commands.RefreshToken.RefreshTokenCommand)">
+            <summary>
+            تحديث رمز المصادقة باستخدام رمز التحديث
+            Refresh authentication token using a refresh token
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.AuthController.ForgotPassword(YemenBooking.Application.Features.Authentication.Commands.PasswordReset.ForgotPasswordCommand)">
+            <summary>
+            إرسال رابط إعادة تعيين كلمة المرور للمستخدم
+            Send password reset link to user
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.AuthController.ResetPassword(YemenBooking.Application.Features.Authentication.Commands.PasswordReset.ResetPasswordCommand)">
+            <summary>
+            إعادة تعيين كلمة المرور باستخدام الرمز المرسل
+            Reset user password using provided token
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.AuthController.ResendEmailVerification(YemenBooking.Application.Features.Authentication.Commands.VerifyEmail.ResendEmailVerificationLinkCommand)">
+            <summary>
+            إعادة إرسال رابط التحقق من البريد الإلكتروني
+            Resend email verification link
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.AuthController.ResendPasswordReset(YemenBooking.Application.Features.Users.Commands.ResendPasswordResetLink.ResendPasswordResetLinkCommand)">
+            <summary>
+            إعادة إرسال رابط استعادة كلمة المرور
+            Resend password reset link
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.AuthController.VerifyEmail(YemenBooking.Application.Features.Authentication.Commands.VerifyEmail.VerifyEmailCommand)">
+            <summary>
+            التحقق من صحة عنوان البريد الإلكتروني للمستخدم
+            Verify user email address
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.AuthController.ChangePassword(YemenBooking.Application.Features.Authentication.Commands.ChangePassword.ChangePasswordCommand)">
+            <summary>
+            تغيير كلمة المرور للمستخدم الحالي
+            Change password for current user
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Common.BaseCommonController">
+            <summary>
+            مقدم أساسي للتحكم بنقاط النهاية العامة
+            Base controller for common endpoints
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Common.ChatAttachmentController">
+            <summary>
+            متحكم لتنزيل مرفقات الشات بشكل آمن
+            Controller for secure download of chat attachments
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.ChatAttachmentController.DownloadAsync(System.Guid)">
+            <summary>
+            تنزيل مرفق محادثة بعد التحقق من صلاحيات المستخدم
+            Download a chat attachment after verifying user access
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Common.ChatController">
+            <summary>
+            متحكم للشات: المحادثات والرسائل والإعدادات
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.ChatController.CreateConversation(YemenBooking.Application.Features.Chat.Commands.Conversation.CreateConversationCommand)">
+            <summary>
+            إنشاء محادثة جديدة
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.ChatController.GetConversations(YemenBooking.Application.Features.Chat.Queries.GetConversationsByParticipant.GetConversationsByParticipantQuery)">
+            <summary>
+            جلب المحادثات الخاصة بالمستخدم
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.ChatController.GetConversation(System.Guid)">
+            <summary>
+            جلب محادثة واحدة بناءً على المعرف
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.ChatController.ArchiveConversation(System.Guid)">
+            <summary>
+            أرشفة محادثة
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.ChatController.UnarchiveConversation(System.Guid)">
+            <summary>
+            إلغاء أرشفة محادثة
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.ChatController.GetMessages(System.Guid,YemenBooking.Application.Features.Chat.Queries.GetMessagesByConversation.GetMessagesByConversationQuery)">
+            <summary>
+            جلب الرسائل في محادثة
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.ChatController.SendMessage(System.Guid,YemenBooking.Application.Features.Chat.Commands.SendMessage.SendMessageCommand)">
+            <summary>
+            إرسال رسالة في المحادثة
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.ChatController.AddReaction(System.Guid,YemenBooking.Application.Features.Chat.Commands.Reaction.AddReactionCommand)">
+            <summary>
+            إضافة تفاعل على رسالة
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.ChatController.RemoveReaction(System.Guid,System.String)">
+            <summary>
+            إزالة تفاعل من رسالة
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.ChatController.UpdateMessageStatus(System.Guid,YemenBooking.Application.Features.Chat.Commands.MessageStatus.UpdateMessageStatusCommand)">
+            <summary>
+            تحديث حالة الرسالة (sent, delivered, read, failed)
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.ChatController.DeleteMessage(System.Guid)">
+            <summary>
+            حذف رسالة
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.ChatController.EditMessage(System.Guid,YemenBooking.Application.Features.Chat.Commands.Message.EditMessageCommand)">
+            <summary>
+            تعديل محتوى رسالة
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.ChatController.SearchChats(YemenBooking.Application.Features.Chat.Queries.SearchChats.SearchChatsQuery)">
+            <summary>
+            بحث في المحادثات والرسائل
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.ChatController.GetAvailableUsers(YemenBooking.Application.Features.Chat.Queries.GetAvailableUsers.GetAvailableUsersQuery)">
+            <summary>
+            جلب قائمة المستخدمين المتاحين للمحادثة
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.ChatController.GetAdminUsers">
+            <summary>
+            جلب حسابات الإدارة فقط (ADMIN, SUPER_ADMIN)
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.ChatController.UpdateUserStatus(YemenBooking.Application.Features.Chat.Commands.UpdateUser.UpdateUserStatusCommand)">
+            <summary>
+            تحديث حالة المستخدم (online, offline, away, busy)
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.ChatController.GetChatSettings">
+            <summary>
+            جلب إعدادات الشات الخاصة بالمستخدم
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.ChatController.UpdateChatSettings(YemenBooking.Application.Features.Chat.Commands.ChatSettings.UpdateChatSettingsCommand)">
+            <summary>
+            تحديث إعدادات الشات الخاصة بالمستخدم
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.ChatController.DeleteConversation(System.Guid)">
+            <summary>
+            حذف محادثة
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.ChatController.UploadFile(YemenBooking.Application.Features.Chat.Commands.UploadFile.UploadFileCommand)">
+            <summary>
+            رفع ملف مرفق في الشات
+            Upload chat attachment file
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Common.FcmController">
+            <summary>
+            متحكم لتسجيل رموز Firebase للمستخدمين
+            Controller for registering user FCM tokens and topic subscription
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.FcmController.RegisterToken(YemenBooking.Api.Controllers.Common.RegisterFcmTokenRequest)">
+            <summary>
+            تسجيل رمز FCM لمستخدم والاشتراك بموضوع الرسائل الخاص به
+            Register FCM token and subscribe to user topic
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.FcmController.UnregisterToken(YemenBooking.Api.Controllers.Common.RegisterFcmTokenRequest)">
+            <summary>
+            إلغاء تسجيل رمز FCM لمستخدم وإلغاء الاشتراك من موضوع الرسائل الخاص به
+            Unregister FCM token and unsubscribe from user topic
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Common.RegisterFcmTokenRequest">
+            <summary>
+            نموذج طلب لتسجيل/إلغاء تسجيل رموز FCM
+            Request model for registering/unregistering FCM tokens
+            </summary>
+        </member>
+        <member name="P:YemenBooking.Api.Controllers.Common.RegisterFcmTokenRequest.Token">
+            <summary>
+            رمز جهاز FCM
+            FCM device token
+            </summary>
+        </member>
+        <member name="P:YemenBooking.Api.Controllers.Common.RegisterFcmTokenRequest.UserId">
+            <summary>
+            معرف المستخدم
+            User identifier
+            </summary>
+        </member>
+        <member name="P:YemenBooking.Api.Controllers.Common.RegisterFcmTokenRequest.DeviceType">
+            <summary>
+            نوع الجهاز (web, mobile, etc.)
+            Device type
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Common.NotificationsController">
+            <summary>
+            متحكم بإشعارات النظام المشتركة
+            Controller for common system notifications operations
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.NotificationsController.MarkAllNotificationsRead">
+            <summary>
+            وضع علامة مقروء على جميع الإشعارات
+            Mark all notifications as read
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.NotificationsController.MarkNotificationAsRead(System.Guid)">
+            <summary>
+            وضع علامة مقروء على إشعار محدد
+            Mark a single notification as read
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Common.PropertiesController">
+            <summary>
+            متحكم بعملية البحث عن الكيانات
+            Controller for common property search operations
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.PropertiesController.SearchProperties(YemenBooking.Application.Features.Properties.Queries.SearchProperties.SearchPropertiesQuery)">
+            <summary>
+            البحث في الكيانات مع الفلاتر، الموقع، والمسافة
+            Search properties with filters, location, and distance
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Common.SearchController">
+            <summary>
+            متحكم بنقاط نهاية البحث المشتركة
+            Controller for shared search endpoints
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.SearchController.SearchProperties(YemenBooking.Application.Features.SearchAndFilters.Commands.Search.SearchPropertiesCommand)">
+            <summary>
+            البحث في الكيانات بناءً على المعايير الديناميكية والفرز والتصفح
+            Search properties with dynamic filters, sorting, and pagination
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.SearchController.SearchUnits(YemenBooking.Application.Features.Units.Queries.SearchUnits.SearchUnitsQuery)">
+            <summary>
+            البحث في الوحدات بناءً على المعايير الديناميكية والفرز والتصفح
+            Search units with dynamic filters, sorting, and pagination
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.SystemSettingsController.GetSettingsAsync(System.Threading.CancellationToken)">
+            <summary>
+            جلب إعدادات النظام
+            Get system settings
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.SystemSettingsController.GetCurrenciesAsync(System.Threading.CancellationToken)">
+            <summary>
+            جلب قائمة العملات
+            Get currency settings
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.SystemSettingsController.GetCitiesAsync(System.Threading.CancellationToken)">
+            <summary>
+            جلب قائمة المدن
+            Get city settings
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Common.UsersController">
+            <summary>
+            متحكم ببيانات وإعدادات المستخدم العامة
+            Controller for common user operations: current user, profile picture, and settings
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.UsersController.GetCurrentUser">
+            <summary>
+            جلب بيانات المستخدم الحالي
+            Get current user details
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.UsersController.UpdateProfilePicture(YemenBooking.Application.Features.Users.Commands.UpdateUser.UpdateUserProfilePictureCommand)">
+            <summary>
+            تحديث صورة الملف الشخصي
+            Update user profile picture
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Common.UsersController.UpdateUserSettings(YemenBooking.Application.Features.Users.Commands.UpdateUser.UpdateUserSettingsCommand)">
+            <summary>
+            تحديث إعدادات المستخدم بصيغة JSON
+            Update user settings JSON
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Images.ImagesController">
+            <summary>
+            متحكم لإدارة الصور الشاملة (رفع، تعديل، حذف، استعلام)
+            Controller for comprehensive image management
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Images.ImagesController.UploadImage(YemenBooking.Api.Controllers.Images.UploadImageRequest)">
+            <summary>
+            رفع صورة واحدة
+            Accept multipart/form-data and return UploadImageResponse
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Images.ImagesController.GetImages(YemenBooking.Application.Features.Properties.Queries.GetImages.GetImagesQuery)">
+            <summary>
+            الحصول على قائمة الصور
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Images.ImagesController.PurgeTempImages(System.String)">
+            <summary>
+            حذف جميع الصور التي تخص مفتاحاً مؤقتاً معيناً وتنظيف الملفات
+            Purge all images associated with a temporary key
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Images.ImagesController.GetImageById(System.Guid)">
+            <summary>
+            الحصول على صورة بواسطة المعرف
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Images.ImagesController.UpdateImage(System.Guid,YemenBooking.Application.Features.Properties.Commands.ManageImages.UpdateImageCommand)">
+            <summary>
+            تحديث بيانات الصورة
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Images.ImagesController.DeleteImage(System.Guid,System.Boolean)">
+            <summary>
+            حذف صورة واحدة
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Images.ImagesController.DeleteImages(YemenBooking.Application.Features.Properties.Commands.ManageImages.DeleteImagesCommand)">
+            <summary>
+            حذف صور متعددة
+            </summary>
+        </member>
+        <member name="P:YemenBooking.Api.Controllers.Images.ImagesController.ReorderImagesRequest.TempKey">
+            <summary>
+            مفتاح مؤقت لتجميع الصور قبل الربط
+            Temporary key to group images prior to binding
+            </summary>
+        </member>
+        <member name="P:YemenBooking.Api.Controllers.Images.ImagesController.ReorderImagesRequest.CityName">
+            <summary>
+            اسم المدينة (اختياري)
+            City name (optional)
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Images.ImagesController.ReorderImages(YemenBooking.Api.Controllers.Images.ImagesController.ReorderImagesRequest)">
+            <summary>
+            إعادة ترتيب الصور
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Images.ImagesController.SetPrimaryImage(System.Guid,YemenBooking.Application.Features.Properties.Commands.ManageImages.SetPrimaryImageCommand)">
+            <summary>
+            تعيين صورة كرئيسية
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Images.ImagesController.GetImageStatistics(YemenBooking.Application.Features.Properties.Queries.GetImageStatistics.GetImageStatisticsQuery)">
+            <summary>
+            الحصول على إحصائيات الصور
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Images.ImagesController.SearchImages(YemenBooking.Application.Features.Properties.Queries.SearchImages.SearchImagesQuery)">
+            <summary>
+            البحث المتقدم في الصور
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Images.ImagesController.GetUploadProgress(System.String)">
+            <summary>
+            تتبع تقدم رفع الصورة
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Images.ImagesController.GetDownloadUrl(System.Guid,System.String)">
+            <summary>
+            الحصول على رابط التنزيل المؤقت
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Images.ImagesController.OptimizeImage(System.Guid,YemenBooking.Application.Features.Properties.Commands.OptimizeImages.OptimizeImageCommand)">
+            <summary>
+            تحسين الصورة (ضغط وإنشاء مصغرات)
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Images.ImagesController.GenerateThumbnails(System.Guid,YemenBooking.Application.Features.Properties.Commands.ManageImages.GenerateThumbnailsCommand)">
+            <summary>
+            إنشاء مصغرات إضافية
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.Images.ImagesController.CopyImage(System.Guid,YemenBooking.Application.Features.Properties.Commands.ManageImages.CopyImageCommand)">
+            <summary>
+            نسخ الصورة لكيان أو وحدة أخرى
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.Images.UploadImageRequest">
+            <summary>
+            طلب رفع صورة يجمع كل الحقول ضمن نموذج واحد
+            DTO to wrap form data for image upload
+            </summary>
+        </member>
+        <member name="P:YemenBooking.Api.Controllers.Images.UploadImageRequest.VideoThumbnail">
+            <summary>
+            صورة مصغرة للفيديو يرسلها العميل (اختياري)
+            Optional client-provided video thumbnail image
+            </summary>
+        </member>
+        <member name="P:YemenBooking.Api.Controllers.Images.UploadImageRequest.SectionId">
+            <summary>
+            للربط مع كيان القسم مباشرة (صور الخلفية/الغلاف)
+            </summary>
+        </member>
+        <member name="P:YemenBooking.Api.Controllers.Images.UploadImageRequest.PropertyInSectionId">
+            <summary>
+            ربط الصور الإضافية بسجل عقار في قسم
+            </summary>
+        </member>
+        <member name="P:YemenBooking.Api.Controllers.Images.UploadImageRequest.UnitInSectionId">
+            <summary>
+            ربط الصور الإضافية بسجل وحدة في قسم
+            </summary>
+        </member>
+        <member name="P:YemenBooking.Api.Controllers.Images.UploadImageRequest.CityId">
+            <summary>
+            Alias to accept cityId from app; mapped to CityName for backend
+            </summary>
+        </member>
+        <member name="P:YemenBooking.Api.Controllers.Images.UploadImageRequest.Context">
+            <summary>
+            سياق الحفظ: section | property-in-section | unit-in-section | property
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.RedisAdminController">
+            <summary>
+            واجهة إدارة نظام Redis
+            توفر نقاط نهاية لإدارة ومراقبة نظام الفهرسة والبحث
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.RedisAdminController.#ctor(YemenBooking.Application.Features.SearchAndFilters.Services.IIndexingService,YemenBooking.Infrastructure.Redis.Core.Interfaces.IRedisCache,Microsoft.Extensions.Logging.ILogger{YemenBooking.Api.Controllers.RedisAdminController})">
+            <summary>
+            مُنشئ وحدة التحكم الإدارية
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.RedisAdminController.RebuildIndex">
+            <summary>
+            إعادة بناء الفهرس الكامل
+            </summary>
+            <remarks>
+            عملية ثقيلة تستغرق وقتاً طويلاً
+            يُنصح بتشغيلها في أوقات قليلة الحركة
+            </remarks>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.RedisAdminController.OptimizeDatabase">
+            <summary>
+            تحسين قاعدة البيانات
+            </summary>
+            <remarks>
+            ينظف البيانات القديمة ويحسن الأداء
+            </remarks>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.RedisAdminController.IndexProperty(System.Guid)">
+            <summary>
+            فهرسة عقار محدد
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.RedisAdminController.FlushCache">
+            <summary>
+            مسح الكاش بالكامل
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.RedisAdminController.GetCacheStatistics">
+            <summary>
+            الحصول على إحصائيات الكاش
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.RedisAdminController.CheckSystemHealth">
+            <summary>
+            فحص صحة النظام
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.RedisAdminController.TestSearch(YemenBooking.Core.Indexing.Models.PropertySearchRequest)">
+            <summary>
+            بحث تجريبي في العقارات
+            </summary>
+            <remarks>
+            نقطة نهاية للاختبار والتصحيح
+            </remarks>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.RedisAdminController.GetSystemInfo">
+            <summary>
+            الحصول على معلومات النظام
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.RedisAdminController.GetDocumentation">
+            <summary>
+            الحصول على التوثيق
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.SearchController">
+            <summary>
+            وحدة تحكم البحث
+            Search controller
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.SearchController.SearchProperties(YemenBooking.Application.Features.Properties.Queries.SearchProperties.SearchPropertiesQuery,System.Threading.CancellationToken)">
+            <summary>
+            البحث في العقارات عبر معالج الاستعلام
+            Search properties via query handler
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.TestLastSeenController">
+            <summary>
+            Controller لاختبار وظيفة تتبع آخر ظهور المستخدمين
+            Test controller for LastSeen tracking functionality
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.TestLastSeenController.GetCurrentUserLastSeen">
+            <summary>
+            الحصول على معلومات آخر ظهور للمستخدم الحالي
+            Get current user's last seen information
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.TestLastSeenController.GetOnlineUsers">
+            <summary>
+            الحصول على قائمة المستخدمين النشطين (آخر ظهور خلال 5 دقائق)
+            Get list of online users (last seen within 5 minutes)
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.TestLastSeenController.GetActivityStats">
+            <summary>
+            الحصول على إحصائيات نشاط المستخدمين
+            Get user activity statistics
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.TestLastSeenController.UpdateLastSeenManually">
+            <summary>
+            تحديث آخر ظهور يدوياً (لأغراض الاختبار فقط)
+            Manually update last seen (for testing purposes only)
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.TestLastSeenController.GetActivityLog(System.Int32)">
+            <summary>
+            الحصول على سجل نشاط المستخدمين
+            Get user activity log
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Controllers.TestRedisController">
+            <summary>
+            Controller لاختبار نظام Redis والفهرسة
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.TestRedisController.TestConnection">
+            <summary>
+            اختبار الاتصال بـ Redis
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.TestRedisController.TestSimpleSearch">
+            <summary>
+            اختبار البحث البسيط
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.TestRedisController.TestSearchWithType(System.String)">
+            <summary>
+            اختبار البحث مع فلتر النوع
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.TestRedisController.TestComplexSearch(YemenBooking.Core.Indexing.Models.PropertySearchRequest)">
+            <summary>
+            اختبار البحث مع فلاتر متعددة
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Controllers.TestRedisController.TestIndexProperty(System.Guid)">
+            <summary>
+            اختبار فهرسة عقار
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Extensions.ApplicationBuilderExtensions">
+            <summary>
+            امتدادات لتكوين الmiddleware الخاصة بتطبيق YemenBooking
+            Extensions for configuring YemenBooking middleware
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Extensions.ApplicationBuilderExtensions.UseYemenBookingMiddlewares(Microsoft.AspNetCore.Builder.WebApplication)">
+            <summary>
+            يهيئ جميع middleware: إعادة التوجيه لـHTTPS، المصادقة، التفويض، OpenAPI وربط المتحكمات
+            Configures middleware: HTTPS redirection, authentication, authorization, OpenAPI and controllers
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Extensions.ServiceCollectionExtensions">
+            <summary>
+            امتدادات حقن التبعيات لمشروع YemenBooking
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Extensions.ServiceCollectionExtensions.AddYemenBookingServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            يضيف كافة التبعيات: مستودعات البيانات، خدمات البنية التحتية، ومعالجات أحداث المجال
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Extensions.ServiceCollectionExtensions.RegisterRepositories(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            يبحث ويسجل جميع الأصناف المنتهية بـ Repository كواجهاتها المطابقة
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Extensions.ServiceCollectionExtensions.RegisterInfrastructureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            يبحث ويسجل جميع الأصناف المنتهية بـ Service كواجهاتها المطابقة
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Extensions.ServiceCollectionExtensions.RegisterValidators(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Registers all FluentValidation validators from the Application assembly
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Infrastructure.ModelBinders.DictionaryModelBinder">
+            <summary>
+            Custom Model Binder لربط query parameters بصيغة key[subkey]=value إلى Dictionary&lt;string, string&gt;
+            يدعم الصيغة: ?dynamicFieldFilters[chalet_size]=139&amp;dynamicFieldFilters[numberOfBedrooms]=3..5
+            Custom Model Binder for binding query parameters in the format key[subkey]=value to Dictionary&lt;string, string&gt;
+            Supports format: ?dynamicFieldFilters[chalet_size]=139&amp;dynamicFieldFilters[numberOfBedrooms]=3..5
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Infrastructure.ModelBinders.DictionaryModelBinderProvider">
+            <summary>
+            Provider للـ DictionaryModelBinder
+            Provider for DictionaryModelBinder
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Infrastructure.ModelBinders.UtcDateTimeModelBinder">
+            <summary>
+            Model binder that automatically converts DateTime parameters to UTC
+            to ensure PostgreSQL compatibility
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Infrastructure.ModelBinders.UtcDateTimeModelBinderProvider">
+            <summary>
+            Provider for UtcDateTimeModelBinder
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Middlewares.ChatWebSocketMiddleware">
+            <summary>
+            Middleware to handle WebSocket connections for chat
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Middlewares.UserActivityTrackingMiddleware">
+            <summary>
+            Middleware لتتبع آخر ظهور المستخدم
+            Tracks user's last seen activity
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Middlewares.UserActivityTrackingMiddleware.GetUserIdFromContext(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            الحصول على معرف المستخدم من HttpContext مع التخزين المؤقت
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Middlewares.UserActivityTrackingMiddleware.ShouldSkipUpdate(System.Guid)">
+            <summary>
+            التحقق من الحاجة لتخطي التحديث بناءً على آخر وقت تحديث
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Middlewares.UserActivityTrackingMiddlewareExtensions">
+            <summary>
+            Extension methods لتسجيل الـ Middleware
+            </summary>
+        </member>
+        <member name="M:YemenBooking.Api.Middlewares.UserActivityTrackingMiddlewareExtensions.UseUserActivityTracking(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            تسجيل Middleware تتبع نشاط المستخدم
+            </summary>
+        </member>
+        <member name="T:YemenBooking.Api.Swagger.SwaggerFileOperationFilter">
+            <summary>
+            يهيئ Swagger لتدعم رفع ملفات من نوع IFormFile في نماذج multipart/form-data
+            Configures Swagger to support IFormFile uploads in multipart/form-data requests
+            </summary>
+        </member>
+    </members>
+</doc>

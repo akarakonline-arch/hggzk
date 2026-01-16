@@ -1,0 +1,495 @@
+import 'dart:async';
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:rezmate/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:rezmate/features/auth/presentation/bloc/auth_state.dart';
+import 'package:rezmate/features/auth/presentation/bloc/auth_event.dart';
+import 'package:rezmate/features/auth/presentation/pages/login_page.dart';
+import 'package:rezmate/features/chat/presentation/widgets/conversation_loader.dart';
+import 'package:rezmate/features/property/presentation/pages/property_units_page.dart';
+import 'package:rezmate/features/review/presentation/pages/reviews_list_page.dart';
+import 'package:rezmate/features/review/presentation/pages/write_review_page.dart';
+import 'package:rezmate/features/search/presentation/pages/search_page.dart';
+import 'package:rezmate/presentation/screens/futuristic_main_screen.dart';
+import 'package:rezmate/presentation/screens/splash_screen.dart';
+import 'package:rezmate/features/onboarding/presentation/pages/select_city_currency_page.dart';
+import 'package:rezmate/features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import 'package:rezmate/features/property/presentation/pages/property_details_page.dart';
+import 'package:rezmate/features/search/domain/entities/search_navigation_params.dart';
+import 'package:rezmate/features/property/domain/entities/property_policy.dart';
+import '../services/local_storage_service.dart';
+import '../injection_container.dart';
+import 'package:rezmate/core/constants/storage_constants.dart';
+import 'package:rezmate/features/auth/presentation/pages/register_page.dart';
+import 'package:rezmate/features/auth/presentation/pages/forgot_password_page.dart';
+import 'package:rezmate/features/auth/presentation/pages/verify_email_modern_page.dart';
+import 'package:rezmate/features/property/presentation/pages/property_gallery_page.dart';
+import 'package:rezmate/features/booking/presentation/pages/booking_form_page.dart';
+import 'package:rezmate/features/booking/presentation/pages/booking_summary_page.dart';
+import 'package:rezmate/features/booking/presentation/pages/booking_payment_page.dart';
+import 'package:rezmate/features/booking/presentation/pages/booking_confirmation_page.dart';
+import 'package:rezmate/features/booking/presentation/pages/booking_details_page.dart';
+import 'package:rezmate/features/property/domain/entities/property_detail.dart';
+import 'package:rezmate/features/property/domain/entities/unit.dart';
+import 'package:rezmate/features/chat/presentation/pages/chat_page.dart';
+import 'package:rezmate/features/chat/presentation/pages/new_conversation_page.dart';
+import 'package:rezmate/features/chat/presentation/pages/conversations_page.dart';
+import 'package:rezmate/features/chat/domain/entities/conversation.dart';
+import 'package:rezmate/features/auth/presentation/pages/change_password_page.dart';
+import 'package:rezmate/features/auth/presentation/pages/edit_profile_page.dart';
+import 'package:rezmate/features/settings/presentation/pages/settings_page.dart';
+import 'package:rezmate/features/settings/presentation/pages/language_settings_page.dart';
+import 'package:rezmate/features/support/presentation/pages/support_page.dart';
+import 'package:rezmate/services/navigation_service.dart';
+import 'package:rezmate/features/notifications/presentation/pages/notifications_page.dart';
+import 'package:rezmate/features/notifications/presentation/pages/notification_settings_page.dart';
+import 'package:rezmate/features/notifications/presentation/bloc/notification_bloc.dart'
+    as notif_bloc;
+import 'package:rezmate/core/constants/route_constants.dart';
+import 'package:rezmate/features/home/presentation/pages/all_sections_page.dart';
+import 'package:rezmate/features/home/presentation/pages/section_details_page.dart';
+import 'package:rezmate/features/home/domain/entities/section.dart';
+
+class AppRouter {
+  static GoRouter build(BuildContext context) {
+    final authBloc = context.read<AuthBloc>();
+    return GoRouter(
+      navigatorKey: NavigationService.rootNavigatorKey,
+      initialLocation: '/',
+      refreshListenable: GoRouterRefreshStream(authBloc.stream),
+      redirect: (context, state) {
+        // Proactive route guard: if access token is expired, force logout and go to /login
+        try {
+          final token = sl<LocalStorageService>()
+              .getData(StorageConstants.accessToken) as String?;
+          if (token != null &&
+              token.isNotEmpty &&
+              _isJwtExpiredRouter(token, skewSeconds: 10)) {
+            context.read<AuthBloc>().add(const LogoutEvent());
+            return '/login';
+          }
+        } catch (_) {}
+
+        final authState = context.read<AuthBloc>().state;
+        final localStorage = sl<LocalStorageService>();
+        final isFirstRun = !localStorage.isOnboardingCompleted();
+
+        final goingToLogin = state.matchedLocation == '/login';
+        final goingToRegister = state.matchedLocation == '/register';
+        final goingToForgot = state.matchedLocation == '/forgot-password';
+        final isSplash = state.matchedLocation == '/';
+        final isProtected =
+            _protectedPaths.any((p) => state.matchedLocation.startsWith(p));
+
+        if (isSplash) return null; // اترك السبلاش يقرر
+
+        if (isFirstRun && !(goingToLogin || goingToRegister || goingToForgot)) {
+          return '/onboarding/select-city-currency';
+        }
+
+        if (authState is AuthUnauthenticated &&
+            isProtected &&
+            !(goingToLogin || goingToRegister || goingToForgot)) {
+          return '/login';
+        }
+
+        if (authState is AuthAuthenticated &&
+            (goingToLogin || goingToRegister || goingToForgot)) {
+          if (!authState.user.isEmailVerified) {
+            return RouteConstants.verifyOtp;
+          }
+          return '/main';
+        }
+
+        if (authState is AuthAuthenticated && isProtected) {
+          if (!authState.user.isEmailVerified &&
+              state.matchedLocation != RouteConstants.verifyOtp) {
+            return RouteConstants.verifyOtp;
+          }
+        }
+
+        return null;
+      },
+      routes: <RouteBase>[
+        GoRoute(
+          path: '/',
+          builder: (BuildContext context, GoRouterState state) {
+            return const SplashScreen();
+          },
+        ),
+        GoRoute(
+          path: RouteConstants.verifyOtp,
+          builder: (BuildContext context, GoRouterState state) {
+            return const VerifyEmailModernPage();
+          },
+        ),
+        // Notifications list
+        GoRoute(
+          path: '/notifications',
+          builder: (context, state) {
+            return BlocProvider<notif_bloc.NotificationBloc>(
+              create: (_) => sl<notif_bloc.NotificationBloc>(),
+              child: const NotificationsPage(),
+            );
+          },
+        ),
+        // Notification settings (align with RouteConstants.notificationSettings)
+        GoRoute(
+          path: '/notifications/settings',
+          builder: (context, state) {
+            return BlocProvider<notif_bloc.NotificationBloc>(
+              create: (_) => sl<notif_bloc.NotificationBloc>(),
+              child: const NotificationSettingsPage(),
+            );
+          },
+        ),
+        GoRoute(
+          path: '/onboarding/select-city-currency',
+          builder: (BuildContext context, GoRouterState state) {
+            return BlocProvider.value(
+              value: context.read<OnboardingBloc>(),
+              child: const SelectCityCurrencyPage(),
+            );
+          },
+        ),
+        GoRoute(
+          path: '/main',
+          builder: (BuildContext context, GoRouterState state) {
+            return const MainScreen();
+          },
+        ),
+        GoRoute(
+          path: '/login',
+          builder: (BuildContext context, GoRouterState state) {
+            return const Scaffold(
+              body: Center(
+                child: LoginPage(),
+              ),
+            );
+          },
+        ),
+        GoRoute(
+          path: '/register',
+          builder: (BuildContext context, GoRouterState state) {
+            final params = state.extra is Map<String, dynamic>
+                ? state.extra as Map<String, dynamic>
+                : {"isFirst": false};
+            return RegisterPage(
+              isFirst: params["isFirst"] ?? false,
+            );
+          },
+        ),
+        GoRoute(
+          path: '/forgot-password',
+          builder: (BuildContext context, GoRouterState state) {
+            return const ForgotPasswordPage();
+          },
+        ),
+        GoRoute(
+          path: '/profile',
+          builder: (BuildContext context, GoRouterState state) {
+            return const Scaffold(
+              body: Center(
+                child: Text('الملف الشخصي'),
+              ),
+            );
+          },
+        ),
+        GoRoute(
+          path: '/profile/edit',
+          builder: (BuildContext context, GoRouterState state) {
+            return const EditProfilePage();
+          },
+        ),
+        GoRoute(
+          path: '/profile/change-password',
+          builder: (BuildContext context, GoRouterState state) {
+            return const ChangePasswordPage();
+          },
+        ),
+        GoRoute(
+          path: '/settings',
+          builder: (BuildContext context, GoRouterState state) {
+            return const SettingsPage();
+          },
+        ),
+        GoRoute(
+          path: '/settings/language',
+          builder: (BuildContext context, GoRouterState state) {
+            return const LanguageSettingsPage();
+          },
+        ),
+        // Support Route
+        GoRoute(
+          path: '/support',
+          builder: (BuildContext context, GoRouterState state) {
+            return const SupportPage();
+          },
+        ),
+        GoRoute(
+          path: '/help-support',
+          builder: (BuildContext context, GoRouterState state) {
+            return const SupportPage();
+          },
+        ),
+        // Review Routes
+        GoRoute(
+          path: '/reviews/:propertyId',
+          builder: (context, state) {
+            final propertyId = state.pathParameters['propertyId']!;
+            final propertyName = state.extra as String? ?? '';
+            return ReviewsListPage(
+              propertyId: propertyId,
+              propertyName: propertyName,
+            );
+          },
+        ),
+        GoRoute(
+          path: '/search',
+          builder: (BuildContext context, GoRouterState state) {
+            final params = state.extra is Map<String, dynamic>
+                ? SearchNavigationParams.fromMap(
+                    state.extra as Map<String, dynamic>)
+                : null;
+            return Scaffold(
+              body: Center(
+                child: SearchPage(initialParams: params),
+              ),
+            );
+          },
+        ),
+        GoRoute(
+          path: RouteConstants.sections,
+          builder: (BuildContext context, GoRouterState state) {
+            return const AllSectionsPage();
+          },
+        ),
+        GoRoute(
+          path: '/section/:id',
+          builder: (BuildContext context, GoRouterState state) {
+            final id = state.pathParameters['id']!;
+            final section =
+                state.extra is Section ? state.extra as Section : null;
+            return SectionDetailsPage(sectionId: id, section: section);
+          },
+        ),
+        GoRoute(
+          path: '/review/write',
+          builder: (context, state) {
+            final extras = state.extra as Map<String, dynamic>;
+            return WriteReviewPage(
+              bookingId: extras['bookingId'] as String,
+              propertyId: extras['propertyId'] as String,
+              propertyName: extras['propertyName'] as String,
+            );
+          },
+        ),
+        // Property details route
+        GoRoute(
+          path: '/property/:id',
+          builder: (context, state) {
+            final id = state.pathParameters['id']!;
+            final extras = (state.extra as Map<String, dynamic>?) ?? {};
+            // نمرر unitId ضمن extras عند توفره لاستخدامه لاحقاً
+            return PropertyDetailsPage(
+              propertyId: id,
+              userId: null,
+              unitId: extras['unitId'] as String?,
+            );
+          },
+        ),
+        // Property units listing page (filtered by dates/guests and unit type)
+        GoRoute(
+          path: '/property/:id/units',
+          builder: (context, state) {
+            final id = state.pathParameters['id']!;
+            final extras = (state.extra as Map<String, dynamic>?) ?? {};
+            return PropertyUnitsPage(
+              propertyId: id,
+              propertyName: (extras['propertyName'] as String?) ?? '',
+              propertyTypeId: extras['propertyTypeId'] as String?,
+              checkInDate: extras['checkInDate'] as DateTime?,
+              checkOutDate: extras['checkOutDate'] as DateTime?,
+              guestsCount: (extras['guestsCount'] as int?) ?? 1,
+              adults: extras['adults'] as int?,
+              children: extras['children'] as int?,
+              unitTypeId: extras['unitTypeId'] as String?,
+              currency: extras['currency'] as String?,
+            );
+          },
+        ),
+        // Property gallery
+        GoRoute(
+          path: '/property/:id/gallery',
+          builder: (context, state) {
+            final extras = (state.extra as Map<String, dynamic>?) ?? {};
+            final units = (extras['units'] as List<Unit>?) ?? const <Unit>[];
+            final initialUnitIndex = extras['initialUnitIndex'] as int? ?? 0;
+            final propertyName =
+                extras['propertyName'] as String? ?? 'Al Zaereen Hotel 2';
+            return PropertyGalleryPage(
+              units: units,
+              initialUnitIndex: initialUnitIndex,
+              propertyName: propertyName,
+            );
+          },
+        ),
+        // Property reviews alias
+        GoRoute(
+          path: '/property/:id/reviews',
+          builder: (context, state) {
+            final propertyId = state.pathParameters['id']!;
+            final propertyName = state.extra as String? ?? '';
+            return ReviewsListPage(
+              propertyId: propertyId,
+              propertyName: propertyName,
+            );
+          },
+        ),
+        // Booking flow
+        GoRoute(
+          path: '/booking/form',
+          builder: (context, state) {
+            final extras = (state.extra as Map<String, dynamic>?) ?? {};
+            return BookingFormPage(
+              propertyId: (extras['propertyId'] as String?) ?? '',
+              propertyName: (extras['propertyName'] as String?) ?? '',
+              unitId: extras['unitId'] as String?,
+              pricePerNight: (extras['pricePerNight'] as num?)?.toDouble(),
+              currency: extras['currency'] as String?,
+              unitName: extras['unitName'] as String?,
+              unitImages: (extras['unitImages'] as List?)
+                  ?.map((e) => e.toString())
+                  .toList(),
+              unitTypeName: extras['unitTypeName'] as String?,
+              adultsCapacity: extras['adultsCapacity'] as int?,
+              childrenCapacity: extras['childrenCapacity'] as int?,
+              customFeatures: extras['customFeatures'] as String?,
+              initialCheckIn: extras['checkInDate'] as DateTime?,
+              initialCheckOut: extras['checkOutDate'] as DateTime?,
+              initialAdults: extras['adults'] as int?,
+              initialChildren: extras['children'] as int?,
+              propertyServices: extras['services'] as List<PropertyService>?,
+              propertyPolicies: extras['policies'] as List<PropertyPolicy>?,
+              isEditMode: extras['isEditMode'] as bool? ?? false,
+              bookingId: extras['bookingId'] as String?,
+              initialSelectedServices:
+                  (extras['initialSelectedServices'] as List?)
+                      ?.map((e) => Map<String, dynamic>.from(e as Map))
+                      .toList(),
+            );
+          },
+        ),
+        GoRoute(
+          path: '/booking/summary',
+          builder: (context, state) {
+            final bookingData = (state.extra as Map<String, dynamic>?) ?? {};
+            return BookingSummaryPage(bookingData: bookingData);
+          },
+        ),
+        GoRoute(
+          path: '/booking/payment',
+          builder: (context, state) {
+            final bookingData = (state.extra as Map<String, dynamic>?) ?? {};
+            return BookingPaymentPage(bookingData: bookingData);
+          },
+        ),
+        GoRoute(
+          path: '/booking/confirmation',
+          builder: (context, state) {
+            return BookingConfirmationPage(
+              booking: state.extra as dynamic,
+            );
+          },
+        ),
+        // إضافة مسار تفاصيل الحجز
+        GoRoute(
+          path: '/booking/:id',
+          builder: (context, state) {
+            final id = state.pathParameters['id']!;
+            return BookingDetailsPage(bookingId: id);
+          },
+        ),
+
+        // قائمة المحادثات
+        GoRoute(
+          path: '/conversations',
+          builder: (context, state) {
+            return const ConversationsPage();
+          },
+        ),
+
+        // محادثة جديدة
+        GoRoute(
+          path: '/conversations/new',
+          builder: (context, state) {
+            return const NewConversationPage();
+          },
+        ),
+
+        // صفحة المحادثة
+        GoRoute(
+          path: '/chat/:conversationId',
+          builder: (context, state) {
+            final conversationId = state.pathParameters['conversationId']!;
+            final conversation = state.extra as Conversation?;
+
+            if (conversation != null) {
+              return ChatPage(conversation: conversation);
+            }
+
+            // إذا لم تمرر المحادثة كـ extra، قم بتحميلها
+            return ConversationLoader(conversationId: conversationId);
+          },
+        ),
+      ],
+    );
+  }
+
+  static const List<String> _protectedPaths = <String>[
+    '/profile',
+    '/review',
+    '/reviews',
+    '/booking',
+    '/payments',
+    '/chat',
+  ];
+}
+
+class GoRouterRefreshStream extends ChangeNotifier {
+  GoRouterRefreshStream(Stream<dynamic> stream) {
+    _subscription = stream.asBroadcastStream().listen((_) => notifyListeners());
+  }
+  late final StreamSubscription<dynamic> _subscription;
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+}
+
+// Minimal JWT exp checker used by router redirect to proactively logout when expired
+bool _isJwtExpiredRouter(String jwt, {int skewSeconds = 0}) {
+  try {
+    final parts = jwt.split('.');
+    if (parts.length != 3) return false;
+    final payload = parts[1].replaceAll('-', '+').replaceAll('_', '/');
+    var normalized = payload;
+    while (normalized.length % 4 != 0) {
+      normalized += '=';
+    }
+    final decoded = utf8.decode(base64Url.decode(normalized));
+    final map = jsonDecode(decoded) as Map<String, dynamic>;
+    final exp = map['exp'];
+    if (exp is int) {
+      final expiresAt = DateTime.fromMillisecondsSinceEpoch(exp * 1000);
+      return DateTime.now()
+          .isAfter(expiresAt.subtract(Duration(seconds: skewSeconds)));
+    }
+    return false;
+  } catch (_) {
+    return false;
+  }
+}
