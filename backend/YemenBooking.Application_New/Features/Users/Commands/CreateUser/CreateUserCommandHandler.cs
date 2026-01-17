@@ -15,6 +15,7 @@ using System.Linq;
 using YemenBooking.Application.Common.Interfaces;
 using YemenBooking.Application.Features.Accounting.Services;
 using YemenBooking.Application.Features.Authentication.Services;
+using YemenBooking.Application.Features.Users.DTOs;
 
 namespace YemenBooking.Application.Features.Users.Commands.CreateUser
 {
@@ -24,6 +25,7 @@ namespace YemenBooking.Application.Features.Users.Commands.CreateUser
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, ResultDto<Guid>>
     {
         private readonly IUserRepository _userRepository;
+        private readonly IUserWalletAccountRepository _userWalletAccountRepository;
         private readonly IPasswordHashingService _passwordHashingService;
         private readonly IEmailService _emailService;
         private readonly ICurrentUserService _currentUserService;
@@ -35,6 +37,7 @@ namespace YemenBooking.Application.Features.Users.Commands.CreateUser
 
         public CreateUserCommandHandler(
             IUserRepository userRepository,
+            IUserWalletAccountRepository userWalletAccountRepository,
             IPasswordHashingService passwordHashingService,
             IEmailService emailService,
             ICurrentUserService currentUserService,
@@ -45,6 +48,7 @@ namespace YemenBooking.Application.Features.Users.Commands.CreateUser
             IRoleRepository roleRepository)
         {
             _userRepository = userRepository;
+            _userWalletAccountRepository = userWalletAccountRepository;
             _passwordHashingService = passwordHashingService;
             _emailService = emailService;
             _currentUserService = currentUserService;
@@ -138,6 +142,38 @@ namespace YemenBooking.Application.Features.Users.Commands.CreateUser
                     accountsCreated = await _financialAccountingService.CreateOwnerFinancialAccountsAsync(created.Id, created.Name, cancellationToken);
                     if (!accountsCreated)
                         throw new InvalidOperationException("FAILED_TO_CREATE_OWNER_FINANCIAL_ACCOUNTS");
+
+                    // Save wallet accounts for owner (optional)
+                    if (request.WalletAccounts != null)
+                    {
+                        var normalized = request.WalletAccounts
+                            .Where(a => a != null && !string.IsNullOrWhiteSpace(a.AccountNumber))
+                            .ToList();
+
+                        if (normalized.Count > 0)
+                        {
+                            var firstDefaultIndex = normalized.FindIndex(a => a.IsDefault);
+                            for (int i = 0; i < normalized.Count; i++)
+                            {
+                                normalized[i].IsDefault = (firstDefaultIndex == -1) ? (i == 0) : (i == firstDefaultIndex);
+                            }
+
+                            var entities = normalized.Select(a => new UserWalletAccount
+                            {
+                                Id = Guid.NewGuid(),
+                                UserId = created.Id,
+                                WalletType = a.WalletType,
+                                AccountNumber = a.AccountNumber.Trim(),
+                                AccountName = string.IsNullOrWhiteSpace(a.AccountName) ? null : a.AccountName.Trim(),
+                                IsDefault = a.IsDefault,
+                                CreatedAt = DateTime.UtcNow,
+                                UpdatedAt = DateTime.UtcNow,
+                                IsActive = true,
+                            }).ToList();
+
+                            await _userWalletAccountRepository.ReplaceForUserAsync(created.Id, entities, cancellationToken);
+                        }
+                    }
                 }
                 else
                 {

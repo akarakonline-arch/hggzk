@@ -1,5 +1,7 @@
 using MediatR;
 using YemenBooking.Application.Common.Models;
+using System.Collections.Generic;
+using YemenBooking.Application.Features.Users.DTOs;
 
 namespace YemenBooking.Application.Features.Users.Commands.UpdateUser;
 
@@ -50,4 +52,6 @@ public class UpdateUserCommand : IRequest<ResultDto<bool>>
     /// Phone number confirmation status
     /// </summary>
     public bool? PhoneNumberConfirmed { get; set; }
+
+    public List<UserWalletAccountRequestDto>? WalletAccounts { get; set; }
 } 

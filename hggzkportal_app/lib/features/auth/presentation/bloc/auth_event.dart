@@ -123,6 +123,7 @@ class UpdateProfileEvent extends AuthEvent {
   final String name;
   final String? email;
   final String? phone;
+  final List<Map<String, dynamic>>? walletAccounts;
   // Owner property fields
   final String? propertyId;
   final String? propertyName;
@@ -139,6 +140,7 @@ class UpdateProfileEvent extends AuthEvent {
     required this.name,
     this.email,
     this.phone,
+    this.walletAccounts,
     this.propertyId,
     this.propertyName,
     this.propertyAddress,
@@ -156,6 +158,7 @@ class UpdateProfileEvent extends AuthEvent {
         name,
         email,
         phone,
+        walletAccounts,
         propertyId,
         propertyName,
         propertyAddress,

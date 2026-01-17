@@ -5,19 +5,19 @@ class ApiConstants {
   static const String baseUrl = String.fromEnvironment(
     'BASE_URL',
     // defaultValue: 'http://api.hggzk.com/',
-    defaultValue: 'http://192.168.0.116:5000/',
+    defaultValue: 'http://192.168.0.209:5000/',
   );
 
   static const String imageBaseUrl = String.fromEnvironment(
     'IMAGE_BASE_URL',
     // defaultValue: 'http://api.hggzk.com',
-    defaultValue: 'http://192.168.0.116:5000',
+    defaultValue: 'http://192.168.0.209:5000',
   );
 
   static const String socketUrl = String.fromEnvironment(
     'SOCKET_URL',
     // defaultValue: 'wss://ws.api.hggzk.com',
-    defaultValue: 'ws://192.168.0.116:5000',
+    defaultValue: 'ws://192.168.0.209:5000',
   );
 
   // Timeouts

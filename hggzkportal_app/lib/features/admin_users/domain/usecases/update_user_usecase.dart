@@ -17,6 +17,9 @@ class UpdateUserUseCase implements UseCase<bool, UpdateUserParams> {
       email: params.email,
       phone: params.phone,
       profileImage: params.profileImage,
+      emailConfirmed: params.emailConfirmed,
+      phoneNumberConfirmed: params.phoneNumberConfirmed,
+      walletAccounts: params.walletAccounts,
     );
   }
 }
@@ -27,6 +30,9 @@ class UpdateUserParams extends Equatable {
   final String? email;
   final String? phone;
   final String? profileImage;
+  final bool? emailConfirmed;
+  final bool? phoneNumberConfirmed;
+  final List<Map<String, dynamic>>? walletAccounts;
 
   const UpdateUserParams({
     required this.userId,
@@ -34,8 +40,20 @@ class UpdateUserParams extends Equatable {
     this.email,
     this.phone,
     this.profileImage,
+    this.emailConfirmed,
+    this.phoneNumberConfirmed,
+    this.walletAccounts,
   });
 
   @override
-  List<Object?> get props => [userId, name, email, phone, profileImage];
+  List<Object?> get props => [
+        userId,
+        name,
+        email,
+        phone,
+        profileImage,
+        emailConfirmed,
+        phoneNumberConfirmed,
+        walletAccounts,
+      ];
 }

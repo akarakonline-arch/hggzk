@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace YemenBooking.Application.Features.Users.DTOs {
     /// <summary>
@@ -108,5 +109,7 @@ namespace YemenBooking.Application.Features.Users.DTOs {
         /// Last login date
         /// </summary>
         public DateTime? LastLoginDate { get; set; }
+
+        public List<UserWalletAccountDto> WalletAccounts { get; set; } = new();
     }
 } 

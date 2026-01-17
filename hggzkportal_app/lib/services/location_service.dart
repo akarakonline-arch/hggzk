@@ -1,6 +1,6 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:permission_handler/permission_handler.dart' as permission_handler;
 
 class LocationService {
   // Location settings for high accuracy
@@ -16,16 +16,16 @@ class LocationService {
 
   // Request location permission
   Future<LocationPermissionStatus> requestLocationPermission() async {
-    final status = await Permission.location.request();
+    final status = await permission_handler.Permission.location.request();
     
     switch (status) {
-      case PermissionStatus.granted:
+      case permission_handler.PermissionStatus.granted:
         return LocationPermissionStatus.granted;
-      case PermissionStatus.denied:
+      case permission_handler.PermissionStatus.denied:
         return LocationPermissionStatus.denied;
-      case PermissionStatus.permanentlyDenied:
+      case permission_handler.PermissionStatus.permanentlyDenied:
         return LocationPermissionStatus.permanentlyDenied;
-      case PermissionStatus.restricted:
+      case permission_handler.PermissionStatus.restricted:
         return LocationPermissionStatus.restricted;
       default:
         return LocationPermissionStatus.unknown;
@@ -220,7 +220,7 @@ class LocationService {
 
   // Open app settings
   Future<bool> openAppSettings() async {
-    return await openAppSettings();
+    return await permission_handler.openAppSettings();
   }
 
   // Format address helper

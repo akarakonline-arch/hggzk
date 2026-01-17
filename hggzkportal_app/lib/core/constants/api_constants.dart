@@ -1,3 +1,6 @@
+import 'package:flutter/foundation.dart'
+    show TargetPlatform, defaultTargetPlatform, kIsWeb;
+
 class ApiConstants {
   ApiConstants._();
 
@@ -5,7 +8,7 @@ class ApiConstants {
   static const String baseUrl = String.fromEnvironment(
     'BASE_URL',
     // defaultValue: 'http://api.hggzk.com/',
-    defaultValue: 'http://192.168.0.116:5000/',
+    defaultValue: 'http://192.168.0.209:5000/',
   );
 
   // Derived base URLs for different API areas
@@ -18,20 +21,27 @@ class ApiConstants {
   static const String imageBaseUrl = String.fromEnvironment(
     'IMAGE_BASE_URL',
     // defaultValue: 'http://api.hggzk.com',
-    defaultValue: 'http://192.168.0.116:5000',
+    defaultValue: 'http://192.168.0.209:5000',
   );
 
   static const String socketUrl = String.fromEnvironment(
     'SOCKET_URL',
     // defaultValue: 'wss://ws.api.hggzk.com',
-    defaultValue: 'ws://192.168.0.116:5000',
+    defaultValue: 'ws://192.168.0.209:5000',
   );
 
   // Google Places API
-  static const String googlePlacesApiKey = String.fromEnvironment(
-    'GOOGLE_PLACES_API_KEY',
-    defaultValue: 'AIzaSyA3PbOyGhE-5zBfbpiRX10wp4gRVDYKI-c',
-  );
+  static String get googlePlacesApiKey {
+    const String fromEnv = String.fromEnvironment(
+      'GOOGLE_PLACES_API_KEY',
+      defaultValue: '',
+    );
+    if (fromEnv.isNotEmpty) return fromEnv;
+    if (kIsWeb) return 'AIzaSyBUpSeBzpMhnKCDSJYmbrNwgsSY7PDlm-M';
+    return defaultTargetPlatform == TargetPlatform.iOS
+        ? 'AIzaSyD9O2NbSnvuV3L8Fknz1SqQehBxWLKkZKE'
+        : 'AIzaSyBUpSeBzpMhnKCDSJYmbrNwgsSY7PDlm-M';
+  }
   static const String googlePlacesBaseUrl =
       'https://maps.googleapis.com/maps/api/place';
 

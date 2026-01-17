@@ -1,13 +1,32 @@
 {
   "project_info": {
-    "project_number": "799150074342",
-    "project_id": "bookncp-51a35",
-    "storage_bucket": "bookncp-51a35.firebasestorage.app"
+    "project_number": "703469038360",
+    "project_id": "rezmate-5e579",
+    "storage_bucket": "rezmate-5e579.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:799150074342:android:a179254dbbfe4a2ce58e27",
+        "mobilesdk_app_id": "1:703469038360:android:68a5e55418d90f01790c6d",
+        "android_client_info": {
+          "package_name": "com.rezmate.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5hz1QTV_LP0ALmsSmyWP0_vnL1Ugip6M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:703469038360:android:7dce286302361ef1790c6d",
         "android_client_info": {
           "package_name": "com.rezmateportal.app"
         }
@@ -15,7 +34,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDKdpo8snbClcZf33zyGa3Gu1YP4GaxR4k"
+          "current_key": "AIzaSyD5hz1QTV_LP0ALmsSmyWP0_vnL1Ugip6M"
         }
       ],
       "services": {

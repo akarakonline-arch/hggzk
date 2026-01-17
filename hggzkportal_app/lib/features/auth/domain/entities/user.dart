@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:hggzkportal/features/admin_users/domain/entities/user_details.dart' show UserWalletAccount;
 
 class User extends Equatable {
   final String userId;
@@ -15,6 +16,7 @@ class User extends Equatable {
   final DateTime? phoneVerifiedAt;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final List<UserWalletAccount> walletAccounts;
 
   const User({
     required this.userId,
@@ -29,6 +31,7 @@ class User extends Equatable {
     this.profileImage,
     this.emailVerifiedAt,
     this.phoneVerifiedAt,
+    this.walletAccounts = const [],
     required this.createdAt,
     required this.updatedAt,
   });
@@ -61,6 +64,7 @@ class User extends Equatable {
         profileImage,
         emailVerifiedAt,
         phoneVerifiedAt,
+        walletAccounts,
         createdAt,
         updatedAt,
       ];

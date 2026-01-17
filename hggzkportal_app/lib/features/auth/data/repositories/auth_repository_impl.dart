@@ -387,6 +387,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String name,
     String? email,
     String? phone,
+    List<Map<String, dynamic>>? walletAccounts,
     // Pass-through for owner property fields
     String? propertyId,
     String? propertyName,
@@ -409,6 +410,7 @@ class AuthRepositoryImpl implements AuthRepository {
           name: name,
           email: email,
           phone: phone,
+          walletAccounts: walletAccounts,
           propertyId: propertyId,
           propertyName: propertyName,
           propertyAddress: propertyAddress,
@@ -437,6 +439,7 @@ class AuthRepositoryImpl implements AuthRepository {
             profileImage: cachedUser.profileImage,
             emailVerifiedAt: cachedUser.emailVerifiedAt,
             phoneVerifiedAt: cachedUser.phoneVerifiedAt,
+            walletAccounts: cachedUser.walletAccounts,
             createdAt: cachedUser.createdAt,
             updatedAt: DateTime.now(),
           );

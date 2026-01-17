@@ -49,7 +49,7 @@ class AppConstants {
   // static const String googleAndroidClientId =
   //     '90807496145-is1cdvm5lmm2cpcd346ivh22rcf43orr.apps.googleusercontent.com';
   static const String googleAndroidClientId =
-      '90807496145-7g24d05j7ear9sepjmjuq9r3pnhm11hl.apps.googleusercontent.com';
+      '333370677136-el3bpb5fn4tt8qrcr52v8r59h4fko283.apps.googleusercontent.com';
   static const String googleIosClientId = '';
 
   // ═══════════════════════════════════════════════════════════════════

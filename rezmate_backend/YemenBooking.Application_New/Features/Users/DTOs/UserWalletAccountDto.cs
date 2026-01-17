@@ -15,3 +15,14 @@ public class UserWalletAccountDto
 
     public bool IsDefault { get; set; }
 }
+
+public class UserWalletAccountRequestDto
+{
+    public PaymentMethodEnum WalletType { get; set; }
+
+    public string AccountNumber { get; set; } = string.Empty;
+
+    public string? AccountName { get; set; }
+
+    public bool IsDefault { get; set; }
+}

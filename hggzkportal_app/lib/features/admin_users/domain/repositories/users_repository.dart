@@ -29,6 +29,10 @@ abstract class UsersRepository {
     required String password,
     required String phone,
     String? profileImage,
+    String? roleName,
+    bool emailConfirmed,
+    bool phoneNumberConfirmed,
+    List<Map<String, dynamic>>? walletAccounts,
   });
 
   Future<Either<Failure, bool>> updateUser({
@@ -37,6 +41,9 @@ abstract class UsersRepository {
     String? email,
     String? phone,
     String? profileImage,
+    bool? emailConfirmed,
+    bool? phoneNumberConfirmed,
+    List<Map<String, dynamic>>? walletAccounts,
   });
 
   Future<Either<Failure, bool>> activateUser(String userId);

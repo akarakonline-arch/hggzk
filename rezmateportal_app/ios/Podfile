@@ -135,7 +135,16 @@ post_install do |installer|
         config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
         
         # Additional stability settings
-        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] = '$(inherited) COCOAPODS=1'
+        defs = config.build_settings['GCC_PREPROCESSOR_DEFINITIONS']
+        defs = ['$(inherited)'] if defs.nil?
+        defs = defs.split(' ') if defs.is_a?(String)
+        defs << 'COCOAPODS=1'
+        defs << 'PERMISSION_CAMERA=1'
+        defs << 'PERMISSION_PHOTOS=1'
+        defs << 'PERMISSION_MICROPHONE=1'
+        defs << 'PERMISSION_LOCATION=1'
+        defs << 'PERMISSION_LOCATION_WHENINUSE=1'
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] = defs.uniq
         config.build_settings.delete('OTHER_LDFLAGS')
       end
     end

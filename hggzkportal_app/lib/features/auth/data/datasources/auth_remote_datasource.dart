@@ -44,6 +44,7 @@ abstract class AuthRemoteDataSource {
     required String name,
     String? email,
     String? phone,
+    List<Map<String, dynamic>>? walletAccounts,
     // Owner's property fields (optional; sent alongside profile)
     String? propertyId,
     String? propertyName,
@@ -525,6 +526,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String name,
     String? email,
     String? phone,
+    List<Map<String, dynamic>>? walletAccounts,
     String? propertyId,
     String? propertyName,
     String? propertyAddress,
@@ -569,6 +571,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       if (propertyLongitude != null)
         data['propertyLongitude'] = propertyLongitude;
       if (email != null) data['email'] = email;
+      if (walletAccounts != null) data['walletAccounts'] = walletAccounts;
 
       final response = await apiClient.put(
         '/api/client/auth/profile',

@@ -1,36 +1,95 @@
 {
   "project_info": {
-    "project_number": "90807496145",
-    "project_id": "yemen-booking-c66e0",
-    "storage_bucket": "yemen-booking-c66e0.firebasestorage.app"
+    "project_number": "333370677136",
+    "project_id": "hggzk-67002",
+    "storage_bucket": "hggzk-67002.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:90807496145:android:04ac391e693b1665b244f0",
+        "mobilesdk_app_id": "1:333370677136:android:828b2fb7cf788c24e90515",
         "android_client_info": {
           "package_name": "com.hggzk.app"
         }
       },
       "oauth_client": [
         {
-          // "client_id": "90807496145-is1cdvm5lmm2cpcd346ivh22rcf43orr.apps.googleusercontent.com",
-          "client_id": "90807496145-7g24d05j7ear9sepjmjuq9r3pnhm11hl.apps.googleusercontent.com",
-          "client_type": 1  // Android
+          "client_id": "333370677136-c6hac6mf0urphejc8v8h234p44ok1kft.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hggzk.app",
+            "certificate_hash": "c611843731bc9123aa706fb5aae5c7a77bcad198"
+          }
         },
         {
-          "client_id": "882426821019-q4hjlkvns3dfnik499cq8u4uspl6188m.apps.googleusercontent.com",
-          "client_type": 3  // Web - مطلوب للحصول على idToken
+          "client_id": "333370677136-el3bpb5fn4tt8qrcr52v8r59h4fko283.apps.googleusercontent.com",
+          "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBvDi3Wq3AkjGuAGiR-V8RLsxV8iuiQMlE"
+          "current_key": "AIzaSyBUpSeBzpMhnKCDSJYmbrNwgsSY7PDlm-M"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "333370677136-el3bpb5fn4tt8qrcr52v8r59h4fko283.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "333370677136-63cqitbsjos82f52h772s15pcdjdoci3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.hggzk.app"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:333370677136:android:3658ebbfa167ae5ae90515",
+        "android_client_info": {
+          "package_name": "com.hggzkportal.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "333370677136-t6935rhu3f1gg7j5giskglm7pr5qbotu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hggzkportal.app",
+            "certificate_hash": "c611843731bc9123aa706fb5aae5c7a77bcad198"
+          }
+        },
+        {
+          "client_id": "333370677136-el3bpb5fn4tt8qrcr52v8r59h4fko283.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUpSeBzpMhnKCDSJYmbrNwgsSY7PDlm-M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "333370677136-el3bpb5fn4tt8qrcr52v8r59h4fko283.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "333370677136-63cqitbsjos82f52h772s15pcdjdoci3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.hggzk.app"
+              }
+            }
+          ]
         }
       }
     }

@@ -12,6 +12,7 @@ import '../../domain/entities/user.dart' as domain;
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
+import '../../../../core/enums/payment_method_enum.dart';
 import '../../../../features/admin_properties/domain/usecases/properties/get_property_details_public_usecase.dart'
     as ap_uc_prop_public_details;
 import '../../../../features/admin_properties/domain/usecases/properties/owner_update_property_usecase.dart'
@@ -100,6 +101,8 @@ class _EditProfilePageState extends State<EditProfilePage>
   Map<String, dynamic> _initialPropertySnapshot = {};
   bool _isPropertyDataLoaded = false;
 
+  final List<_WalletAccountDraft> _walletAccounts = [];
+
   final GlobalKey<PropertyImageGalleryState> _galleryKey = GlobalKey();
 
   @override
@@ -180,6 +183,25 @@ class _EditProfilePageState extends State<EditProfilePage>
         _currentImageUrl = user?.profileImage;
         _isOwner = user?.isOwner ?? false;
         _ownerPropertyId = user?.propertyId;
+
+        for (final wa in _walletAccounts) {
+          wa.dispose();
+        }
+        _walletAccounts.clear();
+        if (_isOwner) {
+          final src = user?.walletAccounts ?? const [];
+          for (final a in src) {
+            final draft = _WalletAccountDraft(
+              walletType: a.walletType,
+              isDefault: a.isDefault,
+            );
+            draft.accountNumberController.text = a.accountNumber;
+            draft.accountNameController.text = a.accountName ?? '';
+            _walletAccounts.add(draft);
+          }
+          _normalizeDefaultWallet();
+        }
+
         // Only mark as loaded if not owner, or if owner but no property
         if (!_isOwner || _ownerPropertyId == null) {
           _isDataLoaded = true;
@@ -329,6 +351,9 @@ class _EditProfilePageState extends State<EditProfilePage>
     _nameFocusNode.dispose();
     _phoneFocusNode.dispose();
     _emailFocusNode.dispose();
+    for (final wa in _walletAccounts) {
+      wa.dispose();
+    }
     super.dispose();
   }
 
@@ -913,9 +938,255 @@ class _EditProfilePageState extends State<EditProfilePage>
               });
             },
           ),
+
+          if (_isOwner) ...[
+            const SizedBox(height: 20),
+            _buildOwnerWalletAccountsSection(isLoading),
+          ],
         ],
       ),
     );
+  }
+
+  Widget _buildOwnerWalletAccountsSection(bool isLoading) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'حسابات استلام المالك',
+          style: AppTextStyles.heading3.copyWith(
+            color: AppTheme.textWhite,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 12),
+        ..._walletAccounts.asMap().entries.map((entry) {
+          final index = entry.key;
+          final item = entry.value;
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppTheme.darkCard.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: AppTheme.darkBorder.withOpacity(0.15),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: DropdownButtonFormField<PaymentMethod>(
+                          value: item.walletType,
+                          decoration: InputDecoration(
+                            labelText: 'نوع المحفظة',
+                            labelStyle: AppTextStyles.caption.copyWith(
+                              color: AppTheme.textMuted.withOpacity(0.6),
+                            ),
+                            filled: false,
+                            border: InputBorder.none,
+                          ),
+                          dropdownColor: AppTheme.darkCard,
+                          items: PaymentMethod.values
+                              .where((m) => m.isWallet)
+                              .map(
+                                (m) => DropdownMenuItem<PaymentMethod>(
+                                  value: m,
+                                  child: Text(
+                                    m.displayNameAr,
+                                    style: AppTextStyles.bodySmall.copyWith(
+                                      color: AppTheme.textWhite,
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                          onChanged: isLoading
+                              ? null
+                              : (v) {
+                                  if (v == null) return;
+                                  setState(() {
+                                    item.walletType = v;
+                                    _hasChanges = _checkForChanges();
+                                  });
+                                },
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      IconButton(
+                        onPressed: isLoading
+                            ? null
+                            : () {
+                                setState(() {
+                                  final removed = _walletAccounts.removeAt(index);
+                                  removed.dispose();
+                                  _normalizeDefaultWallet();
+                                  _hasChanges = _checkForChanges();
+                                });
+                              },
+                        icon: Icon(
+                          Icons.delete_outline_rounded,
+                          color: AppTheme.error.withOpacity(0.9),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  _buildInputField(
+                    controller: item.accountNumberController,
+                    label: 'رقم الحساب/المحفظة',
+                    hint: 'مثال: 7XXXXXXXX',
+                    icon: Icons.numbers_rounded,
+                    keyboardType: TextInputType.text,
+                    onChanged: (_) {
+                      setState(() {
+                        _hasChanges = _checkForChanges();
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  _buildInputField(
+                    controller: item.accountNameController,
+                    label: 'اسم الحساب (اختياري)',
+                    hint: 'اسم المستلم',
+                    icon: Icons.person_outline_rounded,
+                    onChanged: (_) {
+                      setState(() {
+                        _hasChanges = _checkForChanges();
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  GestureDetector(
+                    onTap: isLoading
+                        ? null
+                        : () {
+                            setState(() {
+                              for (final wa in _walletAccounts) {
+                                wa.isDefault = false;
+                              }
+                              item.isDefault = true;
+                              _hasChanges = _checkForChanges();
+                            });
+                          },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 10),
+                      decoration: BoxDecoration(
+                        gradient:
+                            item.isDefault ? AppTheme.primaryGradient : null,
+                        color: !item.isDefault
+                            ? AppTheme.darkCard.withOpacity(0.15)
+                            : null,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: item.isDefault
+                              ? Colors.transparent
+                              : AppTheme.darkBorder.withOpacity(0.2),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            item.isDefault
+                                ? Icons.check_circle_rounded
+                                : Icons.radio_button_unchecked_rounded,
+                            size: 16,
+                            color: item.isDefault
+                                ? Colors.white
+                                : AppTheme.textMuted,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'افتراضي',
+                            style: AppTextStyles.bodySmall.copyWith(
+                              color: item.isDefault
+                                  ? Colors.white
+                                  : AppTheme.textMuted,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }).toList(),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: TextButton.icon(
+            onPressed: isLoading
+                ? null
+                : () {
+                    setState(() {
+                      _walletAccounts.add(
+                        _WalletAccountDraft(
+                          walletType: PaymentMethod.jwaliWallet,
+                          isDefault: false,
+                        ),
+                      );
+                      _normalizeDefaultWallet();
+                      _hasChanges = _checkForChanges();
+                    });
+                  },
+            icon: const Icon(Icons.add_rounded),
+            label: Text(
+              'إضافة حساب',
+              style:
+                  AppTextStyles.bodySmall.copyWith(color: AppTheme.primaryBlue),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _normalizeDefaultWallet() {
+    if (_walletAccounts.isEmpty) return;
+    final hasDefault = _walletAccounts.any((e) => e.isDefault);
+    if (!hasDefault) {
+      _walletAccounts.first.isDefault = true;
+    }
+  }
+
+  List<Map<String, dynamic>>? _buildWalletAccountsPayload() {
+    final items = _walletAccounts
+        .map((e) {
+          final number = e.accountNumberController.text.trim();
+          if (number.isEmpty) return null;
+          final name = e.accountNameController.text.trim();
+          return <String, dynamic>{
+            'walletType': e.walletType.backendValue,
+            'accountNumber': number,
+            if (name.isNotEmpty) 'accountName': name,
+            'isDefault': e.isDefault,
+          };
+        })
+        .whereType<Map<String, dynamic>>()
+        .toList();
+
+    if (items.isEmpty) {
+      final hadOriginal = _originalUser?.walletAccounts.isNotEmpty ?? false;
+      if (hadOriginal || _walletAccounts.isEmpty) {
+        return <Map<String, dynamic>>[];
+      }
+      return null;
+    }
+
+    final firstDefaultIndex = items.indexWhere((e) => e['isDefault'] == true);
+    for (int i = 0; i < items.length; i++) {
+      items[i]['isDefault'] = (firstDefaultIndex == -1)
+          ? (i == 0)
+          : (i == firstDefaultIndex);
+    }
+    return items;
   }
 
   Widget _buildPropertyBasicInfoStep(bool isLoading) {
@@ -2193,16 +2464,32 @@ class _EditProfilePageState extends State<EditProfilePage>
 
     final userFieldsChanged =
         _nameController.text.trim() != _originalUser!.name.trim() ||
-            _emailController.text.trim() != _originalUser!.email.trim() ||
             _phoneController.text.trim() != _originalUser!.phone.trim() ||
             _currentImageUrl != _originalImageUrl;
+
+    bool walletAccountsChanged = false;
+    if (_isOwner) {
+      final original = _originalUser?.walletAccounts ?? const [];
+      final originalSnapshot = original
+          .map((e) =>
+              '${e.walletType.backendValue}|${e.accountNumber.trim()}|${(e.accountName ?? '').trim()}|${e.isDefault}')
+          .toList();
+      final currentSnapshot = _walletAccounts
+          .map((e) =>
+              '${e.walletType.backendValue}|${e.accountNumberController.text.trim()}|${e.accountNameController.text.trim()}|${e.isDefault}')
+          .toList();
+      originalSnapshot.sort();
+      currentSnapshot.sort();
+      walletAccountsChanged =
+          originalSnapshot.join(',') != currentSnapshot.join(',');
+    }
 
     final propertyFieldsChanged = _isOwner && _isPropertyDataLoaded
         ? _hasPropertySnapshotDiff(
             _initialPropertySnapshot, _buildCurrentPropertySnapshot())
         : false;
 
-    return userFieldsChanged || propertyFieldsChanged;
+    return userFieldsChanged || propertyFieldsChanged || walletAccountsChanged;
   }
 
   Map<String, dynamic> _buildCurrentPropertySnapshot() {
@@ -2723,6 +3010,7 @@ class _EditProfilePageState extends State<EditProfilePage>
             phone: _phoneController.text.trim().isEmpty
                 ? null
                 : _phoneController.text.trim(),
+            walletAccounts: _isOwner ? _buildWalletAccountsPayload() : null,
             propertyId: _isOwner ? _ownerPropertyId : null,
             propertyName: _isOwner && _propNameController.text.trim().isNotEmpty
                 ? _propNameController.text.trim()
@@ -2901,6 +3189,24 @@ class _EditProfilePageState extends State<EditProfilePage>
         ),
       ),
     );
+  }
+
+}
+
+class _WalletAccountDraft {
+  PaymentMethod walletType;
+  bool isDefault;
+  final TextEditingController accountNumberController = TextEditingController();
+  final TextEditingController accountNameController = TextEditingController();
+
+  _WalletAccountDraft({
+    required this.walletType,
+    required this.isDefault,
+  });
+
+  void dispose() {
+    accountNumberController.dispose();
+    accountNameController.dispose();
   }
 }
 

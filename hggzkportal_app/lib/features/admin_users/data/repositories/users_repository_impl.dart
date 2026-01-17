@@ -108,6 +108,10 @@ class UsersRepositoryImpl implements UsersRepository {
     required String password,
     required String phone,
     String? profileImage,
+    String? roleName,
+    bool emailConfirmed = false,
+    bool phoneNumberConfirmed = false,
+    List<Map<String, dynamic>>? walletAccounts,
   }) async {
     if (!await networkInfo.isConnected) {
       return const Left(NetworkFailure());
@@ -120,6 +124,10 @@ class UsersRepositoryImpl implements UsersRepository {
         password: password,
         phone: phone,
         profileImage: profileImage,
+        roleName: roleName,
+        emailConfirmed: emailConfirmed,
+        phoneNumberConfirmed: phoneNumberConfirmed,
+        walletAccounts: walletAccounts,
       );
       return Right(userId);
     } on ApiException catch (e) {
@@ -136,6 +144,9 @@ class UsersRepositoryImpl implements UsersRepository {
     String? email,
     String? phone,
     String? profileImage,
+    bool? emailConfirmed,
+    bool? phoneNumberConfirmed,
+    List<Map<String, dynamic>>? walletAccounts,
   }) async {
     if (!await networkInfo.isConnected) {
       return const Left(NetworkFailure());
@@ -148,6 +159,9 @@ class UsersRepositoryImpl implements UsersRepository {
         email: email,
         phone: phone,
         profileImage: profileImage,
+        emailConfirmed: emailConfirmed,
+        phoneNumberConfirmed: phoneNumberConfirmed,
+        walletAccounts: walletAccounts,
       );
       return Right(success);
     } on ApiException catch (e) {

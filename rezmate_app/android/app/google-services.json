@@ -1,31 +1,21 @@
 {
   "project_info": {
-    "project_number": "90807496145",
-    "project_id": "yemen-booking-c66e0",
-    "storage_bucket": "yemen-booking-c66e0.firebasestorage.app"
+    "project_number": "703469038360",
+    "project_id": "rezmate-5e579",
+    "storage_bucket": "rezmate-5e579.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:90807496145:android:04ac391e693b1665b244f0",
+        "mobilesdk_app_id": "1:703469038360:android:68a5e55418d90f01790c6d",
         "android_client_info": {
-          "package_name": "com.arma.rezmate"
+          "package_name": "com.rezmate.app"
         }
       },
-      "oauth_client": [
-        {
-          // "client_id": "90807496145-is1cdvm5lmm2cpcd346ivh22rcf43orr.apps.googleusercontent.com",
-          "client_id": "90807496145-7g24d05j7ear9sepjmjuq9r3pnhm11hl.apps.googleusercontent.com",
-          "client_type": 1  // Android
-        },
-        {
-          "client_id": "882426821019-q4hjlkvns3dfnik499cq8u4uspl6188m.apps.googleusercontent.com",
-          "client_type": 3  // Web - مطلوب للحصول على idToken
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBvDi3Wq3AkjGuAGiR-V8RLsxV8iuiQMlE"
+          "current_key": "AIzaSyD5hz1QTV_LP0ALmsSmyWP0_vnL1Ugip6M"
         }
       ],
       "services": {

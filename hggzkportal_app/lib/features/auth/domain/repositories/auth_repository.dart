@@ -52,6 +52,7 @@ abstract class AuthRepository {
     required String name,
     String? email,
     String? phone,
+    List<Map<String, dynamic>>? walletAccounts,
     // Owner property fields
     String? propertyId,
     String? propertyName,

@@ -15,6 +15,7 @@ class UpdateProfileUseCase implements UseCase<void, UpdateProfileParams> {
       name: params.name,
       email: params.email,
       phone: params.phone,
+      walletAccounts: params.walletAccounts,
       propertyId: params.propertyId,
       propertyName: params.propertyName,
       propertyAddress: params.propertyAddress,
@@ -33,6 +34,7 @@ class UpdateProfileParams extends Equatable {
   final String name;
   final String? email;
   final String? phone;
+  final List<Map<String, dynamic>>? walletAccounts;
   // Owner property fields (optional)
   final String? propertyId;
   final String? propertyName;
@@ -49,6 +51,7 @@ class UpdateProfileParams extends Equatable {
     required this.name,
     this.email,
     this.phone,
+    this.walletAccounts,
     this.propertyId,
     this.propertyName,
     this.propertyAddress,
@@ -66,6 +69,7 @@ class UpdateProfileParams extends Equatable {
         name,
         email,
         phone,
+        walletAccounts,
         propertyId,
         propertyName,
         propertyAddress,

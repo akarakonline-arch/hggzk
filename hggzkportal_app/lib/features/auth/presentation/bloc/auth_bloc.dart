@@ -233,6 +233,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       name: event.name,
       email: event.email,
       phone: event.phone,
+      walletAccounts: event.walletAccounts,
       propertyId: event.propertyId,
       propertyName: event.propertyName,
       propertyAddress: event.propertyAddress,

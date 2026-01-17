@@ -5,12 +5,15 @@ using YemenBooking.Application.Common.Models;
 using YemenBooking.Application.Features.Authentication;
 using YemenBooking.Core.Interfaces.Repositories;
 using YemenBooking.Application.Infrastructure.Services;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using YemenBooking.Application.Common.Interfaces;
 using YemenBooking.Application.Features.AuditLog.Services;
 using YemenBooking.Application.Features.Authentication.DTOs;
 using YemenBooking.Core.Entities;
+using YemenBooking.Application.Features.Users.DTOs;
 
 namespace YemenBooking.Application.Features.Authentication.Commands.UpdateUser;
 
@@ -21,11 +24,13 @@ namespace YemenBooking.Application.Features.Authentication.Commands.UpdateUser;
 public class UpdateUserProfileCommandHandler : IRequestHandler<UpdateUserProfileCommand, ResultDto<UpdateUserProfileResponse>>
 {
     private readonly IUserRepository _userRepository;
+    private readonly IUserWalletAccountRepository _userWalletAccountRepository;
     private readonly IFileUploadService _fileUploadService;
     private readonly ILogger<UpdateUserProfileCommandHandler> _logger;
     private readonly IAuditService _auditService;
     private readonly ICurrentUserService _currentUserService;
     private readonly IPropertyRepository _propertyRepository;
+    private readonly IRoleRepository _roleRepository;
 
     /// <summary>
     /// منشئ معالج أمر تحديث ملف المستخدم الشخصي
@@ -36,18 +41,22 @@ public class UpdateUserProfileCommandHandler : IRequestHandler<UpdateUserProfile
     /// <param name="logger">مسجل الأحداث</param>
     public UpdateUserProfileCommandHandler(
         IUserRepository userRepository,
+        IUserWalletAccountRepository userWalletAccountRepository,
         IFileUploadService fileUploadService,
         ILogger<UpdateUserProfileCommandHandler> logger,
         IAuditService auditService,
         ICurrentUserService currentUserService,
-        IPropertyRepository propertyRepository)
+        IPropertyRepository propertyRepository,
+        IRoleRepository roleRepository)
     {
         _userRepository = userRepository;
+        _userWalletAccountRepository = userWalletAccountRepository;
         _fileUploadService = fileUploadService;
         _logger = logger;
         _auditService = auditService;
         _currentUserService = currentUserService;
         _propertyRepository = propertyRepository;
+        _roleRepository = roleRepository;
     }
 
     /// <summary>
@@ -62,6 +71,30 @@ public class UpdateUserProfileCommandHandler : IRequestHandler<UpdateUserProfile
         try
         {
             _logger.LogInformation("بدء عملية تحديث ملف المستخدم الشخصي: {UserId}", request.UserId);
+
+            async Task<bool> IsOwnerUserAsync(Guid userId)
+            {
+                var roles = (await _userRepository.GetUserRolesAsync(userId, cancellationToken))?.ToList()
+                            ?? new List<UserRole>();
+
+                foreach (var ur in roles)
+                {
+                    var roleName = ur.Role?.Name;
+                    if (string.IsNullOrWhiteSpace(roleName))
+                    {
+                        var role = await _roleRepository.GetRoleByIdAsync(ur.RoleId, cancellationToken);
+                        roleName = role?.Name;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(roleName))
+                    {
+                        var norm = roleName.Trim().ToLowerInvariant();
+                        if (norm == "owner" || norm == "hotel_owner" || norm.Contains("owner"))
+                            return true;
+                    }
+                }
+                return false;
+            }
 
             // التحقق من صحة البيانات المدخلة
             if (request.UserId == Guid.Empty)
@@ -220,6 +253,50 @@ public class UpdateUserProfileCommandHandler : IRequestHandler<UpdateUserProfile
                         hasChanges = true;
                         _logger.LogInformation("تم تحديث بيانات العقار ضمن تحديث الملف الشخصي: {PropertyId}", property.Id);
                     }
+                }
+            }
+
+            // تحديث حسابات استلام المستحقات (Owner-only)
+            if (request.WalletAccounts != null)
+            {
+                var isOwner = _currentUserService.UserRoles.Contains("Owner") || await IsOwnerUserAsync(request.UserId);
+                if (!isOwner)
+                {
+                    return ResultDto<UpdateUserProfileResponse>.Failed("حسابات المحافظ متاحة للمالك فقط", "WALLET_ACCOUNTS_OWNER_ONLY");
+                }
+
+                var normalized = request.WalletAccounts
+                    .Where(a => a != null && !string.IsNullOrWhiteSpace(a.AccountNumber))
+                    .ToList();
+
+                if (normalized.Count == 0)
+                {
+                    await _userWalletAccountRepository.ReplaceForUserAsync(user.Id, new List<UserWalletAccount>(), cancellationToken);
+                    hasChanges = true;
+                }
+                else
+                {
+                    var firstDefaultIndex = normalized.FindIndex(a => a.IsDefault);
+                    for (int i = 0; i < normalized.Count; i++)
+                    {
+                        normalized[i].IsDefault = (firstDefaultIndex == -1) ? (i == 0) : (i == firstDefaultIndex);
+                    }
+
+                    var entities = normalized.Select(a => new UserWalletAccount
+                    {
+                        Id = Guid.NewGuid(),
+                        UserId = user.Id,
+                        WalletType = a.WalletType,
+                        AccountNumber = a.AccountNumber.Trim(),
+                        AccountName = string.IsNullOrWhiteSpace(a.AccountName) ? null : a.AccountName.Trim(),
+                        IsDefault = a.IsDefault,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow,
+                        IsActive = true,
+                    }).ToList();
+
+                    await _userWalletAccountRepository.ReplaceForUserAsync(user.Id, entities, cancellationToken);
+                    hasChanges = true;
                 }
             }
 

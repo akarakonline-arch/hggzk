@@ -4,6 +4,8 @@ using YemenBooking.Application.Features.Authentication;
 using System;
 using System.ComponentModel.DataAnnotations;
 using YemenBooking.Application.Features.Authentication.DTOs;
+using System.Collections.Generic;
+using YemenBooking.Application.Features.Users.DTOs;
 
 namespace YemenBooking.Application.Features.Authentication.Commands.UpdateUser
 {
@@ -32,6 +34,8 @@ namespace YemenBooking.Application.Features.Authentication.Commands.UpdateUser
     /// صورة الملف الشخصي المحدثة (Base64)
     /// </summary>
     public string? ProfileImageBase64 { get; set; }
+
+    public List<UserWalletAccountRequestDto>? WalletAccounts { get; set; }
 
     // Optional property fields (for Owners)
     public Guid? PropertyId { get; set; }

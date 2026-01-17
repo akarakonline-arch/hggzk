@@ -17,6 +17,10 @@ class CreateUserUseCase implements UseCase<String, CreateUserParams> {
       password: params.password,
       phone: params.phone,
       profileImage: params.profileImage,
+      roleName: params.roleName,
+      emailConfirmed: params.emailConfirmed,
+      phoneNumberConfirmed: params.phoneNumberConfirmed,
+      walletAccounts: params.walletAccounts,
     );
   }
 }
@@ -27,6 +31,10 @@ class CreateUserParams extends Equatable {
   final String password;
   final String phone;
   final String? profileImage;
+  final String? roleName;
+  final bool emailConfirmed;
+  final bool phoneNumberConfirmed;
+  final List<Map<String, dynamic>>? walletAccounts;
 
   const CreateUserParams({
     required this.name,
@@ -34,8 +42,22 @@ class CreateUserParams extends Equatable {
     required this.password,
     required this.phone,
     this.profileImage,
+    this.roleName,
+    this.emailConfirmed = false,
+    this.phoneNumberConfirmed = false,
+    this.walletAccounts,
   });
 
   @override
-  List<Object?> get props => [name, email, password, phone, profileImage];
+  List<Object?> get props => [
+        name,
+        email,
+        password,
+        phone,
+        profileImage,
+        roleName,
+        emailConfirmed,
+        phoneNumberConfirmed,
+        walletAccounts,
+      ];
 }

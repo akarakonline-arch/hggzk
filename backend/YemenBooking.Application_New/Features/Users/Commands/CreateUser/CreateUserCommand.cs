@@ -1,5 +1,7 @@
 using MediatR;
 using YemenBooking.Application.Common.Models;
+using System.Collections.Generic;
+using YemenBooking.Application.Features.Users.DTOs;
 
 namespace YemenBooking.Application.Features.Users.Commands.CreateUser
 {
@@ -52,5 +54,7 @@ namespace YemenBooking.Application.Features.Users.Commands.CreateUser
         /// Phone number confirmation status
         /// </summary>
         public bool PhoneNumberConfirmed { get; set; } = false;
+
+        public List<UserWalletAccountRequestDto>? WalletAccounts { get; set; }
     }
 } 

@@ -32,6 +32,10 @@ abstract class UsersRemoteDataSource {
     required String password,
     required String phone,
     String? profileImage,
+    String? roleName,
+    bool emailConfirmed,
+    bool phoneNumberConfirmed,
+    List<Map<String, dynamic>>? walletAccounts,
   });
 
   /// Register an Owner user and create a linked Property in one operation
@@ -57,6 +61,9 @@ abstract class UsersRemoteDataSource {
     String? email,
     String? phone,
     String? profileImage,
+    bool? emailConfirmed,
+    bool? phoneNumberConfirmed,
+    List<Map<String, dynamic>>? walletAccounts,
   });
 
   Future<bool> activateUser(String userId);
@@ -154,6 +161,10 @@ class UsersRemoteDataSourceImpl implements UsersRemoteDataSource {
     required String password,
     required String phone,
     String? profileImage,
+    String? roleName,
+    bool emailConfirmed = false,
+    bool phoneNumberConfirmed = false,
+    List<Map<String, dynamic>>? walletAccounts,
   }) async {
     try {
       final response = await _apiClient.post(
@@ -164,6 +175,10 @@ class UsersRemoteDataSourceImpl implements UsersRemoteDataSource {
           'password': password,
           'phone': phone,
           'profileImage': profileImage ?? '', // إرسال string فارغ بدلاً من null
+          if (roleName != null) 'roleName': roleName,
+          'emailConfirmed': emailConfirmed,
+          'phoneNumberConfirmed': phoneNumberConfirmed,
+          if (walletAccounts != null) 'walletAccounts': walletAccounts,
         },
       );
 
@@ -245,6 +260,9 @@ class UsersRemoteDataSourceImpl implements UsersRemoteDataSource {
     String? email,
     String? phone,
     String? profileImage,
+    bool? emailConfirmed,
+    bool? phoneNumberConfirmed,
+    List<Map<String, dynamic>>? walletAccounts,
   }) async {
     try {
       final data = <String, dynamic>{};
@@ -252,6 +270,10 @@ class UsersRemoteDataSourceImpl implements UsersRemoteDataSource {
       if (email != null) data['email'] = email;
       if (phone != null) data['phone'] = phone;
       if (profileImage != null) data['profileImage'] = profileImage;
+      if (emailConfirmed != null) data['emailConfirmed'] = emailConfirmed;
+      if (phoneNumberConfirmed != null)
+        data['phoneNumberConfirmed'] = phoneNumberConfirmed;
+      if (walletAccounts != null) data['walletAccounts'] = walletAccounts;
 
       final response = await _apiClient.put(
         '/api/admin/Users/$userId',
