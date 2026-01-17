@@ -115,7 +115,7 @@ class _FuturisticPoliciesTableState extends State<FuturisticPoliciesTable>
       policyId: policy.id,
       policyType: _mapPolicyType(policy.type),
       description: policy.description,
-      rules: null,
+      rules: policy.rules ?? '',
       isActive: policy.isActive ?? true,
       propertyName: policy.propertyName,
       effectiveDate: policy.createdAt,
@@ -976,6 +976,7 @@ class _FuturisticPoliciesTableState extends State<FuturisticPoliciesTable>
   }
 
   Widget _buildPolicyDetailsSection(Policy policy) {
+    final rulesText = policy.rules ?? '';
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -988,7 +989,7 @@ class _FuturisticPoliciesTableState extends State<FuturisticPoliciesTable>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (policy.rules != null && policy.rules!.isNotEmpty) ...[
+          if (rulesText.isNotEmpty) ...[
             Row(
               children: [
                 Icon(
@@ -1014,7 +1015,7 @@ class _FuturisticPoliciesTableState extends State<FuturisticPoliciesTable>
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Text(
-                policy.rules!,
+                rulesText,
                 style: AppTextStyles.caption.copyWith(
                   color: AppTheme.textLight,
                   fontFamily: 'monospace',

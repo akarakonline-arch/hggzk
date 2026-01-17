@@ -1691,7 +1691,7 @@ class _EditPolicyPageState extends State<EditPolicyPage>
     if (_originalPolicy == null) return false;
 
     return _descriptionController.text != _originalPolicy!.description ||
-        _rulesController.text != _originalPolicy!.rules ||
+        _rulesController.text != (_originalPolicy!.rules ?? '') ||
         int.tryParse(_cancellationWindowController.text) !=
             _originalPolicy!.cancellationWindowDays ||
         _requireFullPayment !=
@@ -1708,7 +1708,7 @@ class _EditPolicyPageState extends State<EditPolicyPage>
     switch (step) {
       case 0: // Basic Info
         return _descriptionController.text != _originalPolicy!.description ||
-            _rulesController.text != _originalPolicy!.rules;
+            _rulesController.text != (_originalPolicy!.rules ?? '');
       case 1: // Settings
         switch (_selectedType) {
           case PolicyType.cancellation:
@@ -1815,13 +1815,13 @@ class _EditPolicyPageState extends State<EditPolicyPage>
             _descriptionController.text = _originalPolicy!.description;
             _rulesController.text = _originalPolicy!.rules ?? '';
             _cancellationWindowController.text =
-                _originalPolicy!.cancellationWindowDays.toString() ?? '0';
+                (_originalPolicy!.cancellationWindowDays).toString();
             _requireFullPayment =
                 _originalPolicy!.requireFullPaymentBeforeConfirmation ?? false;
             _depositPercentageController.text =
-                _originalPolicy!.minimumDepositPercentage.toString() ?? '0';
+                (_originalPolicy!.minimumDepositPercentage).toString();
             _minHoursController.text =
-                _originalPolicy!.minHoursBeforeCheckIn.toString() ?? '0';
+                (_originalPolicy!.minHoursBeforeCheckIn).toString();
             _hasChanges = false;
           });
 

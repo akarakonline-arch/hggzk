@@ -143,7 +143,7 @@ jobs:
           
           case "${{ matrix.app }}" in
             "hggzk_app")
-              echo "PROFILE_PATH=cer_ios/hggzk.mobileprovision" >> "$GITHUB_ENV"
+              echo "PROFILE_PATH=cer_ios/Provision_Profile_2.mobileprovision" >> "$GITHUB_ENV"
               echo "BUNDLE_ID=com.hggzk.app" >> "$GITHUB_ENV"
               echo "APP_DISPLAY_NAME=HGGZK" >> "$GITHUB_ENV"
               ;;
