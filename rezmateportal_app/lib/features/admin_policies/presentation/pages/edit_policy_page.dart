@@ -1743,10 +1743,10 @@ class _EditPolicyPageState extends State<EditPolicyPage>
       });
     }
 
-    if (_rulesController.text != _originalPolicy!.rules) {
+    if (_rulesController.text != (_originalPolicy!.rules ?? '')) {
       changes.add({
         'field': 'القواعد',
-        'oldValue': _originalPolicy!.rules,
+        'oldValue': _originalPolicy!.rules ?? '',
         'newValue': _rulesController.text,
       });
     }
@@ -1813,7 +1813,7 @@ class _EditPolicyPageState extends State<EditPolicyPage>
 
           setState(() {
             _descriptionController.text = _originalPolicy!.description;
-            _rulesController.text = _originalPolicy!.rules;
+            _rulesController.text = _originalPolicy!.rules ?? '';
             _cancellationWindowController.text =
                 _originalPolicy!.cancellationWindowDays.toString() ?? '0';
             _requireFullPayment =

@@ -988,7 +988,7 @@ class _FuturisticPoliciesTableState extends State<FuturisticPoliciesTable>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (policy.rules.isNotEmpty) ...[
+          if (policy.rules != null && policy.rules!.isNotEmpty) ...[
             Row(
               children: [
                 Icon(
@@ -1014,7 +1014,7 @@ class _FuturisticPoliciesTableState extends State<FuturisticPoliciesTable>
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Text(
-                policy.rules,
+                policy.rules!,
                 style: AppTextStyles.caption.copyWith(
                   color: AppTheme.textLight,
                   fontFamily: 'monospace',

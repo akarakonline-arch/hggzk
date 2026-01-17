@@ -17,7 +17,7 @@ class PolicyIdentityCardTooltip {
     required String policyId,
     required PolicyType policyType,
     required String description,
-    required String rules,
+    String? rules,
     required bool isActive,
     String? propertyName,
     DateTime? effectiveDate,
@@ -54,7 +54,7 @@ class _PolicyCardOverlay extends StatelessWidget {
   final String policyId;
   final PolicyType policyType;
   final String description;
-  final String rules;
+  final String? rules;
   final bool isActive;
   final String? propertyName;
   final DateTime? effectiveDate;
@@ -65,7 +65,7 @@ class _PolicyCardOverlay extends StatelessWidget {
     required this.policyId,
     required this.policyType,
     required this.description,
-    required this.rules,
+    this.rules,
     required this.isActive,
     this.propertyName,
     this.effectiveDate,
@@ -103,7 +103,7 @@ class _PolicyCardContent extends StatefulWidget {
   final String policyId;
   final PolicyType policyType;
   final String description;
-  final String rules;
+  final String? rules;
   final bool isActive;
   final String? propertyName;
   final DateTime? effectiveDate;
@@ -114,7 +114,7 @@ class _PolicyCardContent extends StatefulWidget {
     required this.policyId,
     required this.policyType,
     required this.description,
-    required this.rules,
+    this.rules,
     required this.isActive,
     this.propertyName,
     this.effectiveDate,
@@ -543,7 +543,7 @@ class _PolicyCardContentState extends State<_PolicyCardContent>
           ),
           const SizedBox(height: 12),
           Text(
-            widget.rules,
+            widget.rules ?? '',
             style: AppTextStyles.bodySmall.copyWith(
               color: AppTheme.textLight,
               height: 1.6,
