@@ -42,7 +42,6 @@ class _EditPolicyPageState extends State<EditPolicyPage>
   // Form Controllers
   final _formKey = GlobalKey<FormState>();
   final _descriptionController = TextEditingController();
-  final _rulesController = TextEditingController();
   final _cancellationWindowController = TextEditingController(text: '0');
   final _depositPercentageController = TextEditingController(text: '0');
   final _minHoursController = TextEditingController(text: '0');
@@ -136,7 +135,6 @@ class _EditPolicyPageState extends State<EditPolicyPage>
       // Populate controllers
       _selectedType = policy.type;
       _descriptionController.text = policy.description;
-      _rulesController.text = policy.rules ?? '';
       _propertyId = policy.propertyId;
       _propertyName = policy.propertyName;
 
@@ -164,7 +162,6 @@ class _EditPolicyPageState extends State<EditPolicyPage>
     _glowController.dispose();
     _loadingAnimationController.dispose();
     _descriptionController.dispose();
-    _rulesController.dispose();
     _cancellationWindowController.dispose();
     _depositPercentageController.dispose();
     _minHoursController.dispose();
@@ -656,23 +653,6 @@ class _EditPolicyPageState extends State<EditPolicyPage>
               return null;
             },
           ),
-
-          const SizedBox(height: 20),
-
-          // Rules
-          _buildInputField(
-            controller: _rulesController,
-            label: 'القواعد (JSON)',
-            hint: '{"rule1": "value1"}',
-            icon: Icons.rule_rounded,
-            maxLines: 5,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'الرجاء إدخال القواعد';
-              }
-              return null;
-            },
-          ),
         ],
       ),
     );
@@ -847,20 +827,6 @@ class _EditPolicyPageState extends State<EditPolicyPage>
                 'value': _descriptionController.text,
                 'changed':
                     _descriptionController.text != _originalPolicy?.description
-              },
-            ],
-          ),
-
-          const SizedBox(height: 16),
-
-          _buildReviewCard(
-            title: 'القواعد',
-            color: AppTheme.primaryPurple,
-            items: [
-              {
-                'label': 'JSON',
-                'value': _rulesController.text,
-                'changed': _rulesController.text != _originalPolicy?.rules
               },
             ],
           ),
@@ -1691,7 +1657,6 @@ class _EditPolicyPageState extends State<EditPolicyPage>
     if (_originalPolicy == null) return false;
 
     return _descriptionController.text != _originalPolicy!.description ||
-        _rulesController.text != (_originalPolicy!.rules ?? '') ||
         int.tryParse(_cancellationWindowController.text) !=
             _originalPolicy!.cancellationWindowDays ||
         _requireFullPayment !=
@@ -1707,8 +1672,7 @@ class _EditPolicyPageState extends State<EditPolicyPage>
 
     switch (step) {
       case 0: // Basic Info
-        return _descriptionController.text != _originalPolicy!.description ||
-            _rulesController.text != (_originalPolicy!.rules ?? '');
+        return _descriptionController.text != _originalPolicy!.description;
       case 1: // Settings
         switch (_selectedType) {
           case PolicyType.cancellation:
@@ -1740,14 +1704,6 @@ class _EditPolicyPageState extends State<EditPolicyPage>
         'field': 'الوصف',
         'oldValue': _originalPolicy!.description,
         'newValue': _descriptionController.text,
-      });
-    }
-
-    if (_rulesController.text != (_originalPolicy!.rules ?? '')) {
-      changes.add({
-        'field': 'القواعد',
-        'oldValue': _originalPolicy!.rules ?? '',
-        'newValue': _rulesController.text,
       });
     }
 
@@ -1813,7 +1769,6 @@ class _EditPolicyPageState extends State<EditPolicyPage>
 
           setState(() {
             _descriptionController.text = _originalPolicy!.description;
-            _rulesController.text = _originalPolicy!.rules ?? '';
             _cancellationWindowController.text =
                 (_originalPolicy!.cancellationWindowDays).toString();
             _requireFullPayment =
@@ -1937,7 +1892,7 @@ class _EditPolicyPageState extends State<EditPolicyPage>
               policyId: widget.policyId,
               type: _selectedType,
               description: _descriptionController.text,
-              rules: _rulesController.text.isEmpty ? null : _rulesController.text,
+              rules: null,
               cancellationWindowDays:
                   int.tryParse(_cancellationWindowController.text),
               requireFullPaymentBeforeConfirmation: _requireFullPayment,
