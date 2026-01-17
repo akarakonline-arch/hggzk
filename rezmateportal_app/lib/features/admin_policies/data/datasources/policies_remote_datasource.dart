@@ -11,22 +11,130 @@ abstract class PoliciesRemoteDataSource {
     required String propertyId,
     required PolicyType type,
     required String description,
-    required String rules,
+    String? rules,
     int cancellationWindowDays = 0,
     bool requireFullPaymentBeforeConfirmation = false,
     double minimumDepositPercentage = 0.0,
     int minHoursBeforeCheckIn = 0,
+
+    bool? cancellationFreeCancel,
+    bool? cancellationFullRefund,
+    int? cancellationRefundPercentage,
+    int? cancellationDaysBeforeCheckIn,
+    int? cancellationHoursBeforeCheckIn,
+    bool? cancellationNonRefundable,
+    String? cancellationPenaltyAfterDeadline,
+
+    bool? paymentDepositRequired,
+    bool? paymentFullPaymentRequired,
+    double? paymentDepositPercentage,
+    bool? paymentAcceptCash,
+    bool? paymentAcceptCard,
+    bool? paymentPayAtProperty,
+    bool? paymentCashPreferred,
+    List<String>? paymentAcceptedMethods,
+
+    String? checkInTime,
+    String? checkOutTime,
+    String? checkInFrom,
+    String? checkInUntil,
+    bool? checkInFlexible,
+    bool? checkInFlexibleCheckIn,
+    bool? checkInRequiresCoordination,
+    bool? checkInContactOwner,
+    String? checkInEarlyCheckInNote,
+    String? checkInLateCheckOutNote,
+    String? checkInLateCheckOutFee,
+
+    bool? childrenAllowed,
+    int? childrenFreeUnderAge,
+    int? childrenHalfPriceUnderAge,
+    int? childrenMaxChildrenPerRoom,
+    int? childrenMaxChildren,
+    String? childrenCribsNote,
+    bool? childrenPlaygroundAvailable,
+    bool? childrenKidsMenuAvailable,
+
+    bool? petsAllowed,
+    String? petsReason,
+    double? petsFeeAmount,
+    String? petsMaxWeight,
+    bool? petsRequiresApproval,
+    bool? petsNoFees,
+    bool? petsPetFriendly,
+    bool? petsOutdoorSpace,
+    bool? petsStrict,
+
+    bool? modificationAllowed,
+    int? modificationFreeModificationHours,
+    String? modificationFeesAfter,
+    bool? modificationFlexible,
+    String? modificationReason,
   });
 
   Future<void> updatePolicy({
     required String policyId,
     required PolicyType type,
     required String description,
-    required String rules,
+    String? rules,
     int? cancellationWindowDays,
     bool? requireFullPaymentBeforeConfirmation,
     double? minimumDepositPercentage,
     int? minHoursBeforeCheckIn,
+
+    bool? cancellationFreeCancel,
+    bool? cancellationFullRefund,
+    int? cancellationRefundPercentage,
+    int? cancellationDaysBeforeCheckIn,
+    int? cancellationHoursBeforeCheckIn,
+    bool? cancellationNonRefundable,
+    String? cancellationPenaltyAfterDeadline,
+
+    bool? paymentDepositRequired,
+    bool? paymentFullPaymentRequired,
+    double? paymentDepositPercentage,
+    bool? paymentAcceptCash,
+    bool? paymentAcceptCard,
+    bool? paymentPayAtProperty,
+    bool? paymentCashPreferred,
+    List<String>? paymentAcceptedMethods,
+
+    String? checkInTime,
+    String? checkOutTime,
+    String? checkInFrom,
+    String? checkInUntil,
+    bool? checkInFlexible,
+    bool? checkInFlexibleCheckIn,
+    bool? checkInRequiresCoordination,
+    bool? checkInContactOwner,
+    String? checkInEarlyCheckInNote,
+    String? checkInLateCheckOutNote,
+    String? checkInLateCheckOutFee,
+
+    bool? childrenAllowed,
+    int? childrenFreeUnderAge,
+    int? childrenHalfPriceUnderAge,
+    int? childrenMaxChildrenPerRoom,
+    int? childrenMaxChildren,
+    String? childrenCribsNote,
+    bool? childrenPlaygroundAvailable,
+    bool? childrenKidsMenuAvailable,
+
+    bool? petsAllowed,
+    String? petsReason,
+    double? petsFeeAmount,
+    String? petsMaxWeight,
+    bool? petsRequiresApproval,
+    bool? petsNoFees,
+    bool? petsPetFriendly,
+    bool? petsOutdoorSpace,
+    bool? petsStrict,
+
+    bool? modificationAllowed,
+    int? modificationFreeModificationHours,
+    String? modificationFeesAfter,
+    bool? modificationFlexible,
+    String? modificationReason,
   });
 
   Future<void> deletePolicy(String policyId);
@@ -66,25 +174,137 @@ class PoliciesRemoteDataSourceImpl implements PoliciesRemoteDataSource {
     required String propertyId,
     required PolicyType type,
     required String description,
-    required String rules,
+    String? rules,
     int cancellationWindowDays = 0,
     bool requireFullPaymentBeforeConfirmation = false,
     double minimumDepositPercentage = 0.0,
     int minHoursBeforeCheckIn = 0,
+
+    bool? cancellationFreeCancel,
+    bool? cancellationFullRefund,
+    int? cancellationRefundPercentage,
+    int? cancellationDaysBeforeCheckIn,
+    int? cancellationHoursBeforeCheckIn,
+    bool? cancellationNonRefundable,
+    String? cancellationPenaltyAfterDeadline,
+
+    bool? paymentDepositRequired,
+    bool? paymentFullPaymentRequired,
+    double? paymentDepositPercentage,
+    bool? paymentAcceptCash,
+    bool? paymentAcceptCard,
+    bool? paymentPayAtProperty,
+    bool? paymentCashPreferred,
+    List<String>? paymentAcceptedMethods,
+
+    String? checkInTime,
+    String? checkOutTime,
+    String? checkInFrom,
+    String? checkInUntil,
+    bool? checkInFlexible,
+    bool? checkInFlexibleCheckIn,
+    bool? checkInRequiresCoordination,
+    bool? checkInContactOwner,
+    String? checkInEarlyCheckInNote,
+    String? checkInLateCheckOutNote,
+    String? checkInLateCheckOutFee,
+
+    bool? childrenAllowed,
+    int? childrenFreeUnderAge,
+    int? childrenHalfPriceUnderAge,
+    int? childrenMaxChildrenPerRoom,
+    int? childrenMaxChildren,
+    String? childrenCribsNote,
+    bool? childrenPlaygroundAvailable,
+    bool? childrenKidsMenuAvailable,
+
+    bool? petsAllowed,
+    String? petsReason,
+    double? petsFeeAmount,
+    String? petsMaxWeight,
+    bool? petsRequiresApproval,
+    bool? petsNoFees,
+    bool? petsPetFriendly,
+    bool? petsOutdoorSpace,
+    bool? petsStrict,
+
+    bool? modificationAllowed,
+    int? modificationFreeModificationHours,
+    String? modificationFeesAfter,
+    bool? modificationFlexible,
+    String? modificationReason,
   }) async {
     try {
+      final data = <String, dynamic>{
+        'propertyId': propertyId,
+        'type': type.apiValue,
+        'description': description,
+        'cancellationWindowDays': cancellationWindowDays,
+        'requireFullPaymentBeforeConfirmation':
+            requireFullPaymentBeforeConfirmation,
+        'minimumDepositPercentage': minimumDepositPercentage,
+        'minHoursBeforeCheckIn': minHoursBeforeCheckIn,
+      };
+
+      if (rules != null && rules.isNotEmpty) data['rules'] = rules;
+
+      if (cancellationFreeCancel != null) data['cancellationFreeCancel'] = cancellationFreeCancel;
+      if (cancellationFullRefund != null) data['cancellationFullRefund'] = cancellationFullRefund;
+      if (cancellationRefundPercentage != null) data['cancellationRefundPercentage'] = cancellationRefundPercentage;
+      if (cancellationDaysBeforeCheckIn != null) data['cancellationDaysBeforeCheckIn'] = cancellationDaysBeforeCheckIn;
+      if (cancellationHoursBeforeCheckIn != null) data['cancellationHoursBeforeCheckIn'] = cancellationHoursBeforeCheckIn;
+      if (cancellationNonRefundable != null) data['cancellationNonRefundable'] = cancellationNonRefundable;
+      if (cancellationPenaltyAfterDeadline != null) data['cancellationPenaltyAfterDeadline'] = cancellationPenaltyAfterDeadline;
+
+      if (paymentDepositRequired != null) data['paymentDepositRequired'] = paymentDepositRequired;
+      if (paymentFullPaymentRequired != null) data['paymentFullPaymentRequired'] = paymentFullPaymentRequired;
+      if (paymentDepositPercentage != null) data['paymentDepositPercentage'] = paymentDepositPercentage;
+      if (paymentAcceptCash != null) data['paymentAcceptCash'] = paymentAcceptCash;
+      if (paymentAcceptCard != null) data['paymentAcceptCard'] = paymentAcceptCard;
+      if (paymentPayAtProperty != null) data['paymentPayAtProperty'] = paymentPayAtProperty;
+      if (paymentCashPreferred != null) data['paymentCashPreferred'] = paymentCashPreferred;
+      if (paymentAcceptedMethods != null) data['paymentAcceptedMethods'] = paymentAcceptedMethods;
+
+      if (checkInTime != null) data['checkInTime'] = checkInTime;
+      if (checkOutTime != null) data['checkOutTime'] = checkOutTime;
+      if (checkInFrom != null) data['checkInFrom'] = checkInFrom;
+      if (checkInUntil != null) data['checkInUntil'] = checkInUntil;
+      if (checkInFlexible != null) data['checkInFlexible'] = checkInFlexible;
+      if (checkInFlexibleCheckIn != null) data['checkInFlexibleCheckIn'] = checkInFlexibleCheckIn;
+      if (checkInRequiresCoordination != null) data['checkInRequiresCoordination'] = checkInRequiresCoordination;
+      if (checkInContactOwner != null) data['checkInContactOwner'] = checkInContactOwner;
+      if (checkInEarlyCheckInNote != null) data['checkInEarlyCheckInNote'] = checkInEarlyCheckInNote;
+      if (checkInLateCheckOutNote != null) data['checkInLateCheckOutNote'] = checkInLateCheckOutNote;
+      if (checkInLateCheckOutFee != null) data['checkInLateCheckOutFee'] = checkInLateCheckOutFee;
+
+      if (childrenAllowed != null) data['childrenAllowed'] = childrenAllowed;
+      if (childrenFreeUnderAge != null) data['childrenFreeUnderAge'] = childrenFreeUnderAge;
+      if (childrenHalfPriceUnderAge != null) data['childrenHalfPriceUnderAge'] = childrenHalfPriceUnderAge;
+      if (childrenMaxChildrenPerRoom != null) data['childrenMaxChildrenPerRoom'] = childrenMaxChildrenPerRoom;
+      if (childrenMaxChildren != null) data['childrenMaxChildren'] = childrenMaxChildren;
+      if (childrenCribsNote != null) data['childrenCribsNote'] = childrenCribsNote;
+      if (childrenPlaygroundAvailable != null) data['childrenPlaygroundAvailable'] = childrenPlaygroundAvailable;
+      if (childrenKidsMenuAvailable != null) data['childrenKidsMenuAvailable'] = childrenKidsMenuAvailable;
+
+      if (petsAllowed != null) data['petsAllowed'] = petsAllowed;
+      if (petsReason != null) data['petsReason'] = petsReason;
+      if (petsFeeAmount != null) data['petsFeeAmount'] = petsFeeAmount;
+      if (petsMaxWeight != null) data['petsMaxWeight'] = petsMaxWeight;
+      if (petsRequiresApproval != null) data['petsRequiresApproval'] = petsRequiresApproval;
+      if (petsNoFees != null) data['petsNoFees'] = petsNoFees;
+      if (petsPetFriendly != null) data['petsPetFriendly'] = petsPetFriendly;
+      if (petsOutdoorSpace != null) data['petsOutdoorSpace'] = petsOutdoorSpace;
+      if (petsStrict != null) data['petsStrict'] = petsStrict;
+
+      if (modificationAllowed != null) data['modificationAllowed'] = modificationAllowed;
+      if (modificationFreeModificationHours != null) data['modificationFreeModificationHours'] = modificationFreeModificationHours;
+      if (modificationFeesAfter != null) data['modificationFeesAfter'] = modificationFeesAfter;
+      if (modificationFlexible != null) data['modificationFlexible'] = modificationFlexible;
+      if (modificationReason != null) data['modificationReason'] = modificationReason;
+
       final response = await apiClient.post(
         _baseUrl,
-        data: {
-          'propertyId': propertyId,
-          'type': type.apiValue,
-          'description': description,
-          'rules': rules,
-          'cancellationWindowDays': cancellationWindowDays,
-          'requireFullPaymentBeforeConfirmation': requireFullPaymentBeforeConfirmation,
-          'minimumDepositPercentage': minimumDepositPercentage,
-          'minHoursBeforeCheckIn': minHoursBeforeCheckIn,
-        },
+        data: data,
       );
 
       if (response.data['isSuccess'] == true) {
@@ -101,24 +321,133 @@ class PoliciesRemoteDataSourceImpl implements PoliciesRemoteDataSource {
     required String policyId,
     required PolicyType type,
     required String description,
-    required String rules,
+    String? rules,
     int? cancellationWindowDays,
     bool? requireFullPaymentBeforeConfirmation,
     double? minimumDepositPercentage,
     int? minHoursBeforeCheckIn,
+
+    bool? cancellationFreeCancel,
+    bool? cancellationFullRefund,
+    int? cancellationRefundPercentage,
+    int? cancellationDaysBeforeCheckIn,
+    int? cancellationHoursBeforeCheckIn,
+    bool? cancellationNonRefundable,
+    String? cancellationPenaltyAfterDeadline,
+
+    bool? paymentDepositRequired,
+    bool? paymentFullPaymentRequired,
+    double? paymentDepositPercentage,
+    bool? paymentAcceptCash,
+    bool? paymentAcceptCard,
+    bool? paymentPayAtProperty,
+    bool? paymentCashPreferred,
+    List<String>? paymentAcceptedMethods,
+
+    String? checkInTime,
+    String? checkOutTime,
+    String? checkInFrom,
+    String? checkInUntil,
+    bool? checkInFlexible,
+    bool? checkInFlexibleCheckIn,
+    bool? checkInRequiresCoordination,
+    bool? checkInContactOwner,
+    String? checkInEarlyCheckInNote,
+    String? checkInLateCheckOutNote,
+    String? checkInLateCheckOutFee,
+
+    bool? childrenAllowed,
+    int? childrenFreeUnderAge,
+    int? childrenHalfPriceUnderAge,
+    int? childrenMaxChildrenPerRoom,
+    int? childrenMaxChildren,
+    String? childrenCribsNote,
+    bool? childrenPlaygroundAvailable,
+    bool? childrenKidsMenuAvailable,
+
+    bool? petsAllowed,
+    String? petsReason,
+    double? petsFeeAmount,
+    String? petsMaxWeight,
+    bool? petsRequiresApproval,
+    bool? petsNoFees,
+    bool? petsPetFriendly,
+    bool? petsOutdoorSpace,
+    bool? petsStrict,
+
+    bool? modificationAllowed,
+    int? modificationFreeModificationHours,
+    String? modificationFeesAfter,
+    bool? modificationFlexible,
+    String? modificationReason,
   }) async {
     try {
       final data = <String, dynamic>{
         'policyId': policyId,
         'type': type.apiValue,
         'description': description,
-        'rules': rules,
       };
+
+      if (rules != null && rules.isNotEmpty) data['rules'] = rules;
 
       if (cancellationWindowDays != null) data['cancellationWindowDays'] = cancellationWindowDays;
       if (requireFullPaymentBeforeConfirmation != null) data['requireFullPaymentBeforeConfirmation'] = requireFullPaymentBeforeConfirmation;
       if (minimumDepositPercentage != null) data['minimumDepositPercentage'] = minimumDepositPercentage;
       if (minHoursBeforeCheckIn != null) data['minHoursBeforeCheckIn'] = minHoursBeforeCheckIn;
+
+      if (cancellationFreeCancel != null) data['cancellationFreeCancel'] = cancellationFreeCancel;
+      if (cancellationFullRefund != null) data['cancellationFullRefund'] = cancellationFullRefund;
+      if (cancellationRefundPercentage != null) data['cancellationRefundPercentage'] = cancellationRefundPercentage;
+      if (cancellationDaysBeforeCheckIn != null) data['cancellationDaysBeforeCheckIn'] = cancellationDaysBeforeCheckIn;
+      if (cancellationHoursBeforeCheckIn != null) data['cancellationHoursBeforeCheckIn'] = cancellationHoursBeforeCheckIn;
+      if (cancellationNonRefundable != null) data['cancellationNonRefundable'] = cancellationNonRefundable;
+      if (cancellationPenaltyAfterDeadline != null) data['cancellationPenaltyAfterDeadline'] = cancellationPenaltyAfterDeadline;
+
+      if (paymentDepositRequired != null) data['paymentDepositRequired'] = paymentDepositRequired;
+      if (paymentFullPaymentRequired != null) data['paymentFullPaymentRequired'] = paymentFullPaymentRequired;
+      if (paymentDepositPercentage != null) data['paymentDepositPercentage'] = paymentDepositPercentage;
+      if (paymentAcceptCash != null) data['paymentAcceptCash'] = paymentAcceptCash;
+      if (paymentAcceptCard != null) data['paymentAcceptCard'] = paymentAcceptCard;
+      if (paymentPayAtProperty != null) data['paymentPayAtProperty'] = paymentPayAtProperty;
+      if (paymentCashPreferred != null) data['paymentCashPreferred'] = paymentCashPreferred;
+      if (paymentAcceptedMethods != null) data['paymentAcceptedMethods'] = paymentAcceptedMethods;
+
+      if (checkInTime != null) data['checkInTime'] = checkInTime;
+      if (checkOutTime != null) data['checkOutTime'] = checkOutTime;
+      if (checkInFrom != null) data['checkInFrom'] = checkInFrom;
+      if (checkInUntil != null) data['checkInUntil'] = checkInUntil;
+      if (checkInFlexible != null) data['checkInFlexible'] = checkInFlexible;
+      if (checkInFlexibleCheckIn != null) data['checkInFlexibleCheckIn'] = checkInFlexibleCheckIn;
+      if (checkInRequiresCoordination != null) data['checkInRequiresCoordination'] = checkInRequiresCoordination;
+      if (checkInContactOwner != null) data['checkInContactOwner'] = checkInContactOwner;
+      if (checkInEarlyCheckInNote != null) data['checkInEarlyCheckInNote'] = checkInEarlyCheckInNote;
+      if (checkInLateCheckOutNote != null) data['checkInLateCheckOutNote'] = checkInLateCheckOutNote;
+      if (checkInLateCheckOutFee != null) data['checkInLateCheckOutFee'] = checkInLateCheckOutFee;
+
+      if (childrenAllowed != null) data['childrenAllowed'] = childrenAllowed;
+      if (childrenFreeUnderAge != null) data['childrenFreeUnderAge'] = childrenFreeUnderAge;
+      if (childrenHalfPriceUnderAge != null) data['childrenHalfPriceUnderAge'] = childrenHalfPriceUnderAge;
+      if (childrenMaxChildrenPerRoom != null) data['childrenMaxChildrenPerRoom'] = childrenMaxChildrenPerRoom;
+      if (childrenMaxChildren != null) data['childrenMaxChildren'] = childrenMaxChildren;
+      if (childrenCribsNote != null) data['childrenCribsNote'] = childrenCribsNote;
+      if (childrenPlaygroundAvailable != null) data['childrenPlaygroundAvailable'] = childrenPlaygroundAvailable;
+      if (childrenKidsMenuAvailable != null) data['childrenKidsMenuAvailable'] = childrenKidsMenuAvailable;
+
+      if (petsAllowed != null) data['petsAllowed'] = petsAllowed;
+      if (petsReason != null) data['petsReason'] = petsReason;
+      if (petsFeeAmount != null) data['petsFeeAmount'] = petsFeeAmount;
+      if (petsMaxWeight != null) data['petsMaxWeight'] = petsMaxWeight;
+      if (petsRequiresApproval != null) data['petsRequiresApproval'] = petsRequiresApproval;
+      if (petsNoFees != null) data['petsNoFees'] = petsNoFees;
+      if (petsPetFriendly != null) data['petsPetFriendly'] = petsPetFriendly;
+      if (petsOutdoorSpace != null) data['petsOutdoorSpace'] = petsOutdoorSpace;
+      if (petsStrict != null) data['petsStrict'] = petsStrict;
+
+      if (modificationAllowed != null) data['modificationAllowed'] = modificationAllowed;
+      if (modificationFreeModificationHours != null) data['modificationFreeModificationHours'] = modificationFreeModificationHours;
+      if (modificationFeesAfter != null) data['modificationFeesAfter'] = modificationFeesAfter;
+      if (modificationFlexible != null) data['modificationFlexible'] = modificationFlexible;
+      if (modificationReason != null) data['modificationReason'] = modificationReason;
 
       final response = await apiClient.put(
         '$_baseUrl/$policyId',

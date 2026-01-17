@@ -14,8 +14,8 @@ on:
           - all
           - hggzk_app
           - hggzkportal_app
-          - rezmate_app
-          - rezmateportal_app
+        #   - rezmate_app
+        #   - rezmateportal_app
       platform:
         description: 'Platform to build'
         required: false
