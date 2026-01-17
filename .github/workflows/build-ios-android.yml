@@ -32,6 +32,9 @@ on:
         default: false
 
 jobs:
+  # ═══════════════════════════════════════════════════════════════
+  # Setup Build Matrix
+  # ═══════════════════════════════════════════════════════════════
   setup:
     name: Setup Build Matrix
     runs-on: ubuntu-latest
@@ -47,6 +50,9 @@ jobs:
             echo 'matrix=["${{ github.event.inputs.app_to_build }}"]' >> $GITHUB_OUTPUT
           fi
 
+  # ═══════════════════════════════════════════════════════════════
+  # Build iOS
+  # ═══════════════════════════════════════════════════════════════
   build-ios:
     name: Build ${{ matrix.app }} for iOS
     needs: setup
@@ -83,6 +89,40 @@ jobs:
           channel: stable
           cache: true
 
+      - name: Set App Configuration
+        id: app-config
+        run: |
+          echo "--- Setting configuration for ${{ matrix.app }} ---"
+          
+          case "${{ matrix.app }}" in
+            "hggzk_app")
+              echo "PROFILE_PATH=cer_ios/hggzk.mobileprovision" >> "$GITHUB_ENV"
+              echo "BUNDLE_ID=com.hggzk.app" >> "$GITHUB_ENV"
+              echo "APP_DISPLAY_NAME=HGGZK" >> "$GITHUB_ENV"
+              ;;
+            "hggzkportal_app")
+              echo "PROFILE_PATH=cer_ios/hggzkportal.mobileprovision" >> "$GITHUB_ENV"
+              echo "BUNDLE_ID=com.hggzkportal.app" >> "$GITHUB_ENV"
+              echo "APP_DISPLAY_NAME=HGGZK Portal" >> "$GITHUB_ENV"
+              ;;
+            "rezmate_app")
+              echo "PROFILE_PATH=cer_ios/rezmate.mobileprovision" >> "$GITHUB_ENV"
+              echo "BUNDLE_ID=com.rezmate.app" >> "$GITHUB_ENV"
+              echo "APP_DISPLAY_NAME=Rezmate" >> "$GITHUB_ENV"
+              ;;
+            "rezmateportal_app")
+              echo "PROFILE_PATH=cer_ios/rezmateportal.mobileprovision" >> "$GITHUB_ENV"
+              echo "BUNDLE_ID=com.rezmate.portal" >> "$GITHUB_ENV"
+              echo "APP_DISPLAY_NAME=Rezmate Portal" >> "$GITHUB_ENV"
+              ;;
+            *)
+              echo "❌ Unknown app: ${{ matrix.app }}"
+              exit 1
+              ;;
+          esac
+          
+          echo "✅ Configuration set for ${{ matrix.app }}"
+
       - name: Setup App Store Connect API Key (للتوقيع التلقائي)
         env:
           API_KEY_BASE64: ${{ secrets.APPSTORE_API_KEY_BASE64 }}
@@ -104,7 +144,7 @@ jobs:
             echo "Issuer ID: $API_ISSUER_ID"
             
             # حفظ المعلومات لاستخدامها لاحقاً
-            echo "API_KEY_PATH=~/private_keys/AuthKey_${API_KEY_ID}.p8" >> "$GITHUB_ENV"
+            echo "API_KEY_PATH=$HOME/private_keys/AuthKey_${API_KEY_ID}.p8" >> "$GITHUB_ENV"
           else
             echo "⚠️  App Store Connect API Key not provided"
             echo "⚠️  Will fallback to manual signing"
@@ -165,6 +205,13 @@ jobs:
         run: |
           set -euo pipefail
           
+          echo "==========================================="
+          echo "🔐 Setting up code signing for ${{ matrix.app }}"
+          echo "==========================================="
+          echo "Bundle ID: $BUNDLE_ID"
+          echo "Profile: $PROFILE_PATH"
+          echo ""
+          
           # تنظيف كلمات المرور من أي مسافات أو أحرف خفية
           IOS_P12_PASSWORD_CLEAN="$(printf %s "$IOS_P12_PASSWORD" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
           KEYCHAIN_PASSWORD_CLEAN="$(printf %s "$KEYCHAIN_PASSWORD" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
@@ -179,9 +226,9 @@ jobs:
             exit 1
           fi
           
-          # استخدام الملف من الريبو مباشرة
+          # استخدام الملفات من الريبو
           CERT_P12="cer_ios/ios_development.p12"
-          PROFILE="cer_ios/Provision_Profile_2.mobileprovision"
+          PROFILE="$PROFILE_PATH"
           
           if [ ! -f "$CERT_P12" ]; then
             echo "❌ Missing certificate file: $CERT_P12"
@@ -189,6 +236,8 @@ jobs:
           fi
           if [ ! -f "$PROFILE" ]; then
             echo "❌ Missing provisioning profile: $PROFILE"
+            echo "Available profiles in cer_ios/:"
+            ls -la cer_ios/*.mobileprovision 2>/dev/null || echo "No profiles found"
             exit 1
           fi
           
@@ -207,6 +256,9 @@ jobs:
             exit 1
           fi
           
+          # حذف keychain قديم إن وُجد
+          security delete-keychain build.keychain 2>/dev/null || true
+          
           # إنشاء keychain
           echo ""
           echo "--- Creating keychain ---"
@@ -216,8 +268,7 @@ jobs:
           security list-keychains -d user -s build.keychain
           echo "✅ Keychain created and configured"
           
-          # الحل الجذري: استيراد الشهادة والمفتاح بشكل منفصل (PEM format)
-          # هذا يتجنب مشاكل PKCS#12 مع security على macOS تماماً
+          # استيراد الشهادة والمفتاح بشكل منفصل (PEM format)
           echo ""
           echo "--- Extracting certificate and private key (PEM format) ---"
           
@@ -274,23 +325,41 @@ jobs:
           
           # معالجة provisioning profile
           echo ""
-          echo "--- Installing provisioning profile ---"
+          echo "--- Installing provisioning profile for ${{ matrix.app }} ---"
           PROFILE_PLIST="$RUNNER_TEMP/profile.plist"
           security cms -D -i "$PROFILE" > "$PROFILE_PLIST"
           PROFILE_UUID=$(/usr/libexec/PlistBuddy -c 'Print :UUID' "$PROFILE_PLIST")
           PROFILE_NAME=$(/usr/libexec/PlistBuddy -c 'Print :Name' "$PROFILE_PLIST")
           TEAM_ID=$(/usr/libexec/PlistBuddy -c 'Print :TeamIdentifier:0' "$PROFILE_PLIST")
+          PROFILE_BUNDLE_ID=$(/usr/libexec/PlistBuddy -c 'Print :Entitlements:application-identifier' "$PROFILE_PLIST" | sed "s/^${TEAM_ID}\.//")
+          
+          echo "Profile Name: $PROFILE_NAME"
+          echo "Profile UUID: $PROFILE_UUID"
+          echo "Profile Bundle ID: $PROFILE_BUNDLE_ID"
+          echo "Expected Bundle ID: $BUNDLE_ID"
+          echo "Team ID: $TEAM_ID"
+          
+          # التحقق من تطابق Bundle ID
+          if [ "$PROFILE_BUNDLE_ID" != "$BUNDLE_ID" ] && [ "$PROFILE_BUNDLE_ID" != "*" ]; then
+            # التحقق من wildcard
+            WILDCARD_PREFIX=$(echo "$PROFILE_BUNDLE_ID" | sed 's/\.\*$//')
+            if [[ "$BUNDLE_ID" != "$WILDCARD_PREFIX"* ]]; then
+              echo "⚠️  Warning: Bundle ID mismatch!"
+              echo "   Profile Bundle ID: $PROFILE_BUNDLE_ID"
+              echo "   Expected Bundle ID: $BUNDLE_ID"
+            fi
+          fi
           
           # اكتشاف نوع provisioning profile تلقائياً
+          echo ""
           echo "--- Detecting provisioning profile type ---"
           
           HAS_DEVICES="false"
-          GET_TASK_ALLOW="unknown"
           
           if /usr/libexec/PlistBuddy -c 'Print :ProvisionedDevices' "$PROFILE_PLIST" &>/dev/null; then
             HAS_DEVICES="true"
-            DEVICE_COUNT=$(/usr/libexec/PlistBuddy -c 'Print :ProvisionedDevices' "$PROFILE_PLIST" 2>/dev/null | grep -c "Dict" || echo "0")
-            echo "ProvisionedDevices: YES (count: $DEVICE_COUNT)"
+            DEVICE_COUNT=$(/usr/libexec/PlistBuddy -c 'Print :ProvisionedDevices' "$PROFILE_PLIST" 2>/dev/null | grep -c "    " || echo "0")
+            echo "ProvisionedDevices: YES (count: ~$DEVICE_COUNT)"
           else
             echo "ProvisionedDevices: NO (App Store profile)"
           fi
@@ -311,11 +380,7 @@ jobs:
             echo "✅ Detected: App Store provisioning profile"
           fi
           
-          echo "Profile Name: $PROFILE_NAME"
-          echo "Profile UUID: $PROFILE_UUID"
-          echo "Team ID: $TEAM_ID"
-          echo "Export Method: $EXPORT_METHOD"
-          
+          echo ""
           echo "PROFILE_NAME=$PROFILE_NAME" >> "$GITHUB_ENV"
           echo "PROFILE_UUID=$PROFILE_UUID" >> "$GITHUB_ENV"
           echo "TEAM_ID=$TEAM_ID" >> "$GITHUB_ENV"
@@ -325,29 +390,10 @@ jobs:
           cp "$PROFILE" "$HOME/Library/MobileDevice/Provisioning Profiles/$PROFILE_UUID.mobileprovision"
           
           echo ""
-          echo "✅ iOS code signing setup completed successfully"
+          echo "✅ iOS code signing setup completed for ${{ matrix.app }}"
+          echo "==========================================="
 
-      - name: Get Bundle ID for ${{ matrix.app }}
-        if: ${{ github.event_name != 'pull_request' }}
-        id: bundle-id
-        working-directory: ./${{ matrix.app }}
-        run: |
-          # استخراج Bundle ID من ملف project.pbxproj أو Info.plist
-          BUNDLE_ID=$(grep -m1 "PRODUCT_BUNDLE_IDENTIFIER" ios/Runner.xcodeproj/project.pbxproj | head -1 | sed 's/.*= *\(.*\);/\1/' | tr -d ' "')
-          if [ -z "$BUNDLE_ID" ]; then
-            # fallback: استخدام اسم التطبيق
-            case "${{ matrix.app }}" in
-              "hggzk_app") BUNDLE_ID="com.hggzk.app" ;;
-              "hggzkportal_app") BUNDLE_ID="com.hggzk.portal" ;;
-              "rezmate_app") BUNDLE_ID="com.rezmate.app" ;;
-              "rezmateportal_app") BUNDLE_ID="com.rezmate.portal" ;;
-              *) BUNDLE_ID="com.example.${{ matrix.app }}" ;;
-            esac
-          fi
-          echo "BUNDLE_ID=$BUNDLE_ID" >> "$GITHUB_ENV"
-          echo "Bundle ID: $BUNDLE_ID"
-
-      - name: Build IPA (Automatic Signing with API Key)
+      - name: Build IPA
         if: ${{ github.event_name != 'pull_request' }}
         env:
           API_KEY_ID: ${{ secrets.APPSTORE_API_KEY_ID }}
@@ -356,14 +402,13 @@ jobs:
         run: |
           set -euo pipefail
           
-          echo "==================================="
-          echo "🚀 Building IPA with Automatic Signing"
-          echo "==================================="
-          echo "App: ${{ matrix.app }}"
+          echo "==========================================="
+          echo "🚀 Building IPA for ${{ matrix.app }}"
+          echo "==========================================="
           echo "Bundle ID: $BUNDLE_ID"
-          echo "Export Method: development (ad-hoc profile detected)"
-          echo "Signing: Automatic (using App Store Connect API)"
-          echo "Installable on: All registered devices in provisioning profile"
+          echo "Export Method: $EXPORT_METHOD"
+          echo "Team ID: $TEAM_ID"
+          echo "Profile Name: $PROFILE_NAME"
           echo ""
           
           # تحديد طريقة التوقيع
@@ -393,19 +438,7 @@ jobs:
               -allowProvisioningUpdates \
               archive
           else
-            # Fallback to manual signing
-            # استخراج معلومات من provisioning profile
-            PROFILE="../cer_ios/Provision_Profile_2.mobileprovision"
-            PROFILE_PLIST="$RUNNER_TEMP/profile.plist"
-            security cms -D -i "$PROFILE" > "$PROFILE_PLIST"
-            
-            TEAM_ID=$(/usr/libexec/PlistBuddy -c 'Print :TeamIdentifier:0' "$PROFILE_PLIST")
-            PROFILE_NAME=$(/usr/libexec/PlistBuddy -c 'Print :Name' "$PROFILE_PLIST")
-            PROFILE_UUID=$(/usr/libexec/PlistBuddy -c 'Print :UUID' "$PROFILE_PLIST")
-            
-            echo "Team ID: $TEAM_ID"
-            echo "Profile Name: $PROFILE_NAME"
-            
+            # Manual signing
             xcodebuild -workspace ios/Runner.xcworkspace \
               -scheme Runner \
               -configuration Release \
@@ -434,45 +467,43 @@ jobs:
           # إنشاء ExportOptions.plist
           EXPORT_OPTIONS_PLIST="$RUNNER_TEMP/ExportOptions.plist"
           
-          # تحديد export method - استخدام development دائماً
-          # حتى مع Ad-Hoc profile (Xcode workaround)
-          EXPORT_METHOD="development"
+          # تحديد export method
+          FINAL_EXPORT_METHOD="$EXPORT_METHOD"
+          if [ "$EXPORT_METHOD" = "ad-hoc" ]; then
+            # Xcode workaround: استخدام development بدلاً من ad-hoc
+            FINAL_EXPORT_METHOD="development"
+          fi
           
-          echo "Export Method: $EXPORT_METHOD (forced for Xcode compatibility)"
-          echo ""
-          
-          # ULTIMATE FIX for Xcode:
-          # المشكلة: Xcode يتوقع {} لكن يجد string
-          # الحل: استخدام defaults write (NSUserDefaults) لإنشاء plist صحيح
-          
-          EXPORT_OPTIONS_PLIST="$RUNNER_TEMP/ExportOptions.plist"
+          echo "Export Method: $FINAL_EXPORT_METHOD"
           
           # حذف الملف إن وُجد
           rm -f "$EXPORT_OPTIONS_PLIST"
+          rm -f "$RUNNER_TEMP/ExportOptions.plist"
           
-          # تحديد signing style بناءً على طريقة الـ archive
+          # تحديد signing style
           if [ "$USE_API_KEY" = true ]; then
             SIGNING_STYLE="automatic"
-            echo "Signing Style: automatic (matches archive)"
           else
             SIGNING_STYLE="manual"
-            echo "Signing Style: manual (matches archive)"
           fi
           
-          # إنشاء plist باستخدام defaults (أكثر موثوقية من PlistBuddy)
+          echo "Signing Style: $SIGNING_STYLE"
+          
+          # إنشاء plist باستخدام defaults
           defaults write "$RUNNER_TEMP/ExportOptions" teamID "$TEAM_ID"
-          defaults write "$RUNNER_TEMP/ExportOptions" method "$EXPORT_METHOD"
+          defaults write "$RUNNER_TEMP/ExportOptions" method "$FINAL_EXPORT_METHOD"
           defaults write "$RUNNER_TEMP/ExportOptions" signingStyle "$SIGNING_STYLE"
           defaults write "$RUNNER_TEMP/ExportOptions" compileBitcode -bool false
           defaults write "$RUNNER_TEMP/ExportOptions" uploadSymbols -bool false
           defaults write "$RUNNER_TEMP/ExportOptions" stripSwiftSymbols -bool true
           
-          # إضافة provisioningProfiles فقط للتوقيع اليدوي
+          # إضافة provisioningProfiles للتوقيع اليدوي
           if [ "$SIGNING_STYLE" = "manual" ]; then
-            defaults write "$RUNNER_TEMP/ExportOptions" provisioningProfiles -dict-add "$BUNDLE_ID" "$PROFILE_UUID"
+            defaults write "$RUNNER_TEMP/ExportOptions" provisioningProfiles -dict "$BUNDLE_ID" "$PROFILE_UUID"
           fi
           
-          echo "--- ExportOptions.plist (defaults method) ---"
+          echo ""
+          echo "--- ExportOptions.plist ---"
           plutil -p "$EXPORT_OPTIONS_PLIST"
           echo ""
           
@@ -495,31 +526,30 @@ jobs:
           fi
           
           echo ""
-          echo "==================================="
-          echo "✅ IPA Export Successful!"
-          echo "==================================="
-          echo "📦 Export Method: development"
-          if [ "$USE_API_KEY" = true ]; then
-            echo "🔐 Signing: Automatic (API Key)"
-          else
-            echo "🔐 Signing: Manual"
-          fi
-          echo "📱 Installable on all registered devices"
-          echo ""
+          echo "==========================================="
+          echo "✅ IPA Export Successful for ${{ matrix.app }}!"
+          echo "==========================================="
           
           ls -lh build/ipa/*.ipa || ls -la build/ipa
 
-      - name: Rename IPA with app name
+      - name: Rename IPA with app name and version
         if: ${{ github.event_name != 'pull_request' }}
         working-directory: ./${{ matrix.app }}
         run: |
           VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2 | cut -d '+' -f 1)
+          BUILD_NUMBER=${{ github.run_number }}
           APP_NAME="${{ matrix.app }}"
-          IPA_NAME="${APP_NAME}-v${VERSION}-iOS.ipa"
+          IPA_NAME="${APP_NAME}-v${VERSION}+${BUILD_NUMBER}-iOS.ipa"
+          
           if ls build/ipa/*.ipa 1> /dev/null 2>&1; then
             mv build/ipa/*.ipa "build/ipa/${IPA_NAME}"
+            echo "✅ Renamed IPA to: ${IPA_NAME}"
             echo "IPA_NAME=${IPA_NAME}" >> $GITHUB_ENV
             echo "VERSION=${VERSION}" >> $GITHUB_ENV
+            echo "BUILD_NUMBER=${BUILD_NUMBER}" >> $GITHUB_ENV
+          else
+            echo "❌ No IPA file found"
+            exit 1
           fi
 
       - name: Upload IPA artifact
@@ -528,7 +558,20 @@ jobs:
         with:
           name: ${{ matrix.app }}-ios-ipa
           path: ./${{ matrix.app }}/build/ipa/*.ipa
+          retention-days: 30
 
+      - name: Upload dSYM artifact
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.app }}-ios-dsym
+          path: ./${{ matrix.app }}/build/Runner.xcarchive/dSYMs
+          retention-days: 30
+          if-no-files-found: ignore
+
+  # ═══════════════════════════════════════════════════════════════
+  # Build Android
+  # ═══════════════════════════════════════════════════════════════
   build-android:
     name: Build ${{ matrix.app }} for Android
     needs: setup
@@ -557,6 +600,29 @@ jobs:
           channel: stable
           cache: true
 
+      - name: Set App Configuration
+        run: |
+          echo "--- Setting configuration for ${{ matrix.app }} ---"
+          
+          case "${{ matrix.app }}" in
+            "hggzk_app")
+              echo "ANDROID_BUNDLE_ID=com.hggzk.app" >> "$GITHUB_ENV"
+              echo "APP_DISPLAY_NAME=HGGZK" >> "$GITHUB_ENV"
+              ;;
+            "hggzkportal_app")
+              echo "ANDROID_BUNDLE_ID=com.hggzkportal.app" >> "$GITHUB_ENV"
+              echo "APP_DISPLAY_NAME=HGGZK Portal" >> "$GITHUB_ENV"
+              ;;
+            "rezmate_app")
+              echo "ANDROID_BUNDLE_ID=com.rezmate.app" >> "$GITHUB_ENV"
+              echo "APP_DISPLAY_NAME=Rezmate" >> "$GITHUB_ENV"
+              ;;
+            "rezmateportal_app")
+              echo "ANDROID_BUNDLE_ID=com.rezmate.portal" >> "$GITHUB_ENV"
+              echo "APP_DISPLAY_NAME=Rezmate Portal" >> "$GITHUB_ENV"
+              ;;
+          esac
+
       - name: SSH debug (tmate)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.ssh }}
         uses: mxschmitt/action-tmate@v3
@@ -565,6 +631,16 @@ jobs:
 
       - name: Flutter version
         run: flutter --version
+
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ matrix.app }}-${{ hashFiles(format('{0}/android/gradle/wrapper/gradle-wrapper.properties', matrix.app)) }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-${{ matrix.app }}-
 
       - name: Flutter clean
         working-directory: ./${{ matrix.app }}
@@ -589,12 +665,20 @@ jobs:
         run: |
           set -euo pipefail
           
+          echo "--- Setting up Android Keystore for ${{ matrix.app }} ---"
+          
           if [ -n "${ANDROID_KEYSTORE_BASE64:-}" ]; then
-            echo "--- Setting up Android Keystore ---"
-            
             # فك تشفير الـ keystore
             KEYSTORE_PATH="$RUNNER_TEMP/upload-keystore.jks"
             echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$KEYSTORE_PATH"
+            
+            # التحقق من الملف
+            if [ -f "$KEYSTORE_PATH" ]; then
+              echo "✅ Keystore file created: $(ls -lh $KEYSTORE_PATH)"
+            else
+              echo "❌ Failed to create keystore file"
+              exit 1
+            fi
             
             # إنشاء ملف key.properties
             KEY_PROPERTIES="./${{ matrix.app }}/android/key.properties"
@@ -605,52 +689,63 @@ jobs:
           storeFile=$KEYSTORE_PATH
           EOF
             
-            echo "✅ Android Keystore configured"
+            echo "✅ Android Keystore configured for ${{ matrix.app }}"
             echo "KEYSTORE_PATH=$KEYSTORE_PATH" >> "$GITHUB_ENV"
+            echo "SIGNING_CONFIGURED=true" >> "$GITHUB_ENV"
           else
             echo "⚠️  Android Keystore not provided - will build unsigned APK"
+            echo "SIGNING_CONFIGURED=false" >> "$GITHUB_ENV"
           fi
 
       - name: Build APK (Release)
         if: ${{ github.event_name != 'pull_request' }}
         working-directory: ./${{ matrix.app }}
         run: |
-          if [ -n "${KEYSTORE_PATH:-}" ]; then
-            flutter build apk --release
-          else
-            flutter build apk --release
-          fi
+          echo "--- Building Release APK for ${{ matrix.app }} ---"
+          flutter build apk --release
+          
+          echo ""
+          echo "✅ APK built successfully"
+          ls -lh build/app/outputs/flutter-apk/*.apk
 
       - name: Build App Bundle (AAB)
         if: ${{ github.event_name != 'pull_request' }}
         working-directory: ./${{ matrix.app }}
         run: |
-          if [ -n "${KEYSTORE_PATH:-}" ]; then
-            flutter build appbundle --release
-          else
-            flutter build appbundle --release
-          fi
+          echo "--- Building App Bundle for ${{ matrix.app }} ---"
+          flutter build appbundle --release
+          
+          echo ""
+          echo "✅ AAB built successfully"
+          ls -lh build/app/outputs/bundle/release/*.aab
 
-      - name: Rename APK with app name
+      - name: Rename artifacts with app name and version
         if: ${{ github.event_name != 'pull_request' }}
         working-directory: ./${{ matrix.app }}
         run: |
           VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2 | cut -d '+' -f 1)
+          BUILD_NUMBER=${{ github.run_number }}
           APP_NAME="${{ matrix.app }}"
-          APK_NAME="${APP_NAME}-v${VERSION}-Android.apk"
-          AAB_NAME="${APP_NAME}-v${VERSION}-Android.aab"
           
+          APK_NAME="${APP_NAME}-v${VERSION}+${BUILD_NUMBER}-Android.apk"
+          AAB_NAME="${APP_NAME}-v${VERSION}+${BUILD_NUMBER}-Android.aab"
+          
+          # Rename APK
           if [ -f "build/app/outputs/flutter-apk/app-release.apk" ]; then
             mv "build/app/outputs/flutter-apk/app-release.apk" "build/app/outputs/flutter-apk/${APK_NAME}"
+            echo "✅ Renamed APK to: ${APK_NAME}"
           fi
           
+          # Rename AAB
           if [ -f "build/app/outputs/bundle/release/app-release.aab" ]; then
             mv "build/app/outputs/bundle/release/app-release.aab" "build/app/outputs/bundle/release/${AAB_NAME}"
+            echo "✅ Renamed AAB to: ${AAB_NAME}"
           fi
           
           echo "APK_NAME=${APK_NAME}" >> $GITHUB_ENV
           echo "AAB_NAME=${AAB_NAME}" >> $GITHUB_ENV
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "BUILD_NUMBER=${BUILD_NUMBER}" >> $GITHUB_ENV
 
       - name: Upload APK artifact
         if: ${{ github.event_name != 'pull_request' }}
@@ -658,6 +753,7 @@ jobs:
         with:
           name: ${{ matrix.app }}-android-apk
           path: ./${{ matrix.app }}/build/app/outputs/flutter-apk/*.apk
+          retention-days: 30
 
       - name: Upload AAB artifact
         if: ${{ github.event_name != 'pull_request' }}
@@ -665,40 +761,71 @@ jobs:
         with:
           name: ${{ matrix.app }}-android-aab
           path: ./${{ matrix.app }}/build/app/outputs/bundle/release/*.aab
+          retention-days: 30
 
+  # ═══════════════════════════════════════════════════════════════
+  # Build Summary
+  # ═══════════════════════════════════════════════════════════════
   notify-completion:
-    name: Notify Build Completion
+    name: Build Summary
     needs: [setup, build-ios, build-android]
     runs-on: ubuntu-latest
     if: always()
     steps:
-      - name: Build Status
+      - name: Check Build Status
         run: |
+          echo "==========================================="
+          echo "📊 Build Status Summary"
+          echo "==========================================="
+          
           IOS_STATUS="${{ needs.build-ios.result }}"
           ANDROID_STATUS="${{ needs.build-android.result }}"
           
-          echo "iOS Build Status: $IOS_STATUS"
-          echo "Android Build Status: $ANDROID_STATUS"
+          echo ""
+          echo "🍎 iOS Build: $IOS_STATUS"
+          echo "🤖 Android Build: $ANDROID_STATUS"
+          echo ""
           
-          if [ "$IOS_STATUS" == "success" ] || [ "$IOS_STATUS" == "skipped" ]; then
-            echo "✅ iOS builds completed!"
+          # Check iOS
+          if [ "$IOS_STATUS" == "success" ]; then
+            echo "✅ iOS builds completed successfully!"
+          elif [ "$IOS_STATUS" == "skipped" ]; then
+            echo "⏭️  iOS builds were skipped"
           else
             echo "❌ iOS builds failed!"
           fi
           
-          if [ "$ANDROID_STATUS" == "success" ] || [ "$ANDROID_STATUS" == "skipped" ]; then
-            echo "✅ Android builds completed!"
+          # Check Android
+          if [ "$ANDROID_STATUS" == "success" ]; then
+            echo "✅ Android builds completed successfully!"
+          elif [ "$ANDROID_STATUS" == "skipped" ]; then
+            echo "⏭️  Android builds were skipped"
           else
             echo "❌ Android builds failed!"
           fi
+          
+          echo ""
+          echo "==========================================="
 
-      - name: Summary
+      - name: Generate Summary
         run: |
           echo "## 📱 Build Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**iOS Status:** ${{ needs.build-ios.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Android Status:** ${{ needs.build-android.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Build Number:** ${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "| Platform | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| 🍎 iOS | ${{ needs.build-ios.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🤖 Android | ${{ needs.build-android.result }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Built Apps" >> $GITHUB_STEP_SUMMARY
+          echo "### 📋 Build Details" >> $GITHUB_STEP_SUMMARY
+          echo "- **Build Number:** ${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Triggered by:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🎯 Built Apps" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
           echo "${{ needs.setup.outputs.matrix }}" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📦 Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "Download the built apps from the **Artifacts** section above." >> $GITHUB_STEP_SUMMARY

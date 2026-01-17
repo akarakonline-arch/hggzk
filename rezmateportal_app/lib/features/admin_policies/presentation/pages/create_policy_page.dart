@@ -36,15 +36,72 @@ class _CreatePolicyPageState extends State<CreatePolicyPage>
   // Form Controllers
   final _formKey = GlobalKey<FormState>();
   final _descriptionController = TextEditingController();
-  final _rulesController = TextEditingController();
   final _cancellationWindowController = TextEditingController(text: '0');
   final _depositPercentageController = TextEditingController(text: '0');
   final _minHoursController = TextEditingController(text: '0');
+  final _cancellationRefundPercentageController = TextEditingController();
+  final _cancellationDaysBeforeCheckInController = TextEditingController();
+  final _cancellationHoursBeforeCheckInController = TextEditingController();
+  final _cancellationPenaltyAfterDeadlineController = TextEditingController();
+
+  final _paymentDepositPercentageController = TextEditingController();
+  final _paymentAcceptedMethodsController = TextEditingController();
+
+  final _checkInTimeController = TextEditingController();
+  final _checkOutTimeController = TextEditingController();
+  final _checkInFromController = TextEditingController();
+  final _checkInUntilController = TextEditingController();
+  final _checkInEarlyCheckInNoteController = TextEditingController();
+  final _checkInLateCheckOutNoteController = TextEditingController();
+  final _checkInLateCheckOutFeeController = TextEditingController();
+
+  final _childrenFreeUnderAgeController = TextEditingController();
+  final _childrenHalfPriceUnderAgeController = TextEditingController();
+  final _childrenMaxChildrenPerRoomController = TextEditingController();
+  final _childrenMaxChildrenController = TextEditingController();
+  final _childrenCribsNoteController = TextEditingController();
+
+  final _petsReasonController = TextEditingController();
+  final _petsFeeAmountController = TextEditingController();
+  final _petsMaxWeightController = TextEditingController();
+
+  final _modificationFreeModificationHoursController = TextEditingController();
+  final _modificationFeesAfterController = TextEditingController();
+  final _modificationReasonController = TextEditingController();
   final _storage = GetIt.I<LocalStorageService>();
 
   // State
   PolicyType _selectedType = PolicyType.cancellation;
   bool _requireFullPayment = false;
+  bool? _cancellationFreeCancel;
+  bool? _cancellationFullRefund;
+  bool? _cancellationNonRefundable;
+
+  bool? _paymentDepositRequired;
+  bool? _paymentFullPaymentRequired;
+  bool? _paymentAcceptCash;
+  bool? _paymentAcceptCard;
+  bool? _paymentPayAtProperty;
+  bool? _paymentCashPreferred;
+
+  bool? _checkInFlexible;
+  bool? _checkInFlexibleCheckIn;
+  bool? _checkInRequiresCoordination;
+  bool? _checkInContactOwner;
+
+  bool? _childrenAllowed;
+  bool? _childrenPlaygroundAvailable;
+  bool? _childrenKidsMenuAvailable;
+
+  bool? _petsAllowed;
+  bool? _petsRequiresApproval;
+  bool? _petsNoFees;
+  bool? _petsPetFriendly;
+  bool? _petsOutdoorSpace;
+  bool? _petsStrict;
+
+  bool? _modificationAllowed;
+  bool? _modificationFlexible;
   String? _selectedPropertyId;
   String? _selectedPropertyName;
   bool _isAdmin = false;
@@ -109,10 +166,33 @@ class _CreatePolicyPageState extends State<CreatePolicyPage>
     _animationController.dispose();
     _glowController.dispose();
     _descriptionController.dispose();
-    _rulesController.dispose();
     _cancellationWindowController.dispose();
     _depositPercentageController.dispose();
     _minHoursController.dispose();
+    _cancellationRefundPercentageController.dispose();
+    _cancellationDaysBeforeCheckInController.dispose();
+    _cancellationHoursBeforeCheckInController.dispose();
+    _cancellationPenaltyAfterDeadlineController.dispose();
+    _paymentDepositPercentageController.dispose();
+    _paymentAcceptedMethodsController.dispose();
+    _checkInTimeController.dispose();
+    _checkOutTimeController.dispose();
+    _checkInFromController.dispose();
+    _checkInUntilController.dispose();
+    _checkInEarlyCheckInNoteController.dispose();
+    _checkInLateCheckOutNoteController.dispose();
+    _checkInLateCheckOutFeeController.dispose();
+    _childrenFreeUnderAgeController.dispose();
+    _childrenHalfPriceUnderAgeController.dispose();
+    _childrenMaxChildrenPerRoomController.dispose();
+    _childrenMaxChildrenController.dispose();
+    _childrenCribsNoteController.dispose();
+    _petsReasonController.dispose();
+    _petsFeeAmountController.dispose();
+    _petsMaxWeightController.dispose();
+    _modificationFreeModificationHoursController.dispose();
+    _modificationFeesAfterController.dispose();
+    _modificationReasonController.dispose();
     super.dispose();
   }
 
@@ -426,23 +506,6 @@ class _CreatePolicyPageState extends State<CreatePolicyPage>
               return null;
             },
           ),
-
-          const SizedBox(height: 20),
-
-          // Rules
-          _buildInputField(
-            controller: _rulesController,
-            label: 'القواعد (JSON)',
-            hint: '{"rule1": "value1"}',
-            icon: Icons.rule_rounded,
-            maxLines: 5,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'الرجاء إدخال القواعد';
-              }
-              return null;
-            },
-          ),
         ],
       ),
     );
@@ -545,14 +608,6 @@ class _CreatePolicyPageState extends State<CreatePolicyPage>
               {'label': 'النوع', 'value': _selectedType.displayName},
               {'label': 'العقار', 'value': _selectedPropertyName ?? 'غير محدد'},
               {'label': 'الوصف', 'value': _descriptionController.text},
-            ],
-          ),
-          const SizedBox(height: 16),
-          _buildReviewCard(
-            title: 'القواعد',
-            color: AppTheme.primaryPurple,
-            items: [
-              {'label': 'JSON', 'value': _rulesController.text},
             ],
           ),
           const SizedBox(height: 16),
@@ -748,21 +803,64 @@ class _CreatePolicyPageState extends State<CreatePolicyPage>
   Widget _buildTypeSpecificFields() {
     switch (_selectedType) {
       case PolicyType.cancellation:
-        return _buildInputField(
-          controller: _cancellationWindowController,
-          label: 'نافذة الإلغاء (بالأيام)',
-          hint: 'عدد الأيام المسموح فيها بالإلغاء',
-          icon: Icons.event_busy_rounded,
-          keyboardType: TextInputType.number,
-          validator: (value) {
-            if (value != null && value.isNotEmpty) {
-              final number = int.tryParse(value);
-              if (number == null || number < 0) {
-                return 'يجب إدخال رقم صحيح';
-              }
-            }
-            return null;
-          },
+        return Column(
+          children: [
+            _buildInputField(
+              controller: _cancellationWindowController,
+              label: 'نافذة الإلغاء (بالأيام)',
+              hint: 'عدد الأيام المسموح فيها بالإلغاء',
+              icon: Icons.event_busy_rounded,
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 16),
+            _buildBooleanTile(
+              title: 'إلغاء مجاني',
+              value: _cancellationFreeCancel ?? false,
+              onChanged: (v) => setState(() => _cancellationFreeCancel = v),
+            ),
+            _buildBooleanTile(
+              title: 'استرداد كامل',
+              value: _cancellationFullRefund ?? false,
+              onChanged: (v) => setState(() => _cancellationFullRefund = v),
+            ),
+            _buildBooleanTile(
+              title: 'غير قابل للاسترداد',
+              value: _cancellationNonRefundable ?? false,
+              onChanged: (v) => setState(() => _cancellationNonRefundable = v),
+            ),
+            const SizedBox(height: 16),
+            _buildInputField(
+              controller: _cancellationRefundPercentageController,
+              label: 'نسبة الاسترداد (%)',
+              hint: 'مثال: 50',
+              icon: Icons.percent_rounded,
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 16),
+            _buildInputField(
+              controller: _cancellationDaysBeforeCheckInController,
+              label: 'عدد الأيام قبل تسجيل الوصول',
+              hint: 'مثال: 2',
+              icon: Icons.calendar_today_rounded,
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 16),
+            _buildInputField(
+              controller: _cancellationHoursBeforeCheckInController,
+              label: 'عدد الساعات قبل تسجيل الوصول',
+              hint: 'مثال: 24',
+              icon: Icons.access_time_rounded,
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 16),
+            _buildInputField(
+              controller: _cancellationPenaltyAfterDeadlineController,
+              label: 'غرامة بعد الموعد النهائي',
+              hint: 'مثال: 10%',
+              icon: Icons.money_off_rounded,
+              maxLines: 2,
+            ),
+          ],
         );
 
       case PolicyType.payment:
@@ -844,41 +942,351 @@ class _CreatePolicyPageState extends State<CreatePolicyPage>
               hint: 'النسبة المئوية المطلوبة (0-100)',
               icon: Icons.percent_rounded,
               keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value != null && value.isNotEmpty) {
-                  final number = double.tryParse(value);
-                  if (number == null || number < 0 || number > 100) {
-                    return 'يجب إدخال نسبة بين 0 و 100';
-                  }
-                }
-                return null;
-              },
+            ),
+            const SizedBox(height: 16),
+            _buildBooleanTile(
+              title: 'يتطلب دفعة مقدمة',
+              value: _paymentDepositRequired ?? false,
+              onChanged: (v) => setState(() => _paymentDepositRequired = v),
+            ),
+            _buildBooleanTile(
+              title: 'يتطلب دفع كامل (ضمن سياسة الدفع)',
+              value: _paymentFullPaymentRequired ?? false,
+              onChanged: (v) => setState(() => _paymentFullPaymentRequired = v),
+            ),
+            _buildBooleanTile(
+              title: 'قبول نقداً',
+              value: _paymentAcceptCash ?? false,
+              onChanged: (v) => setState(() => _paymentAcceptCash = v),
+            ),
+            _buildBooleanTile(
+              title: 'قبول بطاقة',
+              value: _paymentAcceptCard ?? false,
+              onChanged: (v) => setState(() => _paymentAcceptCard = v),
+            ),
+            _buildBooleanTile(
+              title: 'الدفع عند العقار',
+              value: _paymentPayAtProperty ?? false,
+              onChanged: (v) => setState(() => _paymentPayAtProperty = v),
+            ),
+            _buildBooleanTile(
+              title: 'النقد مفضّل',
+              value: _paymentCashPreferred ?? false,
+              onChanged: (v) => setState(() => _paymentCashPreferred = v),
+            ),
+            const SizedBox(height: 16),
+            _buildInputField(
+              controller: _paymentDepositPercentageController,
+              label: 'نسبة الدفعة (ضمن سياسة الدفع) (%)',
+              hint: 'مثال: 30',
+              icon: Icons.percent_rounded,
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 16),
+            _buildInputField(
+              controller: _paymentAcceptedMethodsController,
+              label: 'طرق الدفع المقبولة (افصل بـ , )',
+              hint: 'Cash, Card, BankTransfer',
+              icon: Icons.list_alt_rounded,
+              maxLines: 2,
             ),
           ],
         );
 
       case PolicyType.checkIn:
+        return Column(
+          children: [
+            _buildInputField(
+              controller: _minHoursController,
+              label: 'الحد الأدنى للساعات قبل تسجيل الوصول',
+              hint: 'عدد الساعات المطلوبة',
+              icon: Icons.access_time_rounded,
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 16),
+            _buildInputField(
+              controller: _checkInTimeController,
+              label: 'وقت تسجيل الدخول',
+              hint: '14:00',
+              icon: Icons.login_rounded,
+            ),
+            const SizedBox(height: 16),
+            _buildInputField(
+              controller: _checkOutTimeController,
+              label: 'وقت تسجيل الخروج',
+              hint: '12:00',
+              icon: Icons.logout_rounded,
+            ),
+            const SizedBox(height: 16),
+            _buildInputField(
+              controller: _checkInFromController,
+              label: 'تسجيل الدخول من',
+              hint: 'مثال: 12:00',
+              icon: Icons.schedule_rounded,
+            ),
+            const SizedBox(height: 16),
+            _buildInputField(
+              controller: _checkInUntilController,
+              label: 'تسجيل الدخول حتى',
+              hint: 'مثال: 22:00',
+              icon: Icons.schedule_rounded,
+            ),
+            const SizedBox(height: 16),
+            _buildBooleanTile(
+              title: 'تسجيل دخول مرن',
+              value: _checkInFlexible ?? false,
+              onChanged: (v) => setState(() => _checkInFlexible = v),
+            ),
+            _buildBooleanTile(
+              title: 'تسجيل دخول مرن (تفاصيل)',
+              value: _checkInFlexibleCheckIn ?? false,
+              onChanged: (v) => setState(() => _checkInFlexibleCheckIn = v),
+            ),
+            _buildBooleanTile(
+              title: 'يتطلب تنسيق',
+              value: _checkInRequiresCoordination ?? false,
+              onChanged: (v) => setState(() => _checkInRequiresCoordination = v),
+            ),
+            _buildBooleanTile(
+              title: 'تواصل مع المالك',
+              value: _checkInContactOwner ?? false,
+              onChanged: (v) => setState(() => _checkInContactOwner = v),
+            ),
+            const SizedBox(height: 16),
+            _buildInputField(
+              controller: _checkInEarlyCheckInNoteController,
+              label: 'ملاحظة تسجيل مبكر',
+              hint: 'اختياري',
+              icon: Icons.note_rounded,
+              maxLines: 2,
+            ),
+            const SizedBox(height: 16),
+            _buildInputField(
+              controller: _checkInLateCheckOutNoteController,
+              label: 'ملاحظة تسجيل خروج متأخر',
+              hint: 'اختياري',
+              icon: Icons.note_rounded,
+              maxLines: 2,
+            ),
+            const SizedBox(height: 16),
+            _buildInputField(
+              controller: _checkInLateCheckOutFeeController,
+              label: 'رسوم تسجيل خروج متأخر',
+              hint: 'اختياري',
+              icon: Icons.attach_money_rounded,
+            ),
+          ],
+        );
+
+      case PolicyType.children:
+        return Column(
+          children: [
+            _buildBooleanTile(
+              title: 'الأطفال مسموح',
+              value: _childrenAllowed ?? false,
+              onChanged: (v) => setState(() => _childrenAllowed = v),
+            ),
+            const SizedBox(height: 16),
+            _buildInputField(
+              controller: _childrenFreeUnderAgeController,
+              label: 'مجاناً تحت عمر',
+              hint: 'مثال: 6',
+              icon: Icons.child_care_rounded,
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 16),
+            _buildInputField(
+              controller: _childrenHalfPriceUnderAgeController,
+              label: 'نصف سعر تحت عمر',
+              hint: 'مثال: 12',
+              icon: Icons.child_care_rounded,
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 16),
+            _buildInputField(
+              controller: _childrenMaxChildrenPerRoomController,
+              label: 'أقصى أطفال لكل غرفة',
+              hint: 'مثال: 2',
+              icon: Icons.people_alt_rounded,
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 16),
+            _buildInputField(
+              controller: _childrenMaxChildrenController,
+              label: 'أقصى عدد أطفال',
+              hint: 'مثال: 4',
+              icon: Icons.people_alt_rounded,
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 16),
+            _buildInputField(
+              controller: _childrenCribsNoteController,
+              label: 'ملاحظة أسرة أطفال',
+              hint: 'اختياري',
+              icon: Icons.note_rounded,
+              maxLines: 2,
+            ),
+            const SizedBox(height: 16),
+            _buildBooleanTile(
+              title: 'ملعب أطفال',
+              value: _childrenPlaygroundAvailable ?? false,
+              onChanged: (v) => setState(() => _childrenPlaygroundAvailable = v),
+            ),
+            _buildBooleanTile(
+              title: 'قائمة أطفال',
+              value: _childrenKidsMenuAvailable ?? false,
+              onChanged: (v) => setState(() => _childrenKidsMenuAvailable = v),
+            ),
+          ],
+        );
+
+      case PolicyType.pets:
+        return Column(
+          children: [
+            _buildBooleanTile(
+              title: 'الحيوانات مسموحة',
+              value: _petsAllowed ?? false,
+              onChanged: (v) => setState(() => _petsAllowed = v),
+            ),
+            const SizedBox(height: 16),
+            _buildInputField(
+              controller: _petsReasonController,
+              label: 'سبب/ملاحظة',
+              hint: 'اختياري',
+              icon: Icons.note_rounded,
+              maxLines: 2,
+            ),
+            const SizedBox(height: 16),
+            _buildInputField(
+              controller: _petsFeeAmountController,
+              label: 'رسوم',
+              hint: 'مثال: 10',
+              icon: Icons.attach_money_rounded,
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 16),
+            _buildInputField(
+              controller: _petsMaxWeightController,
+              label: 'أقصى وزن',
+              hint: 'مثال: 10kg',
+              icon: Icons.scale_rounded,
+            ),
+            const SizedBox(height: 16),
+            _buildBooleanTile(
+              title: 'يتطلب موافقة',
+              value: _petsRequiresApproval ?? false,
+              onChanged: (v) => setState(() => _petsRequiresApproval = v),
+            ),
+            _buildBooleanTile(
+              title: 'بدون رسوم',
+              value: _petsNoFees ?? false,
+              onChanged: (v) => setState(() => _petsNoFees = v),
+            ),
+            _buildBooleanTile(
+              title: 'صديق للحيوانات',
+              value: _petsPetFriendly ?? false,
+              onChanged: (v) => setState(() => _petsPetFriendly = v),
+            ),
+            _buildBooleanTile(
+              title: 'مساحة خارجية',
+              value: _petsOutdoorSpace ?? false,
+              onChanged: (v) => setState(() => _petsOutdoorSpace = v),
+            ),
+            _buildBooleanTile(
+              title: 'صارم',
+              value: _petsStrict ?? false,
+              onChanged: (v) => setState(() => _petsStrict = v),
+            ),
+          ],
+        );
+
       case PolicyType.modification:
-        return _buildInputField(
-          controller: _minHoursController,
-          label: 'الحد الأدنى للساعات قبل تسجيل الوصول',
-          hint: 'عدد الساعات المطلوبة',
-          icon: Icons.access_time_rounded,
-          keyboardType: TextInputType.number,
-          validator: (value) {
-            if (value != null && value.isNotEmpty) {
-              final number = int.tryParse(value);
-              if (number == null || number < 0) {
-                return 'يجب إدخال رقم صحيح';
-              }
-            }
-            return null;
-          },
+        return Column(
+          children: [
+            _buildInputField(
+              controller: _minHoursController,
+              label: 'الحد الأدنى للساعات قبل تسجيل الوصول',
+              hint: 'عدد الساعات المطلوبة',
+              icon: Icons.access_time_rounded,
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 16),
+            _buildBooleanTile(
+              title: 'التعديل مسموح',
+              value: _modificationAllowed ?? false,
+              onChanged: (v) => setState(() => _modificationAllowed = v),
+            ),
+            _buildBooleanTile(
+              title: 'مرن',
+              value: _modificationFlexible ?? false,
+              onChanged: (v) => setState(() => _modificationFlexible = v),
+            ),
+            const SizedBox(height: 16),
+            _buildInputField(
+              controller: _modificationFreeModificationHoursController,
+              label: 'ساعات تعديل مجانية',
+              hint: 'مثال: 24',
+              icon: Icons.timer_rounded,
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 16),
+            _buildInputField(
+              controller: _modificationFeesAfterController,
+              label: 'رسوم بعد',
+              hint: 'اختياري',
+              icon: Icons.attach_money_rounded,
+              maxLines: 2,
+            ),
+            const SizedBox(height: 16),
+            _buildInputField(
+              controller: _modificationReasonController,
+              label: 'سبب',
+              hint: 'اختياري',
+              icon: Icons.note_rounded,
+              maxLines: 2,
+            ),
+          ],
         );
 
       default:
         return const SizedBox.shrink();
     }
+  }
+
+  Widget _buildBooleanTile({
+    required String title,
+    required bool value,
+    required ValueChanged<bool> onChanged,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppTheme.darkCard.withOpacity(0.5),
+            AppTheme.darkCard.withOpacity(0.3),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppTheme.darkBorder.withOpacity(0.3),
+          width: 1,
+        ),
+      ),
+      child: SwitchListTile(
+        title: Text(
+          title,
+          style: AppTextStyles.bodyMedium.copyWith(
+            color: AppTheme.textWhite,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        value: value,
+        onChanged: onChanged,
+        activeThumbColor: _getPolicyTypeColor(_selectedType),
+        activeTrackColor: _getPolicyTypeColor(_selectedType).withOpacity(0.3),
+      ),
+    );
   }
 
   Widget _buildInputField({
@@ -1185,10 +1593,6 @@ class _CreatePolicyPageState extends State<CreatePolicyPage>
       _showErrorMessage('الرجاء إدخال الوصف');
       return false;
     }
-    if (_rulesController.text.isEmpty) {
-      _showErrorMessage('الرجاء إدخال القواعد');
-      return false;
-    }
     return true;
   }
 
@@ -1199,12 +1603,20 @@ class _CreatePolicyPageState extends State<CreatePolicyPage>
         return;
       }
 
+      List<String>? acceptedMethods;
+      if (_paymentAcceptedMethodsController.text.trim().isNotEmpty) {
+        acceptedMethods = _paymentAcceptedMethodsController.text
+            .split(',')
+            .map((e) => e.trim())
+            .where((e) => e.isNotEmpty)
+            .toList();
+      }
+
       context.read<PoliciesBloc>().add(
             CreatePolicyEvent(
               propertyId: _selectedPropertyId!,
               type: _selectedType,
               description: _descriptionController.text,
-              rules: _rulesController.text,
               cancellationWindowDays:
                   int.tryParse(_cancellationWindowController.text) ?? 0,
               requireFullPaymentBeforeConfirmation: _requireFullPayment,
@@ -1212,6 +1624,90 @@ class _CreatePolicyPageState extends State<CreatePolicyPage>
                   double.tryParse(_depositPercentageController.text) ?? 0,
               minHoursBeforeCheckIn:
                   int.tryParse(_minHoursController.text) ?? 0,
+              cancellationFreeCancel: _cancellationFreeCancel,
+              cancellationFullRefund: _cancellationFullRefund,
+              cancellationRefundPercentage:
+                  int.tryParse(_cancellationRefundPercentageController.text),
+              cancellationDaysBeforeCheckIn:
+                  int.tryParse(_cancellationDaysBeforeCheckInController.text),
+              cancellationHoursBeforeCheckIn:
+                  int.tryParse(_cancellationHoursBeforeCheckInController.text),
+              cancellationNonRefundable: _cancellationNonRefundable,
+              cancellationPenaltyAfterDeadline:
+                  _cancellationPenaltyAfterDeadlineController.text.isEmpty
+                      ? null
+                      : _cancellationPenaltyAfterDeadlineController.text,
+              paymentDepositRequired: _paymentDepositRequired,
+              paymentFullPaymentRequired: _paymentFullPaymentRequired,
+              paymentDepositPercentage:
+                  double.tryParse(_paymentDepositPercentageController.text),
+              paymentAcceptCash: _paymentAcceptCash,
+              paymentAcceptCard: _paymentAcceptCard,
+              paymentPayAtProperty: _paymentPayAtProperty,
+              paymentCashPreferred: _paymentCashPreferred,
+              paymentAcceptedMethods: acceptedMethods,
+              checkInTime: _checkInTimeController.text.isEmpty
+                  ? null
+                  : _checkInTimeController.text,
+              checkOutTime: _checkOutTimeController.text.isEmpty
+                  ? null
+                  : _checkOutTimeController.text,
+              checkInFrom: _checkInFromController.text.isEmpty
+                  ? null
+                  : _checkInFromController.text,
+              checkInUntil: _checkInUntilController.text.isEmpty
+                  ? null
+                  : _checkInUntilController.text,
+              checkInFlexible: _checkInFlexible,
+              checkInFlexibleCheckIn: _checkInFlexibleCheckIn,
+              checkInRequiresCoordination: _checkInRequiresCoordination,
+              checkInContactOwner: _checkInContactOwner,
+              checkInEarlyCheckInNote: _checkInEarlyCheckInNoteController.text.isEmpty
+                  ? null
+                  : _checkInEarlyCheckInNoteController.text,
+              checkInLateCheckOutNote: _checkInLateCheckOutNoteController.text.isEmpty
+                  ? null
+                  : _checkInLateCheckOutNoteController.text,
+              checkInLateCheckOutFee: _checkInLateCheckOutFeeController.text.isEmpty
+                  ? null
+                  : _checkInLateCheckOutFeeController.text,
+              childrenAllowed: _childrenAllowed,
+              childrenFreeUnderAge:
+                  int.tryParse(_childrenFreeUnderAgeController.text),
+              childrenHalfPriceUnderAge:
+                  int.tryParse(_childrenHalfPriceUnderAgeController.text),
+              childrenMaxChildrenPerRoom:
+                  int.tryParse(_childrenMaxChildrenPerRoomController.text),
+              childrenMaxChildren:
+                  int.tryParse(_childrenMaxChildrenController.text),
+              childrenCribsNote: _childrenCribsNoteController.text.isEmpty
+                  ? null
+                  : _childrenCribsNoteController.text,
+              childrenPlaygroundAvailable: _childrenPlaygroundAvailable,
+              childrenKidsMenuAvailable: _childrenKidsMenuAvailable,
+              petsAllowed: _petsAllowed,
+              petsReason: _petsReasonController.text.isEmpty
+                  ? null
+                  : _petsReasonController.text,
+              petsFeeAmount: double.tryParse(_petsFeeAmountController.text),
+              petsMaxWeight: _petsMaxWeightController.text.isEmpty
+                  ? null
+                  : _petsMaxWeightController.text,
+              petsRequiresApproval: _petsRequiresApproval,
+              petsNoFees: _petsNoFees,
+              petsPetFriendly: _petsPetFriendly,
+              petsOutdoorSpace: _petsOutdoorSpace,
+              petsStrict: _petsStrict,
+              modificationAllowed: _modificationAllowed,
+              modificationFreeModificationHours:
+                  int.tryParse(_modificationFreeModificationHoursController.text),
+              modificationFeesAfter: _modificationFeesAfterController.text.isEmpty
+                  ? null
+                  : _modificationFeesAfterController.text,
+              modificationFlexible: _modificationFlexible,
+              modificationReason: _modificationReasonController.text.isEmpty
+                  ? null
+                  : _modificationReasonController.text,
             ),
           );
     }

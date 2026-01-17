@@ -99,7 +99,7 @@ class _FuturisticPolicyCardState extends State<FuturisticPolicyCard> {
       policyId: policy.id,
       policyType: _mapPolicyType(policy.type),
       description: policy.description,
-      rules: policy.rules,
+      rules: policy.rules ?? '',
       isActive: policy.isActive ?? true,
       propertyName: policy.propertyName,
       effectiveDate: policy.createdAt,

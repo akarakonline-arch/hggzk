@@ -136,7 +136,7 @@ class _EditPolicyPageState extends State<EditPolicyPage>
       // Populate controllers
       _selectedType = policy.type;
       _descriptionController.text = policy.description;
-      _rulesController.text = policy.rules;
+      _rulesController.text = policy.rules ?? '';
       _propertyId = policy.propertyId;
       _propertyName = policy.propertyName;
 
@@ -1891,10 +1891,6 @@ class _EditPolicyPageState extends State<EditPolicyPage>
       _showErrorMessage('الرجاء إدخال الوصف');
       return false;
     }
-    if (_rulesController.text.isEmpty) {
-      _showErrorMessage('الرجاء إدخال القواعد');
-      return false;
-    }
     return true;
   }
 
@@ -1941,7 +1937,7 @@ class _EditPolicyPageState extends State<EditPolicyPage>
               policyId: widget.policyId,
               type: _selectedType,
               description: _descriptionController.text,
-              rules: _rulesController.text,
+              rules: _rulesController.text.isEmpty ? null : _rulesController.text,
               cancellationWindowDays:
                   int.tryParse(_cancellationWindowController.text),
               requireFullPaymentBeforeConfirmation: _requireFullPayment,

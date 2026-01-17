@@ -115,7 +115,7 @@ class _FuturisticPoliciesTableState extends State<FuturisticPoliciesTable>
       policyId: policy.id,
       policyType: _mapPolicyType(policy.type),
       description: policy.description,
-      rules: policy.rules,
+      rules: policy.rules ?? '',
       isActive: policy.isActive ?? true,
       propertyName: policy.propertyName,
       effectiveDate: policy.createdAt,
@@ -988,7 +988,7 @@ class _FuturisticPoliciesTableState extends State<FuturisticPoliciesTable>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (policy.rules.isNotEmpty) ...[
+          if ((policy.rules ?? '').isNotEmpty) ...[
             Row(
               children: [
                 Icon(
@@ -1014,7 +1014,7 @@ class _FuturisticPoliciesTableState extends State<FuturisticPoliciesTable>
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Text(
-                policy.rules,
+                policy.rules ?? '',
                 style: AppTextStyles.caption.copyWith(
                   color: AppTheme.textLight,
                   fontFamily: 'monospace',
