@@ -631,6 +631,9 @@ jobs:
           java-version: '17'
           cache: 'gradle'
 
+      - name: Accept Android Licenses
+        run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
