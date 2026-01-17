@@ -69,6 +69,7 @@ class BookingRepositoryImpl implements BookingRepository {
     required String bookingId,
     required String userId,
     required String reason,
+    bool refundPayments = false,
   }) async {
     if (!(await internetConnectionChecker.hasConnection)) {
       return const Left(NetworkFailure('لا يوجد اتصال بالإنترنت'));
@@ -79,6 +80,7 @@ class BookingRepositoryImpl implements BookingRepository {
         bookingId: bookingId,
         userId: userId,
         reason: reason,
+        refundPayments: refundPayments,
       );
       
       if (result.success) {

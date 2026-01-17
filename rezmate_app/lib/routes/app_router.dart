@@ -39,8 +39,11 @@ import 'package:rezmate/features/chat/presentation/pages/conversations_page.dart
 import 'package:rezmate/features/chat/domain/entities/conversation.dart';
 import 'package:rezmate/features/auth/presentation/pages/change_password_page.dart';
 import 'package:rezmate/features/auth/presentation/pages/edit_profile_page.dart';
+import 'package:rezmate/features/auth/presentation/pages/profile_page.dart';
 import 'package:rezmate/features/settings/presentation/pages/settings_page.dart';
 import 'package:rezmate/features/settings/presentation/pages/language_settings_page.dart';
+import 'package:rezmate/features/settings/presentation/pages/in_app_webview_page.dart';
+import 'package:rezmate/features/settings/presentation/pages/legal_documents_page.dart';
 import 'package:rezmate/features/support/presentation/pages/support_page.dart';
 import 'package:rezmate/services/navigation_service.dart';
 import 'package:rezmate/features/notifications/presentation/pages/notifications_page.dart';
@@ -60,7 +63,7 @@ class AppRouter {
       initialLocation: '/',
       refreshListenable: GoRouterRefreshStream(authBloc.stream),
       redirect: (context, state) {
-        // Proactive route guard: if access token is expired, force logout and go to /login
+        // Proactive route guard: if access token is expired, force logout silently
         try {
           final token = sl<LocalStorageService>()
               .getData(StorageConstants.accessToken) as String?;
@@ -68,7 +71,6 @@ class AppRouter {
               token.isNotEmpty &&
               _isJwtExpiredRouter(token, skewSeconds: 10)) {
             context.read<AuthBloc>().add(const LogoutEvent());
-            return '/login';
           }
         } catch (_) {}
 
@@ -92,7 +94,8 @@ class AppRouter {
         if (authState is AuthUnauthenticated &&
             isProtected &&
             !(goingToLogin || goingToRegister || goingToForgot)) {
-          return '/login';
+          final from = Uri.encodeComponent(state.uri.toString());
+          return '/login?from=$from';
         }
 
         if (authState is AuthAuthenticated &&
@@ -190,11 +193,7 @@ class AppRouter {
         GoRoute(
           path: '/profile',
           builder: (BuildContext context, GoRouterState state) {
-            return const Scaffold(
-              body: Center(
-                child: Text('الملف الشخصي'),
-              ),
-            );
+            return const ProfilePage();
           },
         ),
         GoRoute(
@@ -207,6 +206,23 @@ class AppRouter {
           path: '/profile/change-password',
           builder: (BuildContext context, GoRouterState state) {
             return const ChangePasswordPage();
+          },
+        ),
+        GoRoute(
+          path: '/legal',
+          builder: (BuildContext context, GoRouterState state) {
+            return const LegalDocumentsPage(baseUrl: 'https://www.rezmate.com');
+          },
+        ),
+        GoRoute(
+          path: '/legal/webview',
+          builder: (BuildContext context, GoRouterState state) {
+            final extra = state.extra is Map<String, dynamic>
+                ? state.extra as Map<String, dynamic>
+                : const <String, dynamic>{};
+            final title = (extra['title'] as String?) ?? '';
+            final url = (extra['url'] as String?) ?? 'https://www.rezmate.com';
+            return InAppWebViewPage(title: title, url: url);
           },
         ),
         GoRoute(

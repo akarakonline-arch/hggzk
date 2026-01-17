@@ -21,6 +21,7 @@ abstract class BookingRemoteDataSource {
     required String bookingId,
     required String userId,
     required String reason,
+    bool refundPayments = false,
   });
   
   Future<ResultDto<bool>> updateBooking({
@@ -238,6 +239,7 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
     required String bookingId,
     required String userId,
     required String reason,
+    bool refundPayments = false,
   }) async {
     const requestName = 'booking.cancelBooking';
     logRequestStart(requestName, details: {
@@ -252,6 +254,7 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
           'bookingId': bookingId,
           'userId': userId,
           'cancellationReason': reason,
+          'refundPayments': refundPayments,
         },
       );
 

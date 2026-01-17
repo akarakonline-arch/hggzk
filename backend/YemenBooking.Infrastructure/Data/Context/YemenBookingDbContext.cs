@@ -48,6 +48,8 @@ public class YemenBookingDbContext : DbContext
     /// </summary>
     public DbSet<User> Users { get; set; }
 
+    public DbSet<UserWalletAccount> UserWalletAccounts { get; set; }
+
     /// <summary>
     /// جدول الأدوار
     /// Roles table
@@ -387,6 +389,7 @@ public class YemenBookingDbContext : DbContext
         // تطبيق جميع إعدادات الكيانات
         // Apply all entity configurations
         modelBuilder.ApplyConfiguration(new UserConfiguration());
+        modelBuilder.ApplyConfiguration(new UserWalletAccountConfiguration());
         modelBuilder.ApplyConfiguration(new RoleConfiguration());
         modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
         modelBuilder.ApplyConfiguration(new PropertyTypeConfiguration());

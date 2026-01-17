@@ -2,13 +2,16 @@
 
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
+import 'package:go_router/go_router.dart';
 import 'dart:ui';
 import 'dart:math' as math;
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/utils/validators.dart';
+import '../../../../core/enums/payment_method_enum.dart';
 import 'password_strength_indicator.dart';
 import 'package:hggzkportal/injection_container.dart';
 import 'package:hggzkportal/core/models/paginated_result.dart';
@@ -38,6 +41,7 @@ class RegisterForm extends StatefulWidget {
     double? latitude,
     double? longitude,
     String? description,
+    List<Map<String, dynamic>>? walletAccounts,
   ) onSubmit;
   final bool isLoading;
 
@@ -86,6 +90,9 @@ class _RegisterFormState extends State<RegisterForm>
   bool _obscureConfirmPassword = true;
   bool _acceptTerms = false;
   bool _showPasswordStrength = false;
+
+  late TapGestureRecognizer _termsRecognizer;
+  late TapGestureRecognizer _privacyRecognizer;
   String _selectedPropertyTypeId = '';
   List<ap_models.PropertyTypeModel> _propertyTypes = const [];
   bool _loadingPropertyTypes = false;
@@ -97,6 +104,8 @@ class _RegisterFormState extends State<RegisterForm>
   bool _loadingSuggestions = false;
   Timer? _debounce;
   String _placesSessionToken = _generatePlacesSessionToken();
+
+  final List<_WalletAccountDraft> _walletAccounts = [];
 
   /// حماية ضد الضغط المتكرر على زر التسجيل
   bool _isSubmitting = false;
@@ -162,6 +171,34 @@ class _RegisterFormState extends State<RegisterForm>
 
     _loadPropertyTypes();
     _loadCities();
+
+    _walletAccounts.add(
+      _WalletAccountDraft(
+        walletType: PaymentMethod.jwaliWallet,
+        isDefault: true,
+      ),
+    );
+
+    _termsRecognizer = TapGestureRecognizer()
+      ..onTap = () {
+        context.push(
+          '/legal/webview',
+          extra: <String, dynamic>{
+            'title': 'الشروط والأحكام',
+            'url': 'https://www.hggzk.com/terms-partners',
+          },
+        );
+      };
+    _privacyRecognizer = TapGestureRecognizer()
+      ..onTap = () {
+        context.push(
+          '/legal/webview',
+          extra: <String, dynamic>{
+            'title': 'سياسة الخصوصية',
+            'url': 'https://www.hggzk.com/privacy',
+          },
+        );
+      };
   }
 
   @override
@@ -204,6 +241,11 @@ class _RegisterFormState extends State<RegisterForm>
     _checkboxAnimationController.dispose();
     _sectionAnimationController.dispose();
     _floatingAnimationController.dispose();
+    _termsRecognizer.dispose();
+    _privacyRecognizer.dispose();
+    for (final wa in _walletAccounts) {
+      wa.dispose();
+    }
     super.dispose();
   }
 
@@ -655,10 +697,239 @@ class _RegisterFormState extends State<RegisterForm>
           hint: 'وصف مختصر عن الكيان وخدماته...',
           icon: Icons.description_outlined,
         ),
+        const SizedBox(height: 16),
+        _buildOwnerWalletAccountsSection(),
         const SizedBox(height: 20),
         _buildTermsCheckbox(),
       ],
     );
+  }
+
+  Widget _buildOwnerWalletAccountsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _buildSectionHeader(
+          'حسابات استلام المالك (اختياري)',
+          Icons.account_balance_wallet_rounded,
+        ),
+        const SizedBox(height: 12),
+        ..._walletAccounts.asMap().entries.map((entry) {
+          final index = entry.key;
+          final item = entry.value;
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppTheme.darkCard.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: AppTheme.darkBorder.withValues(alpha: 0.15),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: DropdownButtonFormField<PaymentMethod>(
+                          value: item.walletType,
+                          decoration: InputDecoration(
+                            labelText: 'نوع المحفظة',
+                            labelStyle: AppTextStyles.caption.copyWith(
+                              color: AppTheme.textMuted.withValues(alpha: 0.6),
+                            ),
+                            filled: false,
+                            border: InputBorder.none,
+                          ),
+                          dropdownColor: AppTheme.darkCard,
+                          items: PaymentMethod.values
+                              .where((m) => m.isWallet)
+                              .map(
+                                (m) => DropdownMenuItem<PaymentMethod>(
+                                  value: m,
+                                  child: Text(
+                                    m.displayNameAr,
+                                    style: AppTextStyles.bodySmall.copyWith(
+                                      color: AppTheme.textWhite,
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                          onChanged: widget.isLoading
+                              ? null
+                              : (v) {
+                                  if (v == null) return;
+                                  setState(() {
+                                    item.walletType = v;
+                                  });
+                                },
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      if (_walletAccounts.length > 1)
+                        IconButton(
+                          onPressed: widget.isLoading
+                              ? null
+                              : () {
+                                  setState(() {
+                                    final removed = _walletAccounts.removeAt(index);
+                                    removed.dispose();
+                                    _normalizeDefaultWallet();
+                                  });
+                                },
+                          icon: Icon(
+                            Icons.delete_outline_rounded,
+                            color: AppTheme.error.withValues(alpha: 0.9),
+                          ),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  _buildEnhancedField(
+                    controller: item.accountNumberController,
+                    focusNode: item.accountNumberFocusNode,
+                    label: 'رقم الحساب/المحفظة',
+                    hint: 'مثال: 7XXXXXXXX',
+                    icon: Icons.numbers_rounded,
+                    keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.next,
+                  ),
+                  const SizedBox(height: 10),
+                  _buildEnhancedField(
+                    controller: item.accountNameController,
+                    focusNode: item.accountNameFocusNode,
+                    label: 'اسم الحساب (اختياري)',
+                    hint: 'اسم المستلم',
+                    icon: Icons.person_outline_rounded,
+                    textInputAction: TextInputAction.done,
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: widget.isLoading
+                              ? null
+                              : () {
+                                  setState(() {
+                                    for (final wa in _walletAccounts) {
+                                      wa.isDefault = false;
+                                    }
+                                    item.isDefault = true;
+                                  });
+                                },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 10),
+                            decoration: BoxDecoration(
+                              gradient: item.isDefault
+                                  ? AppTheme.primaryGradient
+                                  : null,
+                              color: !item.isDefault
+                                  ? AppTheme.darkCard.withValues(alpha: 0.15)
+                                  : null,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: item.isDefault
+                                    ? Colors.transparent
+                                    : AppTheme.darkBorder.withValues(alpha: 0.2),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  item.isDefault
+                                      ? Icons.check_circle_rounded
+                                      : Icons.radio_button_unchecked_rounded,
+                                  size: 16,
+                                  color: item.isDefault
+                                      ? Colors.white
+                                      : AppTheme.textMuted,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'افتراضي',
+                                  style: AppTextStyles.bodySmall.copyWith(
+                                    color: item.isDefault
+                                        ? Colors.white
+                                        : AppTheme.textMuted,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        }).toList(),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: TextButton.icon(
+            onPressed: widget.isLoading
+                ? null
+                : () {
+                    setState(() {
+                      _walletAccounts.add(
+                        _WalletAccountDraft(
+                          walletType: PaymentMethod.jwaliWallet,
+                          isDefault: false,
+                        ),
+                      );
+                      _normalizeDefaultWallet();
+                    });
+                  },
+            icon: const Icon(Icons.add_rounded),
+            label: Text(
+              'إضافة حساب',
+              style: AppTextStyles.bodySmall.copyWith(color: AppTheme.primaryBlue),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _normalizeDefaultWallet() {
+    if (_walletAccounts.isEmpty) return;
+    final hasDefault = _walletAccounts.any((e) => e.isDefault);
+    if (!hasDefault) {
+      _walletAccounts.first.isDefault = true;
+    }
+  }
+
+  List<Map<String, dynamic>>? _buildWalletAccountsPayload() {
+    final items = _walletAccounts
+        .map((e) {
+          final number = e.accountNumberController.text.trim();
+          if (number.isEmpty) return null;
+          final name = e.accountNameController.text.trim();
+          return <String, dynamic>{
+            'walletType': e.walletType.backendValue,
+            'accountNumber': number,
+            if (name.isNotEmpty) 'accountName': name,
+            'isDefault': e.isDefault,
+          };
+        })
+        .whereType<Map<String, dynamic>>()
+        .toList();
+
+    if (items.isEmpty) return null;
+
+    final firstDefaultIndex = items.indexWhere((e) => e['isDefault'] == true);
+    for (int i = 0; i < items.length; i++) {
+      items[i]['isDefault'] = (firstDefaultIndex == -1) ? (i == 0) : (i == firstDefaultIndex);
+    }
+    return items;
   }
 
   Widget _buildSectionHeader(String title, IconData icon) {
@@ -1162,6 +1433,7 @@ class _RegisterFormState extends State<RegisterForm>
                         decorationColor:
                             AppTheme.primaryBlue.withValues(alpha: 0.3),
                       ),
+                      recognizer: _termsRecognizer,
                     ),
                     const TextSpan(text: ' و'),
                     TextSpan(
@@ -1173,6 +1445,7 @@ class _RegisterFormState extends State<RegisterForm>
                         decorationColor:
                             AppTheme.primaryBlue.withValues(alpha: 0.3),
                       ),
+                      recognizer: _privacyRecognizer,
                     ),
                   ],
                 ),
@@ -1465,6 +1738,7 @@ class _RegisterFormState extends State<RegisterForm>
         _descriptionController.text.trim().isEmpty
             ? null
             : _descriptionController.text.trim(),
+        _buildWalletAccountsPayload(),
       );
     }
   }
@@ -2065,3 +2339,24 @@ class _EnhancedMapPickerDialogState extends State<_EnhancedMapPickerDialog>
 
 String _generatePlacesSessionToken() =>
     'sess_${DateTime.now().microsecondsSinceEpoch}';
+
+class _WalletAccountDraft {
+  PaymentMethod walletType;
+  bool isDefault;
+  final TextEditingController accountNumberController = TextEditingController();
+  final TextEditingController accountNameController = TextEditingController();
+  final FocusNode accountNumberFocusNode = FocusNode();
+  final FocusNode accountNameFocusNode = FocusNode();
+
+  _WalletAccountDraft({
+    required this.walletType,
+    required this.isDefault,
+  });
+
+  void dispose() {
+    accountNumberController.dispose();
+    accountNameController.dispose();
+    accountNumberFocusNode.dispose();
+    accountNameFocusNode.dispose();
+  }
+}

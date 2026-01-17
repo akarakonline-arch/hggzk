@@ -90,6 +90,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
       bookingId: event.bookingId,
       userId: event.userId,
       reason: event.reason,
+      refundPayments: event.refundPayments,
     );
 
     final result = await cancelBookingUseCase(params);
@@ -103,7 +104,6 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         if (failure is ServerFailure && failure.showAsDialog) {
           showAsDialog = true;
           code = failure.code;
-          message = failure.code ?? failure.message;
         }
 
         emit(BookingError(

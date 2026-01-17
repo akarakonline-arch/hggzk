@@ -27,6 +27,7 @@ class RegisterOwnerUseCase
       starRating: params.starRating,
       description: params.description,
       currency: params.currency,
+      walletAccounts: params.walletAccounts,
     );
   }
 }
@@ -45,6 +46,7 @@ class RegisterOwnerParams extends Equatable {
   final int starRating;
   final String? description;
   final String? currency;
+  final List<Map<String, dynamic>>? walletAccounts;
 
   const RegisterOwnerParams({
     required this.name,
@@ -60,6 +62,7 @@ class RegisterOwnerParams extends Equatable {
     this.starRating = 3,
     this.description,
     this.currency,
+    this.walletAccounts,
   });
 
   @override
@@ -77,5 +80,6 @@ class RegisterOwnerParams extends Equatable {
         starRating,
         description,
         currency,
+        walletAccounts,
       ];
 }

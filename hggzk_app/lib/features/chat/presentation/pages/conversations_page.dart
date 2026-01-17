@@ -5,9 +5,13 @@ import 'package:flutter/services.dart';
 import 'dart:ui';
 import 'dart:math' as math;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/constants/route_constants.dart';
+import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../auth/presentation/bloc/auth_state.dart';
 import '../../domain/entities/conversation.dart';
 import '../bloc/chat_bloc.dart';
 import '../widgets/conversation_item_widget.dart';
@@ -167,35 +171,53 @@ class _ConversationsPageState extends State<ConversationsPage>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.darkBackground,
-      body: Stack(
-        children: [
-          // Ultra minimal gradient background
-          _buildUltraMinimalBackground(),
+      body: BlocBuilder<AuthBloc, AuthState>(
+        buildWhen: (previous, current) {
+          return current is! AuthLoading;
+        },
+        builder: (context, authState) {
+          if (authState is AuthUnauthenticated) {
+            return _buildUnauthenticatedView(context);
+          }
 
-          // Subtle floating particles
-          _buildSubtleParticles(),
+          return Stack(
+            children: [
+              // Ultra minimal gradient background
+              _buildUltraMinimalBackground(),
 
-          // Main content with glass overlay
-          SafeArea(
-            child: Column(
-              children: [
-                _buildUltraPremiumHeader(),
-                Expanded(
-                  child: FadeTransition(
-                    opacity: _fadeAnimation,
-                    child: SlideTransition(
-                      position: _slideAnimation,
-                      child: _buildConversationsList(),
+              // Subtle floating particles
+              _buildSubtleParticles(),
+
+              // Main content with glass overlay
+              SafeArea(
+                child: Column(
+                  children: [
+                    _buildUltraPremiumHeader(),
+                    Expanded(
+                      child: FadeTransition(
+                        opacity: _fadeAnimation,
+                        child: SlideTransition(
+                          position: _slideAnimation,
+                          child: _buildConversationsList(),
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-        ],
+              ),
+            ],
+          );
+        },
       ),
-      floatingActionButton: ChatFAB(
-        onPressed: _startNewConversation,
+      floatingActionButton: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, authState) {
+          if (authState is AuthUnauthenticated) {
+            return const SizedBox.shrink();
+          }
+          return ChatFAB(
+            onPressed: _startNewConversation,
+          );
+        },
       ),
     );
   }
@@ -831,6 +853,135 @@ class _ConversationsPageState extends State<ConversationsPage>
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildUnauthenticatedView(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            AppTheme.darkBackground,
+            AppTheme.darkSurface.withOpacity(0.95),
+          ],
+        ),
+      ),
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      AppTheme.darkCard.withOpacity(0.3),
+                      AppTheme.darkCard.withOpacity(0.15),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(
+                    color: AppTheme.primaryBlue.withOpacity(0.15),
+                    width: 0.5,
+                  ),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                    child: Center(
+                      child: Icon(
+                        Icons.forum_outlined,
+                        size: 48,
+                        color: AppTheme.textMuted,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 28),
+              Text(
+                'يرجى تسجيل الدخول',
+                style: AppTextStyles.h2.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.textWhite,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'قم بتسجيل الدخول للوصول إلى محادثاتك',
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: AppTheme.textMuted,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 28),
+              _buildMinimalButton(
+                onPressed: () => context.push(RouteConstants.login),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.login_rounded,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'تسجيل الدخول',
+                      style: AppTextStyles.buttonMedium.copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMinimalButton({
+    required VoidCallback onPressed,
+    required Widget child,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                AppTheme.primaryBlue.withOpacity(0.8),
+                AppTheme.primaryPurple.withOpacity(0.6),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: AppTheme.primaryBlue.withOpacity(0.2),
+              width: 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppTheme.primaryBlue.withOpacity(0.2),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: child,
+        ),
       ),
     );
   }

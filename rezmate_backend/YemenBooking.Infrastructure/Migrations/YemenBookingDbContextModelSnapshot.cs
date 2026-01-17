@@ -5370,6 +5370,67 @@ namespace YemenBooking.Infrastructure.Migrations
                     b.ToTable("UserSettings", (string)null);
                 });
 
+            modelBuilder.Entity("YemenBooking.Core.Entities.UserWalletAccount", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("UserWalletAccountId");
+
+                    b.Property<string>("AccountName")
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<string>("AccountNumber")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDefault")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("WalletType")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "WalletType")
+                        .HasDatabaseName("IX_UserWalletAccounts_UserId_WalletType");
+
+                    b.ToTable("UserWalletAccounts", (string)null);
+                });
+
             modelBuilder.Entity("ChatConversationParticipant", b =>
                 {
                     b.HasOne("YemenBooking.Core.Entities.ChatConversation", null)
@@ -6403,6 +6464,17 @@ namespace YemenBooking.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("YemenBooking.Core.Entities.UserWalletAccount", b =>
+                {
+                    b.HasOne("YemenBooking.Core.Entities.User", "User")
+                        .WithMany("WalletAccounts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("YemenBooking.Core.Entities.Amenity", b =>
                 {
                     b.Navigation("PropertyTypeAmenities");
@@ -6585,6 +6657,8 @@ namespace YemenBooking.Infrastructure.Migrations
                     b.Navigation("StaffPositions");
 
                     b.Navigation("UserRoles");
+
+                    b.Navigation("WalletAccounts");
                 });
 #pragma warning restore 612, 618
         }

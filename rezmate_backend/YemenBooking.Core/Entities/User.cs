@@ -113,6 +113,8 @@ public class User : BaseEntity<Guid>
     [Display(Name = "الكيانات المملوكة من قبل المستخدم")]
     public virtual ICollection<Property> Properties { get; set; } = new List<Property>();
 
+    public virtual ICollection<UserWalletAccount> WalletAccounts { get; set; } = new List<UserWalletAccount>();
+
     /// <summary>
     /// الحجوزات التي قام بها المستخدم
     /// Bookings made by the user

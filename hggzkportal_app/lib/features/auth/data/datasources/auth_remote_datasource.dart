@@ -93,6 +93,7 @@ abstract class AuthRemoteDataSource {
     int starRating = 3,
     String? description,
     String? currency,
+    List<Map<String, dynamic>>? walletAccounts,
   });
 
   Future<void> deleteOwnerAccount({
@@ -689,6 +690,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     int starRating = 3,
     String? description,
     String? currency,
+    List<Map<String, dynamic>>? walletAccounts,
   }) async {
     const requestName = 'auth.registerOwnerWithProperty';
     logRequestStart(requestName, details: {
@@ -715,6 +717,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           'starRating': starRating,
           if (description != null) 'description': description,
           if (currency != null) 'currency': currency,
+          if (walletAccounts != null) 'walletAccounts': walletAccounts,
         },
       );
 

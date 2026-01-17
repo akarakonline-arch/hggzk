@@ -470,6 +470,12 @@ class _PaymentBreakdownPieChartState extends State<PaymentBreakdownPieChart>
           return 'فلوسك';
         case PaymentMethod.jaibWallet:
           return 'جيب';
+        case PaymentMethod.eWallet:
+          return 'محفظة إلكترونية';
+        case PaymentMethod.sabaCashWallet:
+          return 'سبأ كاش';
+        case PaymentMethod.paypal:
+          return 'PayPal';
         default:
           return 'أخرى';
       }

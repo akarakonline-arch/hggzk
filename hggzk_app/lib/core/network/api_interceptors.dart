@@ -420,10 +420,18 @@ class ErrorInterceptor extends Interceptor {
     );
   }
 
-  Future<void> _forceLogout() async {
+  Future<void> _forceLogout({bool navigateToLogin = false}) async {
+    bool hadSession = false;
     try {
       // Clear local storages first
       final localStorage = sl<LocalStorageService>();
+      hadSession =
+          ((localStorage.getData(StorageConstants.accessToken) as String?)
+                  ?.isNotEmpty ??
+              false) ||
+              ((localStorage.getData(StorageConstants.refreshToken) as String?)
+                      ?.isNotEmpty ??
+                  false);
       await localStorage.removeData(StorageConstants.accessToken);
       await localStorage.removeData(StorageConstants.refreshToken);
       // Also clear contextual headers to avoid stale context after logout
@@ -435,8 +443,9 @@ class ErrorInterceptor extends Interceptor {
     // Dispatch logout to trigger router redirect
     try {
       AppBloc.authBloc.add(const LogoutEvent());
-      // Navigate immediately to login to avoid showing stale page/errors
-      NavigationService.goToLogin();
+      if (navigateToLogin && hadSession) {
+        NavigationService.goToLogin();
+      }
     } catch (_) {}
   }
 }

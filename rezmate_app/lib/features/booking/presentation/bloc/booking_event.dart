@@ -34,15 +34,17 @@ class CancelBookingEvent extends BookingEvent {
   final String bookingId;
   final String userId;
   final String reason;
+  final bool refundPayments;
 
   const CancelBookingEvent({
     required this.bookingId,
     required this.userId,
     required this.reason,
+    this.refundPayments = false,
   });
 
   @override
-  List<Object> get props => [bookingId, userId, reason];
+  List<Object> get props => [bookingId, userId, reason, refundPayments];
 }
 
 class GetUserBookingsEvent extends BookingEvent {

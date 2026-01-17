@@ -54,9 +54,9 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>نحتاج للوصول إلى الميكروفون لتسجيل الملاحظات الصوتية</string>
 	<key>NSCameraUsageDescription</key>
-	<string>نحتاج لاستخدام الكاميرا لالتقاط صورة الملف الشخصي وصور العقارات</string>
+	<string>نحتاج لاستخدام الكاميرا لالتقاط صورة الملف الشخصي وصور المراجعات للحجوزات</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>نحتاج للوصول إلى مكتبة الصور لاختيار صورة الملف الشخصي وصور العقارات</string>
+	<string>نحتاج للوصول إلى مكتبة الصور لاختيار صورة الملف الشخصي وصور المراجعات للحجوزات</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>نحتاج للإذن لحفظ الصور المُعدلة إلى مكتبة الصور</string>
 	<key>NSContactsUsageDescription</key>

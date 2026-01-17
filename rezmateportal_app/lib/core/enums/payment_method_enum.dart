@@ -9,6 +9,8 @@ enum PaymentMethod {
   cash,
   paypal,
   creditCard,
+  eWallet,
+  sabaCashWallet,
 }
 
 /// Extension for PaymentMethod enum
@@ -32,6 +34,10 @@ extension PaymentMethodExtension on PaymentMethod {
         return 7;
       case PaymentMethod.creditCard:
         return 8;
+      case PaymentMethod.eWallet:
+        return 9;
+      case PaymentMethod.sabaCashWallet:
+        return 10;
     }
   }
 
@@ -54,6 +60,10 @@ extension PaymentMethodExtension on PaymentMethod {
         return 'باي بال';
       case PaymentMethod.creditCard:
         return 'بطاقة ائتمان';
+      case PaymentMethod.eWallet:
+        return 'محفظة إلكترونية';
+      case PaymentMethod.sabaCashWallet:
+        return 'محفظة سبأ كاش';
     }
   }
 
@@ -76,6 +86,10 @@ extension PaymentMethodExtension on PaymentMethod {
         return 'PayPal';
       case PaymentMethod.creditCard:
         return 'Credit Card';
+      case PaymentMethod.eWallet:
+        return 'E-Wallet';
+      case PaymentMethod.sabaCashWallet:
+        return 'SabaCash Wallet';
     }
   }
 
@@ -98,6 +112,10 @@ extension PaymentMethodExtension on PaymentMethod {
         return 'paypal';
       case PaymentMethod.creditCard:
         return 'credit_card';
+      case PaymentMethod.eWallet:
+        return 'e_wallet';
+      case PaymentMethod.sabaCashWallet:
+        return 'saba_cash';
     }
   }
 
@@ -109,6 +127,8 @@ extension PaymentMethodExtension on PaymentMethod {
       case PaymentMethod.oneCashWallet:
       case PaymentMethod.floskWallet:
       case PaymentMethod.jaibWallet:
+      case PaymentMethod.eWallet:
+      case PaymentMethod.sabaCashWallet:
         return true;
       default:
         return false;
@@ -144,6 +164,10 @@ extension PaymentMethodExtension on PaymentMethod {
         return PaymentMethod.paypal;
       case 8:
         return PaymentMethod.creditCard;
+      case 9:
+        return PaymentMethod.eWallet;
+      case 10:
+        return PaymentMethod.sabaCashWallet;
       default:
         return PaymentMethod.cash;
     }
@@ -174,6 +198,11 @@ extension PaymentMethodExtension on PaymentMethod {
       case 'creditcard':
       case 'credit':
         return PaymentMethod.creditCard;
+      case 'ewallet':
+        return PaymentMethod.eWallet;
+      case 'sabacashwallet':
+      case 'sabacash':
+        return PaymentMethod.sabaCashWallet;
       default:
         return PaymentMethod.cash;
     }

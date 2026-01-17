@@ -2,6 +2,8 @@ using MediatR;
 using YemenBooking.Application.Common.Models;
 using YemenBooking.Application.Features.Authentication;
 using YemenBooking.Application.Features.Authentication.DTOs;
+using YemenBooking.Core.Enums;
+using System.Collections.Generic;
 
 namespace YemenBooking.Application.Features.Authentication.Commands.RegisterOwner;
 
@@ -17,6 +19,8 @@ public class RegisterPropertyOwnerCommand : IRequest<ResultDto<RegisterPropertyO
     public string Password { get; set; } = string.Empty;
     public string Phone { get; set; } = string.Empty;
 
+    public List<OwnerWalletAccountRequestDto>? WalletAccounts { get; set; }
+
     // Property fields
     public Guid PropertyTypeId { get; set; }
     public string PropertyName { get; set; } = string.Empty;
@@ -27,5 +31,13 @@ public class RegisterPropertyOwnerCommand : IRequest<ResultDto<RegisterPropertyO
     public int StarRating { get; set; } = 3;
     public string? Description { get; set; }
     public string? Currency { get; set; }
+}
+
+public class OwnerWalletAccountRequestDto
+{
+    public PaymentMethodEnum WalletType { get; set; }
+    public string AccountNumber { get; set; } = string.Empty;
+    public string? AccountName { get; set; }
+    public bool IsDefault { get; set; }
 }
 

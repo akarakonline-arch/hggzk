@@ -553,15 +553,31 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   void _handleAuthState(BuildContext context, AuthState state) {
     if (state is AuthLoginSuccess) {
       final user = state.user;
+      final from = GoRouterState.of(context).uri.queryParameters['from'];
+      final decodedFrom =
+          (from == null || from.isEmpty) ? null : Uri.decodeComponent(from);
+
       if (user.isEmailVerified) {
-        context.go(RouteConstants.main);
+        if (decodedFrom != null && !decodedFrom.startsWith('/login')) {
+          context.go(decodedFrom);
+        } else {
+          context.go(RouteConstants.main);
+        }
       } else {
         context.go(RouteConstants.verifyOtp);
       }
     } else if (state is AuthAuthenticated) {
       final user = state.user;
+      final from = GoRouterState.of(context).uri.queryParameters['from'];
+      final decodedFrom =
+          (from == null || from.isEmpty) ? null : Uri.decodeComponent(from);
+
       if (user.isEmailVerified) {
-        context.go(RouteConstants.main);
+        if (decodedFrom != null && !decodedFrom.startsWith('/login')) {
+          context.go(decodedFrom);
+        } else {
+          context.go(RouteConstants.main);
+        }
       } else {
         context.go(RouteConstants.verifyOtp);
       }

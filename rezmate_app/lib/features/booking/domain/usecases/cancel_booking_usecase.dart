@@ -15,6 +15,7 @@ class CancelBookingUseCase implements UseCase<bool, CancelBookingParams> {
       bookingId: params.bookingId,
       userId: params.userId,
       reason: params.reason,
+      refundPayments: params.refundPayments,
     );
   }
 }
@@ -23,13 +24,15 @@ class CancelBookingParams extends Equatable {
   final String bookingId;
   final String userId;
   final String reason;
+  final bool refundPayments;
 
   const CancelBookingParams({
     required this.bookingId,
     required this.userId,
     required this.reason,
+    this.refundPayments = false,
   });
 
   @override
-  List<Object> get props => [bookingId, userId, reason];
+  List<Object> get props => [bookingId, userId, reason, refundPayments];
 }

@@ -164,6 +164,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       starRating: event.starRating,
       description: event.description,
       currency: event.currency,
+      walletAccounts: event.walletAccounts,
     );
 
     final result = await registerOwnerUseCase(params);

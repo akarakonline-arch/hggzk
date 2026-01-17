@@ -74,6 +74,10 @@ class PaymentMethodIcon extends StatelessWidget {
         return Icons.account_balance_wallet;
       case PaymentMethod.jaibWallet:
         return Icons.account_balance_wallet;
+      case PaymentMethod.eWallet:
+        return Icons.account_balance_wallet;
+      case PaymentMethod.sabaCashWallet:
+        return Icons.account_balance_wallet;
       case PaymentMethod.cash:
         return CupertinoIcons.money_dollar_circle_fill;
       case PaymentMethod.paypal:
@@ -93,6 +97,8 @@ class PaymentMethodIcon extends StatelessWidget {
       case PaymentMethod.oneCashWallet:
       case PaymentMethod.floskWallet:
       case PaymentMethod.jaibWallet:
+      case PaymentMethod.eWallet:
+      case PaymentMethod.sabaCashWallet:
         return AppTheme.primaryViolet;
       case PaymentMethod.cash:
         return AppTheme.success;
@@ -117,6 +123,10 @@ class PaymentMethodIcon extends StatelessWidget {
         return 'فلوسك';
       case PaymentMethod.jaibWallet:
         return 'جيب';
+      case PaymentMethod.eWallet:
+        return 'محفظة إلكترونية';
+      case PaymentMethod.sabaCashWallet:
+        return 'سبأ كاش';
       case PaymentMethod.cash:
         return 'نقدي';
       case PaymentMethod.paypal:

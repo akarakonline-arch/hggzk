@@ -99,6 +99,10 @@ class PaymentModel extends Payment {
           return PaymentMethod.paypal;
         case 8:
           return PaymentMethod.creditCard;
+        case 9:
+          return PaymentMethod.eWallet;
+        case 10:
+          return PaymentMethod.sabaCashWallet;
         default:
           return PaymentMethod.cash;
       }

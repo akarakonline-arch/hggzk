@@ -184,6 +184,7 @@ class AuthRepositoryImpl implements AuthRepository {
     int starRating = 3,
     String? description,
     String? currency,
+    List<Map<String, dynamic>>? walletAccounts,
   }) async {
     if (await internetConnectionChecker.hasConnection) {
       try {
@@ -201,6 +202,7 @@ class AuthRepositoryImpl implements AuthRepository {
           starRating: starRating,
           description: description,
           currency: currency,
+          walletAccounts: walletAccounts,
         );
         // persist tokens to LocalStorageService as well for interceptor
         final localStorage = sl<LocalStorageService>();

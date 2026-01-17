@@ -138,34 +138,59 @@ public class GetBookingDetailsQueryHandler : IRequestHandler<GetBookingDetailsQu
                 .Sum(p => p.Amount.Amount);
             var isPaid = totalPaid >= booking.TotalPrice.Amount;
 
-            // حساب إمكانية الإلغاء وفقاً لسياسة الإلغاء (بدون استخدام PolicySnapshot JSON)
             bool canCancel = false;
-            if (booking.Status != BookingStatus.Cancelled &&
-                booking.Status != BookingStatus.Completed &&
-                booking.Status != BookingStatus.CheckedIn &&
-                unit.AllowsCancellation)
+            string? cancelNotAllowedCode = null;
+            string? cancelNotAllowedReason = null;
+
+            if (booking.Status == BookingStatus.Pending)
             {
-                int? windowDays = unit.CancellationWindowDays;
-                if (!windowDays.HasValue)
+                canCancel = true;
+            }
+            else if (booking.Status != BookingStatus.Cancelled &&
+                     booking.Status != BookingStatus.Completed &&
+                     booking.Status != BookingStatus.CheckedIn)
+            {
+                if (!unit.AllowsCancellation)
                 {
-                    var propertyPolicy = await _propertyRepository.GetCancellationPolicyAsync(property.Id, cancellationToken);
-                    windowDays = propertyPolicy?.CancellationWindowDays;
-                }
-
-                var utcNow = DateTime.UtcNow;
-                var timeToCheckIn = booking.CheckIn - utcNow;
-                var daysBeforeCheckIn = timeToCheckIn.TotalDays;
-
-                if (windowDays.HasValue)
-                {
-                    if (daysBeforeCheckIn >= 0 && daysBeforeCheckIn >= windowDays.Value)
+                    canCancel = false;
+                    if (booking.Status == BookingStatus.Confirmed)
                     {
-                        canCancel = true;
+                        cancelNotAllowedCode = "CANCELLATION_NOT_ALLOWED";
+                        cancelNotAllowedReason = "سياسة العقار لا تسمح بإلغاء الحجز بعد التأكيد";
                     }
                 }
                 else
                 {
-                    if (timeToCheckIn.TotalSeconds >= 0)
+                    int? windowDays = unit.CancellationWindowDays;
+                    if (!windowDays.HasValue)
+                    {
+                        var propertyPolicy = await _propertyRepository.GetCancellationPolicyAsync(property.Id, cancellationToken);
+                        windowDays = propertyPolicy?.CancellationWindowDays;
+                    }
+
+                    var utcNow = DateTime.UtcNow;
+                    var timeToCheckIn = booking.CheckIn - utcNow;
+                    var daysBeforeCheckIn = timeToCheckIn.TotalDays;
+
+                    if (timeToCheckIn.TotalSeconds < 0)
+                    {
+                        canCancel = false;
+                        if (booking.Status == BookingStatus.Confirmed)
+                        {
+                            cancelNotAllowedCode = "CANCELLATION_AFTER_CHECKIN";
+                            cancelNotAllowedReason = "لا يمكن إلغاء الحجز بعد وقت تسجيل الوصول";
+                        }
+                    }
+                    else if (windowDays.HasValue && daysBeforeCheckIn < windowDays.Value)
+                    {
+                        canCancel = false;
+                        if (booking.Status == BookingStatus.Confirmed)
+                        {
+                            cancelNotAllowedCode = "CANCELLATION_WINDOW_EXCEEDED";
+                            cancelNotAllowedReason = $"لا يمكن إلغاء الحجز خلال {windowDays.Value} يوم/أيام قبل تاريخ الوصول حسب سياسة الإلغاء";
+                        }
+                    }
+                    else
                     {
                         canCancel = true;
                     }
@@ -205,7 +230,9 @@ public class GetBookingDetailsQueryHandler : IRequestHandler<GetBookingDetailsQu
                 PolicySnapshot = booking.PolicySnapshot,
                 PolicySnapshotAt = booking.PolicySnapshotAt,
                 IsPaid = isPaid,
-                CanCancel = canCancel
+                CanCancel = canCancel,
+                CancelNotAllowedCode = cancelNotAllowedCode,
+                CancelNotAllowedReason = cancelNotAllowedReason
             };
 
             _logger.LogInformation("تم الحصول على تفاصيل الحجز بنجاح. معرف الحجز: {BookingId}", request.BookingId);

@@ -23,6 +23,7 @@ public static class RepositoryServiceRegistration
         
         // User Management
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUserWalletAccountRepository, UserWalletAccountRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IUserRoleRepository, UserRoleRepository>();
         services.AddScoped<IUserSettingsRepository, UserSettingsRepository>();

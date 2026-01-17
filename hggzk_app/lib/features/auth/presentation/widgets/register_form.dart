@@ -1,7 +1,9 @@
 // lib/features/auth/presentation/widgets/ultra_register_form.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'dart:ui';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -48,6 +50,9 @@ class _RegisterFormState extends State<RegisterForm>
   bool _acceptTerms = false;
   bool _showPasswordStrength = false;
 
+  late TapGestureRecognizer _termsRecognizer;
+  late TapGestureRecognizer _privacyRecognizer;
+
   /// حماية ضد الضغط المتكرر على زر التسجيل
   bool _isSubmitting = false;
 
@@ -73,6 +78,27 @@ class _RegisterFormState extends State<RegisterForm>
         _showPasswordStrength = _passwordController.text.isNotEmpty;
       });
     });
+
+    _termsRecognizer = TapGestureRecognizer()
+      ..onTap = () {
+        context.push(
+          '/legal/webview',
+          extra: <String, dynamic>{
+            'title': 'الشروط والأحكام',
+            'url': 'https://www.hggzk.com/terms-customers',
+          },
+        );
+      };
+    _privacyRecognizer = TapGestureRecognizer()
+      ..onTap = () {
+        context.push(
+          '/legal/webview',
+          extra: <String, dynamic>{
+            'title': 'سياسة الخصوصية',
+            'url': 'https://www.hggzk.com/privacy',
+          },
+        );
+      };
 
     // Add focus listeners for animations
     _nameFocusNode.addListener(() => setState(() {}));
@@ -107,6 +133,8 @@ class _RegisterFormState extends State<RegisterForm>
     _confirmPasswordFocusNode.dispose();
     _fieldAnimationController.dispose();
     _checkboxAnimationController.dispose();
+    _termsRecognizer.dispose();
+    _privacyRecognizer.dispose();
     super.dispose();
   }
 
@@ -473,6 +501,7 @@ class _RegisterFormState extends State<RegisterForm>
                       decoration: TextDecoration.underline,
                       decorationColor: AppTheme.primaryBlue.withOpacity(0.3),
                     ),
+                    recognizer: _termsRecognizer,
                   ),
                   const TextSpan(text: ' و'),
                   TextSpan(
@@ -482,6 +511,7 @@ class _RegisterFormState extends State<RegisterForm>
                       decoration: TextDecoration.underline,
                       decorationColor: AppTheme.primaryBlue.withOpacity(0.3),
                     ),
+                    recognizer: _privacyRecognizer,
                   ),
                 ],
               ),

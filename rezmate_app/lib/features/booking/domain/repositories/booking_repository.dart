@@ -17,6 +17,7 @@ abstract class BookingRepository {
     required String bookingId,
     required String userId,
     required String reason,
+    bool refundPayments = false,
   });
   
   Future<Either<Failure, PaginatedResult<Booking>>> getUserBookings({

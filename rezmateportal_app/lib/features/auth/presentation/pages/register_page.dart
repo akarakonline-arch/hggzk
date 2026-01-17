@@ -470,6 +470,7 @@ class _RegisterPageState extends State<RegisterPage>
                   latitude,
                   longitude,
                   description,
+                  walletAccounts,
                 ) {
                   // استخدام endpoint تسجيل المالك مع إنشاء العقار
                   // الباك إند يُسند دور Owner تلقائياً
@@ -486,6 +487,7 @@ class _RegisterPageState extends State<RegisterPage>
                           latitude: latitude,
                           longitude: longitude,
                           description: description,
+                          walletAccounts: walletAccounts,
                         ),
                       );
                 },

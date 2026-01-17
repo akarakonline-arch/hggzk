@@ -186,6 +186,18 @@ namespace YemenBooking.Application.Features.Bookings.DTOs {
         public bool CanCancel { get; set; }
 
         /// <summary>
+        /// سبب عدم السماح بالإلغاء (للعرض في تطبيق العميل)
+        /// Reason why cancellation is not allowed (for client UI)
+        /// </summary>
+        public string? CancelNotAllowedReason { get; set; }
+
+        /// <summary>
+        /// كود سبب عدم السماح بالإلغاء (للتعامل البرمجي في تطبيق العميل)
+        /// Code for why cancellation is not allowed (for client handling)
+        /// </summary>
+        public string? CancelNotAllowedCode { get; set; }
+
+        /// <summary>
         /// هل يمكن تقييم الحجز
         /// Can review booking
         /// </summary>

@@ -1,5 +1,6 @@
 // lib/features/admin_users/presentation/pages/user_details_page.dart
 
+import 'package:rezmateportal/core/enums/payment_method_enum.dart';
 import 'package:rezmateportal/core/theme/app_theme.dart';
 import 'package:rezmateportal/core/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
@@ -1229,6 +1230,25 @@ class _UserDetailsPageState extends State<UserDetailsPage>
               _buildDetailRow('الدور', _getRoleText(user.role!)),
           ],
         ),
+        if ((user.role ?? '').toLowerCase() == 'owner' &&
+            user.walletAccounts.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          _buildSectionCard(
+            title: 'حسابات الاستلام',
+            icon: Icons.payments_rounded,
+            children: user.walletAccounts.map((acc) {
+              final title = acc.walletType.displayNameAr;
+              final subtitle =
+                  acc.accountName != null && acc.accountName!.isNotEmpty
+                      ? '${acc.accountNumber} - ${acc.accountName}'
+                      : acc.accountNumber;
+              return _buildDetailRow(
+                acc.isDefault ? '$title (افتراضي)' : title,
+                subtitle,
+              );
+            }).toList(),
+          ),
+        ],
         const SizedBox(height: 16),
         _buildSectionCard(
           title: 'إحصائيات الحجوزات',

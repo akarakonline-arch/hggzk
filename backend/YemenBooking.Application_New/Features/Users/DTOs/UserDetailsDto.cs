@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace YemenBooking.Application.Features.Users.DTOs {
     /// <summary>بيانات تفصيلية عن المستخدم</summary>
@@ -97,5 +98,7 @@ namespace YemenBooking.Application.Features.Users.DTOs {
 
         /// <summary>عدد الردود على البلاغات (غير مستخدم حاليًا)</summary>
         public int? RepliesCount { get; set; }
+
+        public List<UserWalletAccountDto> WalletAccounts { get; set; } = new List<UserWalletAccountDto>();
     }
 } 

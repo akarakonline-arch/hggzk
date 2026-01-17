@@ -1219,8 +1219,7 @@ class _UltraMinimalDialog extends StatelessWidget {
                             ),
                             child: Text(
                               'إلغاء',
-                              style: AppTextStyles.caption.copyWith(
-                              ),
+                              style: AppTextStyles.caption.copyWith(),
                               textAlign: TextAlign.center,
                             ),
                           ),

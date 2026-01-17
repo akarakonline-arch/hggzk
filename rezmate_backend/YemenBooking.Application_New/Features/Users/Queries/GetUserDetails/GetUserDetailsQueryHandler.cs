@@ -23,6 +23,7 @@ namespace YemenBooking.Application.Features.Users.Queries.GetUserDetails
     public class GetUserDetailsQueryHandler : IRequestHandler<GetUserDetailsQuery, ResultDto<UserDetailsDto>>
     {
         private readonly IUserRepository _userRepository;
+        private readonly IUserWalletAccountRepository _userWalletAccountRepository;
         private readonly IBookingRepository _bookingRepository;
         private readonly IReportRepository _reportRepository;
         private readonly IPaymentRepository _paymentRepository;
@@ -36,6 +37,7 @@ namespace YemenBooking.Application.Features.Users.Queries.GetUserDetails
 
         public GetUserDetailsQueryHandler(
             IUserRepository userRepository,
+            IUserWalletAccountRepository userWalletAccountRepository,
             IBookingRepository bookingRepository,
             IReportRepository reportRepository,
             IPaymentRepository paymentRepository,
@@ -48,6 +50,7 @@ namespace YemenBooking.Application.Features.Users.Queries.GetUserDetails
             ILogger<GetUserDetailsQueryHandler> logger)
         {
             _userRepository = userRepository;
+            _userWalletAccountRepository = userWalletAccountRepository;
             _bookingRepository = bookingRepository;
             _reportRepository = reportRepository;
             _paymentRepository = paymentRepository;
@@ -131,6 +134,18 @@ namespace YemenBooking.Application.Features.Users.Queries.GetUserDetails
                     var properties = await _propertyRepository.GetPropertiesByOwnerAsync(request.UserId, cancellationToken);
                     var firstProperty = properties.FirstOrDefault();
                     propertyId = firstProperty?.Id ?? Guid.Empty;
+
+                    var accounts = await _userWalletAccountRepository.GetByUserIdAsync(request.UserId, cancellationToken);
+                    dto.WalletAccounts = accounts
+                        .Select(a => new UserWalletAccountDto
+                        {
+                            Id = a.Id,
+                            WalletType = a.WalletType,
+                            AccountNumber = a.AccountNumber,
+                            AccountName = a.AccountName,
+                            IsDefault = a.IsDefault,
+                        })
+                        .ToList();
                 }
                 else
                 {

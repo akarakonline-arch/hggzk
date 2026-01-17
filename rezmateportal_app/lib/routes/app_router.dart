@@ -118,6 +118,8 @@ import 'package:rezmateportal/features/onboarding/presentation/pages/select_city
 import 'package:rezmateportal/features/notifications/presentation/pages/notifications_page.dart';
 import 'package:rezmateportal/features/notifications/presentation/pages/notification_settings_page.dart';
 import 'package:rezmateportal/features/admin_hub/presentation/pages/admin_hub_page.dart';
+import 'package:rezmateportal/features/settings/presentation/pages/in_app_webview_page.dart';
+import 'package:rezmateportal/features/settings/presentation/pages/legal_documents_page.dart';
 import 'package:rezmateportal/features/notifications/presentation/bloc/notification_bloc.dart'
     as notif_bloc;
 import 'package:rezmateportal/features/notifications/presentation/bloc/notification_event.dart';
@@ -358,6 +360,23 @@ class AppRouter {
           path: '/profile/change-password',
           builder: (BuildContext context, GoRouterState state) {
             return const ChangePasswordPage();
+          },
+        ),
+        GoRoute(
+          path: '/legal',
+          builder: (BuildContext context, GoRouterState state) {
+            return const LegalDocumentsPage(baseUrl: 'https://www.rezmate.com');
+          },
+        ),
+        GoRoute(
+          path: '/legal/webview',
+          builder: (BuildContext context, GoRouterState state) {
+            final extra = state.extra is Map<String, dynamic>
+                ? state.extra as Map<String, dynamic>
+                : const <String, dynamic>{};
+            final title = (extra['title'] as String?) ?? '';
+            final url = (extra['url'] as String?) ?? 'https://www.rezmate.com';
+            return InAppWebViewPage(title: title, url: url);
           },
         ),
         // Settings routes removed

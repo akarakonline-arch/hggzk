@@ -991,6 +991,7 @@ class _ProfilePageState extends State<ProfilePage>
         'icon': Icons.edit_outlined,
         'title': 'تعديل الملف الشخصي',
         'route': RouteConstants.editProfile,
+        'extra': null,
         'color': AppTheme.primaryBlue,
         'widget': null,
       },
@@ -998,6 +999,7 @@ class _ProfilePageState extends State<ProfilePage>
         'icon': Icons.lock_outline_rounded,
         'title': 'تغيير كلمة المرور',
         'route': RouteConstants.changePassword,
+        'extra': null,
         'color': AppTheme.primaryPurple,
         'widget': null,
       },
@@ -1005,6 +1007,7 @@ class _ProfilePageState extends State<ProfilePage>
         'icon': Icons.palette_outlined,
         'title': 'مظهر التطبيق',
         'route': null,
+        'extra': null,
         'color': const Color(0xFF6366F1),
         'widget': _buildThemeToggleMenuItem(),
       },
@@ -1012,6 +1015,7 @@ class _ProfilePageState extends State<ProfilePage>
         'icon': Icons.fingerprint_rounded,
         'title': 'تسجيل الدخول بالبصمة',
         'route': null,
+        'extra': null,
         'color': AppTheme.primaryPurple,
         'widget': _buildBiometricToggleMenuItem(context),
       },
@@ -1026,13 +1030,26 @@ class _ProfilePageState extends State<ProfilePage>
         'icon': Icons.notifications_none_rounded,
         'title': 'إعدادات الإشعارات',
         'route': RouteConstants.notificationSettings,
+        'extra': null,
         'color': AppTheme.warning,
+        'widget': null,
+      },
+      {
+        'icon': Icons.policy_rounded,
+        'title': 'السياسات والشروط',
+        'route': '/legal',
+        'extra': null,
+        'color': AppTheme.primaryBlue,
         'widget': null,
       },
       {
         'icon': Icons.help_outline_rounded,
         'title': 'المساعدة والدعم',
-        'route': null,
+        'route': '/legal/webview',
+        'extra': <String, dynamic>{
+          'title': 'المساعدة والدعم',
+          'url': 'https://www.hggzk.com/support',
+        },
         'color': AppTheme.primaryCyan,
         'widget': null,
       },
@@ -1080,8 +1097,9 @@ class _ProfilePageState extends State<ProfilePage>
                       color: item['color'] as Color,
                       onTap: () {
                         final route = item['route'] as String?;
+                        final extra = item['extra'] as Map<String, dynamic>?;
                         if (route != null) {
-                          context.push(route);
+                          context.push(route, extra: extra);
                         }
                       },
                       delay: index * 50,

@@ -33,6 +33,7 @@ abstract class AuthRepository {
     int starRating = 3,
     String? description,
     String? currency,
+    List<Map<String, dynamic>>? walletAccounts,
   });
 
   Future<Either<Failure, void>> logout();

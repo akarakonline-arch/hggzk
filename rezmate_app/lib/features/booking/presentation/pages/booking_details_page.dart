@@ -49,6 +49,10 @@ class _BookingDetailsPageState extends State<BookingDetailsPage>
   bool _showQRCode = false;
   final ScrollController _scrollController = ScrollController();
   double _scrollOffset = 0;
+  dynamic _cachedBooking;
+  String? _pendingCancelReason;
+  String? _pendingCancelBookingId;
+  String? _pendingCancelUserId;
 
   @override
   void initState() {
@@ -153,28 +157,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage>
             // Main Content
             BlocConsumer<BookingBloc, BookingState>(
               listener: (context, state) {
-                if (state is BookingError && state.showAsDialog) {
-                  final code = state.code ?? state.message;
-                  if (code == 'CANCELLATION_AFTER_CHECKIN') {
-                    _showPolicyDialog(
-                      title: 'لا يمكن إلغاء الحجز',
-                      description:
-                          'لا يمكن إلغاء الحجز بعد وقت تسجيل الوصول حسب سياسة الإلغاء.',
-                    );
-                  } else if (code == 'CANCELLATION_WINDOW_EXCEEDED') {
-                    _showPolicyDialog(
-                      title: 'غير مسموح بالإلغاء',
-                      description:
-                          'لا يمكن إلغاء الحجز خلال نافذة الإلغاء المحددة في سياسة الحجز.',
-                    );
-                  } else if (code == 'REFUND_EXCEEDS_POLICY') {
-                    _showPolicyDialog(
-                      title: 'طلب الاسترداد مرفوض',
-                      description:
-                          'المبلغ المطلوب للاسترداد يتجاوز الحد المسموح حسب سياسة الإلغاء لهذا الحجز.',
-                    );
-                  }
-                }
+                _handleBookingState(context, state);
               },
               builder: (context, state) {
                 if (state is BookingLoading) {
@@ -184,12 +167,16 @@ class _BookingDetailsPageState extends State<BookingDetailsPage>
                 }
 
                 if (state is BookingError) {
+                  if (_cachedBooking != null) {
+                    return _buildContent(_cachedBooking);
+                  }
                   return Center(
                     child: _buildMinimalError(state),
                   );
                 }
 
                 if (state is BookingDetailsLoaded) {
+                  _cachedBooking = state.booking;
                   return _buildContent(state.booking);
                 }
 
@@ -199,6 +186,176 @@ class _BookingDetailsPageState extends State<BookingDetailsPage>
           ],
         ),
       ),
+    );
+  }
+
+  void _handleBookingState(BuildContext context, BookingState state) {
+    if (state is BookingCancelled) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('تم إلغاء الحجز بنجاح'),
+          backgroundColor: AppTheme.success,
+        ),
+      );
+      _refreshUserBookings();
+      Navigator.pop(context);
+      return;
+    }
+
+    if (state is BookingError && state.showAsDialog) {
+      final code = state.code ?? state.message;
+      if (code == 'CANCELLATION_AFTER_CHECKIN') {
+        _showPolicyDialog(
+          title: 'لا يمكن إلغاء الحجز',
+          description: 'لا يمكن إلغاء الحجز بعد وقت تسجيل الوصول.',
+        );
+      } else if (code == 'CANCELLATION_NOT_ALLOWED') {
+        _showPolicyDialog(
+          title: 'غير مسموح بالإلغاء',
+          description: 'سياسة العقار لا تسمح بإلغاء الحجز بعد التأكيد.',
+        );
+      } else if (code == 'CANCELLATION_WINDOW_EXCEEDED') {
+        _showPolicyDialog(
+          title: 'غير مسموح بالإلغاء',
+          description: 'لا يمكن إلغاء الحجز خلال نافذة الإلغاء المحددة.',
+        );
+      } else if (code == 'PAYMENTS_EXIST') {
+        _showRefundThenCancelDialog();
+      } else if (code == 'REFUND_EXCEEDS_POLICY') {
+        _showPolicyDialog(
+          title: 'طلب الاسترداد مرفوض',
+          description: 'المبلغ المطلوب للاسترداد يتجاوز الحد المسموح.',
+        );
+      }
+    }
+
+    if (state is BookingError && !state.showAsDialog) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(state.message),
+          backgroundColor: AppTheme.error,
+        ),
+      );
+    }
+  }
+
+  void _showRefundThenCancelDialog() {
+    final authState = context.read<AuthBloc>().state;
+    if (authState is! AuthAuthenticated) {
+      context.go('/login');
+      return;
+    }
+
+    final bookingId = _pendingCancelBookingId;
+    final userId = _pendingCancelUserId ?? authState.user.userId;
+    final reason = _pendingCancelReason ?? '';
+
+    if (bookingId == null || bookingId.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('تعذر إعادة محاولة الإلغاء، الرجاء المحاولة مرة أخرى.'),
+          backgroundColor: AppTheme.error,
+        ),
+      );
+      return;
+    }
+
+    showDialog(
+      context: context,
+      barrierColor: AppTheme.overlayDark,
+      builder: (ctx) {
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Dialog(
+            backgroundColor: Colors.transparent,
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: AppTheme.cardGradient,
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: AppTheme.warning.withOpacity(0.2)),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.info_outline_rounded, color: AppTheme.warning, size: 22),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          'تأكيد الاسترداد والإلغاء',
+                          style: AppTextStyles.h3.copyWith(
+                            color: AppTheme.textWhite,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'هذا الحجز يحتوي على مدفوعات. هل تريد استرداد المدفوعات ثم إلغاء الحجز؟',
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: AppTheme.textMuted,
+                      height: 1.4,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppTheme.darkSurface.withOpacity(0.6),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: Text(
+                            'رجوع',
+                            style: AppTextStyles.buttonMedium.copyWith(color: AppTheme.textWhite),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(ctx);
+                            context.read<BookingBloc>().add(
+                                  CancelBookingEvent(
+                                    bookingId: bookingId,
+                                    userId: userId,
+                                    reason: reason,
+                                    refundPayments: true,
+                                  ),
+                                );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppTheme.warning,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: Text(
+                            'استرداد ثم إلغاء',
+                            style: AppTextStyles.buttonMedium.copyWith(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -546,66 +703,50 @@ class _BookingDetailsPageState extends State<BookingDetailsPage>
       icon: Icons.policy_rounded,
       iconColor: AppTheme.primaryBlue.withOpacity(0.8),
       children: policies
-          .map<Widget>((p) {
-            String type = '';
-            String description = '';
-            try {
-              if (p is Map) {
-                type = (p['Type'] ?? '').toString();
-                description = (p['Description'] ?? '').toString();
-              }
-            } catch (_) {
-              // ignore
-            }
-
-            if (description.isEmpty) return const SizedBox.shrink();
-            final visual = _getBookingPolicyVisual(type);
-
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      color: visual.color.withOpacity(0.12),
-                      borderRadius: BorderRadius.circular(8),
+          .map<Widget>((p) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: AppTheme.primaryBlue.withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        Icons.policy_outlined,
+                        size: 18,
+                        color: AppTheme.primaryBlue.withOpacity(0.9),
+                      ),
                     ),
-                    child: Icon(
-                      visual.icon,
-                      size: 18,
-                      color: visual.color.withOpacity(0.9),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          visual.title,
-                          style: AppTextStyles.caption.copyWith(
-                            color: AppTheme.textWhite.withOpacity(0.9),
-                            fontWeight: FontWeight.w600,
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _getBookingPolicyVisual(p['Type']).title,
+                            style: AppTextStyles.caption.copyWith(
+                              color: AppTheme.textWhite.withOpacity(0.9),
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          description,
-                          style: AppTextStyles.caption.copyWith(
-                            color: AppTheme.textMuted.withOpacity(0.8),
-                            height: 1.4,
+                          const SizedBox(height: 2),
+                          Text(
+                            p['Description'],
+                            style: AppTextStyles.caption.copyWith(
+                              color: AppTheme.textMuted.withOpacity(0.8),
+                              height: 1.4,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          })
+                  ],
+                ),
+              ))
           .where((w) => w is! SizedBox)
           .toList(),
     );
@@ -640,7 +781,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage>
               Positioned.fill(
                 child: Container(
                   decoration: BoxDecoration(
-                    color: AppTheme.darkCard.withOpacity(0.7), // 🎯 خلفية أولية
+                    color: AppTheme.darkCard.withOpacity(0.7), //
                     gradient: LinearGradient(
                       begin: Alignment.topRight,
                       end: Alignment.bottomLeft,
@@ -652,22 +793,22 @@ class _BookingDetailsPageState extends State<BookingDetailsPage>
                   ),
                 ),
               ),
-              // Blur effect - محدود التأثير
+              // Blur effect -
               Positioned.fill(
                 child: ClipRect(
-                  // 🎯 يحد التأثير
+                  //
                   child: BackdropFilter(
                     filter: ImageFilter.blur(
-                      sigmaX: 8, // 🎯 متوسط القوة
+                      sigmaX: 8, //
                       sigmaY: 8,
                     ),
                     child: Container(
-                      color: Colors.black.withOpacity(0.01), // 🎯 شبه شفاف
+                      color: Colors.black.withOpacity(0.01), //
                     ),
                   ),
                 ),
               ),
-              // المحتوى
+              //
               Padding(
                 padding: EdgeInsets.only(
                   top: topPadding,
@@ -804,12 +945,12 @@ class _BookingDetailsPageState extends State<BookingDetailsPage>
         borderRadius: BorderRadius.circular(10),
         child: Stack(children: [
           Container(
-            color: AppTheme.darkCard.withOpacity(0.5), // طبقة حاجزة
+            color: AppTheme.darkCard.withOpacity(0.5), //
           ),
           BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4), // blur خفيف
+            filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4), //
             child: Container(
-              color: Colors.black.withOpacity(0.01), // تأثير خفيف
+              color: Colors.black.withOpacity(0.01), //
             ),
           ),
           IconButton(
@@ -872,7 +1013,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage>
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        color: AppTheme.darkCard, // 🎯 خلفية صلبة أولاً
+        color: AppTheme.darkCard, //
         gradient: LinearGradient(
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
@@ -897,14 +1038,14 @@ class _BookingDetailsPageState extends State<BookingDetailsPage>
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: Stack(
-          // 🎯 استخدم Stack
+          //
           children: [
             Container(
-              // 🎯 طبقة حاجزة
+              //
               color: AppTheme.darkCard.withOpacity(0.6),
             ),
             BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3), // 🎯 قلل القوة
+              filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3), //
               child: Container(
                 color: Colors.transparent,
               ),
@@ -1079,7 +1220,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage>
   Widget _buildCompactPropertyCard(dynamic booking) {
     return Container(
       decoration: BoxDecoration(
-        color: AppTheme.darkCard.withOpacity(0.5), // 🎯 خلفية صلبة
+        color: AppTheme.darkCard.withOpacity(0.5), //
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: AppTheme.darkBorder.withOpacity(0.14),
@@ -1089,10 +1230,10 @@ class _BookingDetailsPageState extends State<BookingDetailsPage>
       child: ClipRRect(
           borderRadius: BorderRadius.circular(14),
           child: Stack(
-            // 🎯 Stack للطبقات
+            //
             children: [
               Container(
-                // 🎯 طبقة حاجزة
+                //
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
@@ -1103,7 +1244,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage>
                 ),
               ),
               BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3), // 🎯 قلل القوة
+                filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3), //
                 child: Container(
                   color: Colors.transparent,
                 ),
@@ -1393,15 +1534,16 @@ class _BookingDetailsPageState extends State<BookingDetailsPage>
   Widget _buildCompactPaymentInfo(dynamic booking) {
     // Calculate paid and remaining
     final double baseTotal = (booking.totalAmount ?? 0).toDouble();
-    final double servicesTotal = booking.services != null && booking.services is List
-        ? booking.services.fold(0.0, (sum, service) {
-            try {
-              return sum + (service.totalPrice ?? 0).toDouble();
-            } catch (_) {
-              return sum;
-            }
-          })
-        : 0.0;
+    final double servicesTotal =
+        booking.services != null && booking.services is List
+            ? booking.services.fold(0.0, (sum, service) {
+                try {
+                  return sum + (service.totalPrice ?? 0).toDouble();
+                } catch (_) {
+                  return sum;
+                }
+              })
+            : 0.0;
     final double total = baseTotal + servicesTotal;
     final String currency = booking.currency ?? 'YER';
     double paid = 0.0;
@@ -1413,9 +1555,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage>
           if (p.status == PaymentStatus.completed) {
             paid += (p.amount ?? 0).toDouble();
           }
-        } catch (_) {
-          // ignore malformed payment entries
-        }
+        } catch (_) {}
       }
     }
     final double remaining = (total - paid) > 0 ? (total - paid) : 0.0;
@@ -1454,8 +1594,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage>
                 ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: isFullyPaid
                       ? AppTheme.success.withOpacity(0.08)
@@ -1749,6 +1888,43 @@ class _BookingDetailsPageState extends State<BookingDetailsPage>
             onPressed: () => _cancelBooking(booking),
           ),
         ],
+        if (!booking.canCancel &&
+            booking.status == BookingStatus.confirmed &&
+            (booking.cancelNotAllowedReason != null &&
+                booking.cancelNotAllowedReason.toString().isNotEmpty)) ...[
+          const SizedBox(height: 8),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppTheme.warning.withOpacity(0.10),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: AppTheme.warning.withOpacity(0.35),
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.info_outline_rounded,
+                  color: AppTheme.warning,
+                  size: 18,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    booking.cancelNotAllowedReason,
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppTheme.textWhite.withOpacity(0.95),
+                      fontWeight: FontWeight.w600,
+                      height: 1.3,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
         if (booking.status == BookingStatus.completed && booking.canReview) ...[
           const SizedBox(height: 8),
           _buildCompactActionButton(
@@ -1786,7 +1962,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage>
         ),
       ),
       child: Padding(
-        // ⚠️ أزلنا ClipRRect و BackdropFilter
+        //
         padding: const EdgeInsets.all(14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -2102,7 +2278,143 @@ class _BookingDetailsPageState extends State<BookingDetailsPage>
 
   void _cancelBooking(dynamic booking) {
     HapticFeedback.mediumImpact();
-    // Show cancel dialog
+    final authState = context.read<AuthBloc>().state;
+    if (authState is! AuthAuthenticated) {
+      context.go('/login');
+      return;
+    }
+
+    final reasonController = TextEditingController();
+    showDialog(
+      context: context,
+      barrierColor: AppTheme.overlayDark,
+      builder: (ctx) {
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Dialog(
+            backgroundColor: Colors.transparent,
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: AppTheme.cardGradient,
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: AppTheme.error.withOpacity(0.2)),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.cancel_rounded,
+                          color: AppTheme.error, size: 22),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          'تأكيد إلغاء الحجز',
+                          style: AppTextStyles.h3.copyWith(
+                            color: AppTheme.textWhite,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'هل تريد إلغاء هذا الحجز؟',
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: AppTheme.textMuted,
+                      height: 1.4,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 14),
+                  TextField(
+                    controller: reasonController,
+                    maxLines: 2,
+                    style: AppTextStyles.bodySmall
+                        .copyWith(color: AppTheme.textWhite),
+                    decoration: InputDecoration(
+                      hintText: 'سبب الإلغاء (اختياري)',
+                      hintStyle: AppTextStyles.bodySmall
+                          .copyWith(color: AppTheme.textMuted),
+                      filled: true,
+                      fillColor: AppTheme.darkCard.withOpacity(0.6),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: AppTheme.darkBorder.withOpacity(0.3),
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: AppTheme.darkBorder.withOpacity(0.3),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                AppTheme.darkSurface.withOpacity(0.6),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: Text(
+                            'رجوع',
+                            style: AppTextStyles.buttonMedium
+                                .copyWith(color: AppTheme.textWhite),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(ctx);
+                            _pendingCancelBookingId = booking.id;
+                            _pendingCancelUserId = authState.user.userId;
+                            _pendingCancelReason = reasonController.text.trim();
+                            context.read<BookingBloc>().add(
+                                  CancelBookingEvent(
+                                    bookingId: booking.id,
+                                    userId: authState.user.userId,
+                                    reason: reasonController.text.trim(),
+                                    refundPayments: false,
+                                  ),
+                                );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppTheme.error,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: Text(
+                            'إلغاء الحجز',
+                            style: AppTextStyles.buttonMedium
+                                .copyWith(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    ).then((_) => reasonController.dispose());
   }
 
   void _writeReview(dynamic booking) {

@@ -1,4 +1,24 @@
 import 'package:equatable/equatable.dart';
+import 'package:hggzkportal/core/enums/payment_method_enum.dart';
+
+class UserWalletAccount extends Equatable {
+  final String id;
+  final PaymentMethod walletType;
+  final String accountNumber;
+  final String? accountName;
+  final bool isDefault;
+
+  const UserWalletAccount({
+    required this.id,
+    required this.walletType,
+    required this.accountNumber,
+    this.accountName,
+    required this.isDefault,
+  });
+
+  @override
+  List<Object?> get props => [id, walletType, accountNumber, accountName, isDefault];
+}
 
 class UserDetails extends Equatable {
   final String id;
@@ -37,6 +57,7 @@ class UserDetails extends Equatable {
   final int? unitImagesCount;
   final double? netRevenue;
   final int? repliesCount;
+  final List<UserWalletAccount> walletAccounts;
 
   const UserDetails({
     required this.id,
@@ -69,6 +90,7 @@ class UserDetails extends Equatable {
     this.unitImagesCount,
     this.netRevenue,
     this.repliesCount,
+    this.walletAccounts = const [],
   });
 
   @override
@@ -103,5 +125,6 @@ class UserDetails extends Equatable {
         unitImagesCount,
         netRevenue,
         repliesCount,
+        walletAccounts,
       ];
 }

@@ -1,4 +1,47 @@
+import '../../../../core/enums/payment_method_enum.dart';
 import '../../domain/entities/user_details.dart';
+
+class UserWalletAccountModel extends UserWalletAccount {
+  const UserWalletAccountModel({
+    required super.id,
+    required super.walletType,
+    required super.accountNumber,
+    super.accountName,
+    required super.isDefault,
+  });
+
+  factory UserWalletAccountModel.fromJson(Map<String, dynamic> json) {
+    final walletTypeRaw = json['walletType'];
+    PaymentMethod parsedWalletType;
+    if (walletTypeRaw is num) {
+      parsedWalletType = PaymentMethodExtension.fromBackendValue(walletTypeRaw.toInt());
+    } else if (walletTypeRaw is String) {
+      final asInt = int.tryParse(walletTypeRaw);
+      parsedWalletType = asInt != null
+          ? PaymentMethodExtension.fromBackendValue(asInt)
+          : PaymentMethodExtension.fromString(walletTypeRaw);
+    } else {
+      parsedWalletType = PaymentMethod.cash;
+    }
+    return UserWalletAccountModel(
+      id: (json['id'] ?? '').toString(),
+      walletType: parsedWalletType,
+      accountNumber: (json['accountNumber'] ?? '').toString(),
+      accountName: json['accountName']?.toString(),
+      isDefault: (json['isDefault'] as bool?) ?? false,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'walletType': walletType.backendValue,
+      'accountNumber': accountNumber,
+      'accountName': accountName,
+      'isDefault': isDefault,
+    };
+  }
+}
 
 class UserDetailsModel extends UserDetails {
   const UserDetailsModel({
@@ -30,6 +73,7 @@ class UserDetailsModel extends UserDetails {
     int? unitImagesCount,
     double? netRevenue,
     int? repliesCount,
+    List<UserWalletAccount>? walletAccounts,
   }) : super(
           id: id,
           userName: userName,
@@ -59,9 +103,18 @@ class UserDetailsModel extends UserDetails {
           unitImagesCount: unitImagesCount,
           netRevenue: netRevenue,
           repliesCount: repliesCount,
+          walletAccounts: walletAccounts ?? const [],
         );
 
   factory UserDetailsModel.fromJson(Map<String, dynamic> json) {
+    final accountsJson = json['walletAccounts'];
+    final walletAccounts = (accountsJson is List)
+        ? accountsJson
+            .whereType<Map>()
+            .map((e) => UserWalletAccountModel.fromJson(
+                e.map((k, v) => MapEntry(k.toString(), v))))
+            .toList()
+        : <UserWalletAccountModel>[];
     return UserDetailsModel(
       id: json['id'] as String,
       userName: json['userName'] as String,
@@ -101,6 +154,7 @@ class UserDetailsModel extends UserDetails {
           ? (json['netRevenue'] as num).toDouble()
           : null,
       repliesCount: json['repliesCount'] as int?,
+      walletAccounts: walletAccounts,
     );
   }
 
@@ -134,6 +188,15 @@ class UserDetailsModel extends UserDetails {
       'unitImagesCount': unitImagesCount,
       'netRevenue': netRevenue,
       'repliesCount': repliesCount,
+      'walletAccounts': walletAccounts
+          .map((e) => UserWalletAccountModel(
+                id: e.id,
+                walletType: e.walletType,
+                accountNumber: e.accountNumber,
+                accountName: e.accountName,
+                isDefault: e.isDefault,
+              ).toJson())
+          .toList(),
     };
   }
 }

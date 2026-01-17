@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'dart:ui';
 import 'dart:math' as math;
 import 'package:hggzkportal/core/theme/app_text_styles.dart';
+import 'package:hggzkportal/core/enums/payment_method_enum.dart';
 import 'package:hggzkportal/injection_container.dart' as di;
 import 'package:hggzkportal/features/admin_financial/domain/repositories/financial_repository.dart';
 import 'package:hggzkportal/features/admin_bookings/domain/usecases/bookings/get_bookings_by_user_usecase.dart';
@@ -1224,6 +1225,24 @@ class _UserDetailsPageState extends State<UserDetailsPage>
                 'إجمالي المردودات', '﷼${user.totalRefunds.toStringAsFixed(2)}'),
           ],
         ),
+        if ((user.role ?? '').toLowerCase() == 'owner' &&
+            user.walletAccounts.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          _buildSectionCard(
+            title: 'حسابات الاستلام',
+            icon: Icons.payments_rounded,
+            children: user.walletAccounts.map((acc) {
+              final title = acc.walletType.displayNameAr;
+              final subtitle = acc.accountName != null && acc.accountName!.isNotEmpty
+                  ? '${acc.accountNumber} - ${acc.accountName}'
+                  : acc.accountNumber;
+              return _buildDetailRow(
+                acc.isDefault ? '$title (افتراضي)' : title,
+                subtitle,
+              );
+            }).toList(),
+          ),
+        ],
       ],
     );
   }

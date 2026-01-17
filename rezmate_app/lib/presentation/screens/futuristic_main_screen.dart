@@ -11,6 +11,8 @@ import '../../core/theme/app_text_styles.dart';
 import '../../features/home/presentation/pages/futuristic_home_page.dart';
 import '../../features/booking/presentation/pages/my_bookings_page.dart';
 import '../../features/auth/presentation/pages/profile_page.dart';
+import '../../features/auth/presentation/bloc/auth_bloc.dart';
+import '../../features/auth/presentation/bloc/auth_state.dart';
 import '../../features/notifications/presentation/bloc/notification_bloc.dart';
 import '../../features/notifications/presentation/bloc/notification_event.dart';
 import '../../features/notifications/presentation/bloc/notification_state.dart';
@@ -103,8 +105,11 @@ class _MainScreenState extends State<MainScreen>
     _initializeAnimations();
     _startAnimations();
     
-    // Load notifications
-    context.read<NotificationBloc>().add(const LoadNotificationsEvent());
+    // Load notifications only for authenticated users to avoid 401->force logout->login navigation on app start
+    final authState = context.read<AuthBloc>().state;
+    if (authState is AuthAuthenticated) {
+      context.read<NotificationBloc>().add(const LoadNotificationsEvent());
+    }
   }
   
   void _initializeControllers() {

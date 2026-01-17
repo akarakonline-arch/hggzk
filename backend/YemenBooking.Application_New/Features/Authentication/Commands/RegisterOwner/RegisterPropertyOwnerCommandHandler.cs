@@ -25,6 +25,7 @@ namespace YemenBooking.Application.Features.Authentication.Commands.RegisterOwne
     {
         private readonly IPasswordHashingService _passwordHashingService;
         private readonly IUserRepository _userRepository;
+        private readonly IUserWalletAccountRepository _userWalletAccountRepository;
         private readonly IPropertyRepository _propertyRepository;
         private readonly IRoleRepository _roleRepository;
         private readonly IUnitOfWork _unitOfWork;
@@ -35,6 +36,7 @@ namespace YemenBooking.Application.Features.Authentication.Commands.RegisterOwne
         public RegisterPropertyOwnerCommandHandler(
             IPasswordHashingService passwordHashingService,
             IUserRepository userRepository,
+            IUserWalletAccountRepository userWalletAccountRepository,
             IPropertyRepository propertyRepository,
             IRoleRepository roleRepository,
             IUnitOfWork unitOfWork,
@@ -44,6 +46,7 @@ namespace YemenBooking.Application.Features.Authentication.Commands.RegisterOwne
         {
             _passwordHashingService = passwordHashingService;
             _userRepository = userRepository;
+            _userWalletAccountRepository = userWalletAccountRepository;
             _propertyRepository = propertyRepository;
             _roleRepository = roleRepository;
             _unitOfWork = unitOfWork;
@@ -108,6 +111,39 @@ namespace YemenBooking.Application.Features.Authentication.Commands.RegisterOwne
                         FavoritesJson = "[]"
                     };
                     await _userRepository.CreateUserAsync(user, cancellationToken);
+
+                    // Save wallet accounts (receiving accounts) for owner
+                    if (request.WalletAccounts != null && request.WalletAccounts.Count > 0)
+                    {
+                        var normalized = request.WalletAccounts
+                            .Where(a => a != null && !string.IsNullOrWhiteSpace(a.AccountNumber))
+                            .ToList();
+
+                        if (normalized.Count > 0)
+                        {
+                            // Normalize IsDefault
+                            var firstDefaultIndex = normalized.FindIndex(a => a.IsDefault);
+                            for (int i = 0; i < normalized.Count; i++)
+                            {
+                                normalized[i].IsDefault = (firstDefaultIndex == -1) ? (i == 0) : (i == firstDefaultIndex);
+                            }
+
+                            var entities = normalized.Select(a => new UserWalletAccount
+                            {
+                                Id = Guid.NewGuid(),
+                                UserId = user.Id,
+                                WalletType = a.WalletType,
+                                AccountNumber = a.AccountNumber.Trim(),
+                                AccountName = string.IsNullOrWhiteSpace(a.AccountName) ? null : a.AccountName.Trim(),
+                                IsDefault = a.IsDefault,
+                                CreatedAt = DateTime.UtcNow,
+                                UpdatedAt = DateTime.UtcNow,
+                                IsActive = true,
+                            }).ToList();
+
+                            await _userWalletAccountRepository.ReplaceForUserAsync(user.Id, entities, cancellationToken);
+                        }
+                    }
 
                     // Assign Owner role
                     var roles = await _roleRepository.GetAllRolesAsync(cancellationToken);

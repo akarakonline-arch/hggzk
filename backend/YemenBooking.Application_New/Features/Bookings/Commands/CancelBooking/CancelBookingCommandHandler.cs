@@ -82,9 +82,23 @@ public class CancelBookingCommandHandler : IRequestHandler<CancelBookingCommand,
         {
             return ResultDto<bool>.Failure("الحجز غير موجود");
         }
+
+        var previousStatus = booking.Status;
+
+        if (booking.Status == BookingStatus.Cancelled ||
+            booking.Status == BookingStatus.Completed ||
+            booking.Status == BookingStatus.CheckedIn)
+        {
+            return ResultDto<bool>.Failure("لا يمكن إلغاء هذا الحجز في حالته الحالية");
+        }
         var roles = _currentUserService.UserRoles;
         var isAdmin = roles.Any(r => string.Equals(r, "Admin", StringComparison.OrdinalIgnoreCase));
         var currentUserId = _currentUserService.UserId;
+
+        if (!isAdmin && request.UserId != Guid.Empty && request.UserId != currentUserId)
+        {
+            return ResultDto<bool>.Failure("بيانات المستخدم غير صحيحة");
+        }
 
         if (booking.UserId != currentUserId && !isAdmin)
         {
@@ -99,50 +113,54 @@ public class CancelBookingCommandHandler : IRequestHandler<CancelBookingCommand,
                 return ResultDto<bool>.Failure("ليس لديك صلاحية لإلغاء هذا الحجز");
             }
         }
-        // سياسة الإلغاء: تحقق صارم قبل أي تعديل
+        // سياسة الإلغاء: للحجوزات المؤكدة فقط
         var unit = await _unitRepository.GetByIdAsync(booking.UnitId, cancellationToken);
         if (unit == null)
         {
             return ResultDto<bool>.Failure("الوحدة غير موجودة");
         }
 
-        if (!unit.AllowsCancellation)
+        if (booking.Status == BookingStatus.Confirmed)
         {
-            return ResultDto<bool>.Failure("هذه الوحدة لا تسمح بإلغاء الحجز");
-        }
-
-        // احصل على نافذة الإلغاء من الحقول المهيكلة بدقة (بدون الاعتماد على JSON)
-        int? windowDays = unit.CancellationWindowDays;
-        if (!windowDays.HasValue)
-        {
-            var propertyPolicy = await _propertyRepository.GetCancellationPolicyAsync(unit.PropertyId, cancellationToken);
-            windowDays = propertyPolicy?.CancellationWindowDays;
-        }
-
-        if (windowDays.HasValue)
-        {
-            var userToday = (await _currentUserService.ConvertFromUtcToUserLocalAsync(DateTime.UtcNow)).Date;
-            var checkInLocalDate = (await _currentUserService.ConvertFromUtcToUserLocalAsync(booking.CheckIn)).Date;
-            var daysBeforeCheckIn = (checkInLocalDate - userToday).TotalDays;
-
-            // لا يُسمح بإلغاء الحجز بعد وقت تسجيل الوصول وفقًا للسياسة
-            if (daysBeforeCheckIn < 0)
+            if (!unit.AllowsCancellation)
             {
                 return ResultDto<bool>.Failure(
-                    "لا يمكن إلغاء الحجز بعد وقت تسجيل الوصول حسب سياسة الإلغاء",
-                    errorCode: "CANCELLATION_AFTER_CHECKIN",
+                    "سياسة العقار لا تسمح بإلغاء الحجز بعد التأكيد",
+                    errorCode: "CANCELLATION_NOT_ALLOWED",
                     showAsDialog: true
                 );
             }
 
-            // إذا تم تعيين نافذة إلغاء، فالتجاوز عنها يُعد مخالفة للسياسة
-            if (daysBeforeCheckIn < windowDays.Value)
+            int? windowDays = unit.CancellationWindowDays;
+            if (!windowDays.HasValue)
             {
-                return ResultDto<bool>.Failure(
-                    $"لا يمكن إلغاء الحجز خلال {windowDays.Value} يوم/أيام قبل تاريخ الوصول حسب سياسة الإلغاء",
-                    errorCode: "CANCELLATION_WINDOW_EXCEEDED",
-                    showAsDialog: true
-                );
+                var propertyPolicy = await _propertyRepository.GetCancellationPolicyAsync(unit.PropertyId, cancellationToken);
+                windowDays = propertyPolicy?.CancellationWindowDays;
+            }
+
+            if (windowDays.HasValue)
+            {
+                var userToday = (await _currentUserService.ConvertFromUtcToUserLocalAsync(DateTime.UtcNow)).Date;
+                var checkInLocalDate = (await _currentUserService.ConvertFromUtcToUserLocalAsync(booking.CheckIn)).Date;
+                var daysBeforeCheckIn = (checkInLocalDate - userToday).TotalDays;
+
+                if (daysBeforeCheckIn < 0)
+                {
+                    return ResultDto<bool>.Failure(
+                        "لا يمكن إلغاء الحجز بعد وقت تسجيل الوصول حسب سياسة الإلغاء",
+                        errorCode: "CANCELLATION_AFTER_CHECKIN",
+                        showAsDialog: true
+                    );
+                }
+
+                if (daysBeforeCheckIn < windowDays.Value)
+                {
+                    return ResultDto<bool>.Failure(
+                        $"لا يمكن إلغاء الحجز خلال {windowDays.Value} يوم/أيام قبل تاريخ الوصول حسب سياسة الإلغاء",
+                        errorCode: "CANCELLATION_WINDOW_EXCEEDED",
+                        showAsDialog: true
+                    );
+                }
             }
         }
 
@@ -187,7 +205,7 @@ public class CancelBookingCommandHandler : IRequestHandler<CancelBookingCommand,
 
         foreach (var schedule in schedulesToUpdate)
         {
-            schedule.Status = "Available";
+            schedule.Status = AvailabilityStatus.Available;
             schedule.Reason = null;
             schedule.Notes = null;
             schedule.BookingId = null;
@@ -256,7 +274,7 @@ public class CancelBookingCommandHandler : IRequestHandler<CancelBookingCommand,
             entityType: "BookingDto",
             entityId: booking.Id,
             action: AuditAction.DELETE,
-            oldValues: JsonSerializer.Serialize(new { booking.Id, PreviousStatus = "Pending" }),
+            oldValues: JsonSerializer.Serialize(new { booking.Id, PreviousStatus = previousStatus.ToString() }),
             newValues: null,
             performedBy: performerId,
             notes: notes,

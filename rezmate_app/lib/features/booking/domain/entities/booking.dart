@@ -37,6 +37,8 @@ class Booking extends Equatable {
   final List<String> unitImages;
   final ContactInfo contactInfo;
   final bool canCancel;
+  final String? cancelNotAllowedReason;
+  final String? cancelNotAllowedCode;
   final bool canReview;
   final bool canModify;
   final String? policySnapshot;
@@ -78,6 +80,8 @@ class Booking extends Equatable {
     this.unitImages = const [],
     required this.contactInfo,
     this.canCancel = false,
+    this.cancelNotAllowedReason,
+    this.cancelNotAllowedCode,
     this.canReview = false,
     this.canModify = false,
     this.policySnapshot,
@@ -127,6 +131,8 @@ class Booking extends Equatable {
         unitImages,
         contactInfo,
         canCancel,
+        cancelNotAllowedReason,
+        cancelNotAllowedCode,
         canReview,
         canModify,
         policySnapshot,

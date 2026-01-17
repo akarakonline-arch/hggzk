@@ -237,6 +237,11 @@ public class GetUserBookingsQueryHandler : IRequestHandler<GetUserBookingsQuery,
             return false;
         }
 
+        if (booking.Status == BookingStatus.Pending)
+        {
+            return true;
+        }
+
         var unit = booking.Unit;
         var property = unit?.Property;
 

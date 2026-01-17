@@ -66,6 +66,7 @@ class RegisterOwnerWithPropertyEvent extends AuthEvent {
   final int starRating;
   final String? description;
   final String? currency;
+  final List<Map<String, dynamic>>? walletAccounts;
 
   const RegisterOwnerWithPropertyEvent({
     required this.name,
@@ -81,6 +82,7 @@ class RegisterOwnerWithPropertyEvent extends AuthEvent {
     this.starRating = 3,
     this.description,
     this.currency,
+    this.walletAccounts,
   });
 
   @override
@@ -98,6 +100,7 @@ class RegisterOwnerWithPropertyEvent extends AuthEvent {
         starRating,
         description,
         currency,
+        walletAccounts,
       ];
 }
 
